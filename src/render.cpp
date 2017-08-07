@@ -40,18 +40,40 @@ std::string parse_file_name(std::string line) {
   return file_name;
 }
 
+int image_type(std::string line, std::string& str) {
+  del_comments(line);
+  std::vector<std::string> strs = split_string(line, " ");
+  int file_type = 0;
+  if (strs[0].compare("CODIFICATION") + strs[1].compare("=")) {
+    if (strs[2].compare("ascii")) {
+      str += "P3\n";
+      file_type = 3;
+    }
+    else if(strs[2].compare("binary")){
+      str += "P6\n";
+      file_type = 6;
+    }
+  }
+  return file_type;
+}
+
 
 int main(int argc, char const *argv[]) {
   std::string input_file_name = argv[0];
   // std::ifstream input_file(input_file_name, std::ios::in);
   std::ifstream input_file("input_file.txt", std::ios::in);
   std::string output_file_name;
-  
+
   if (input_file.is_open()) {
     std::string line;
     //getting file name
     std::getline(input_file, line);
     output_file_name = parse_file_name(line);
+
+    //getting file tipe
+    std::getline(input_file, line);
+    std::getline(input_file, line);
+    image_type_number = image_type(line, file_string);
 
     input_file.close();
   }
