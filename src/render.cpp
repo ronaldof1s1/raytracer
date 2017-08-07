@@ -69,6 +69,18 @@ int number_of_col(std::string line, std::string str) {
 }
 
 
+int number_of_col(std::string line, std::string str) {
+  del_comments(line);
+  std::vector<std::string> strs = split_string(line, " ");
+  int n_row = -1;
+  if (strs[0].compare "HEIGHT" + strs[1].compare("=") == 0) {
+    str += strs[2] + " ";
+    n_row = std::stoi(strs[2]);
+  }
+  return n_row;
+}
+
+
 int main(int argc, char const *argv[]) {
   std::string input_file_name = argv[0];
   // std::ifstream input_file(input_file_name, std::ios::in);
@@ -92,6 +104,8 @@ int main(int argc, char const *argv[]) {
     n_col = number_of_col(line, file_string);
 
     //getting number of rows
+    std::getline(input_file,line);
+    n_row = number_of_rows(line, file_string);
 
     input_file.close();
   }
