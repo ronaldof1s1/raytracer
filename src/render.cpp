@@ -44,7 +44,7 @@ int image_type(std::string line, std::string& str) {
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   int file_type = 0;
-  if (strs[0].compare("CODIFICATION") + strs[1].compare("=")) {
+  if (strs[0].compare("CODIFICATION") + strs[1].compare("=") == 0) {
     if (strs[2].compare("ascii")) {
       str += "P3\n";
       file_type = 3;
@@ -57,12 +57,24 @@ int image_type(std::string line, std::string& str) {
   return file_type;
 }
 
+int number_of_col(std::string line, std::string str) {
+  del_comments(line);
+  std::vector<std::string> strs = split_string(line, " ");
+  int n_col = -1;
+  if (strs[0].compare "WIDTH" + strs[1].compare("=") == 0) {
+    str += strs[2] + " ";
+    n_col = std::stoi(strs[2]);
+  }
+  return n_col;
+}
+
 
 int main(int argc, char const *argv[]) {
   std::string input_file_name = argv[0];
   // std::ifstream input_file(input_file_name, std::ios::in);
   std::ifstream input_file("input_file.txt", std::ios::in);
   std::string output_file_name;
+  int image_type_number, n_col, n_row;
 
   if (input_file.is_open()) {
     std::string line;
@@ -74,6 +86,12 @@ int main(int argc, char const *argv[]) {
     std::getline(input_file, line);
     std::getline(input_file, line);
     image_type_number = image_type(line, file_string);
+
+    //getting number of collumns
+    std::getline(input_file,line);
+    n_col = number_of_col(line, file_string);
+
+    //getting number of rows
 
     input_file.close();
   }
