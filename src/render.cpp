@@ -80,14 +80,14 @@ int number_of_rows(std::string line, std::string str) {
   return n_row;
 }
 
-int* get_point_rgb(std::string line, std::string point){
+std::vector<int>* get_point_rgb(std::string line, std::string point){
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
-  int *rgb;
+  std::vector<int> *rgb = new std::vector<int>();
   if (strs[0].compare(point) + strs[1].compare("=") == 0) {
-    rgb[0] = std::stoi(strs[2]);
-    rgb[1] = std::stoi(strs[3]);
-    rgb[2] = std::stoi(strs[4]);
+    rgb->push_back(std::stoi(strs[2]));
+    rgb->push_back(std::stoi(strs[3]));
+    rgb->push_back(std::stoi(strs[4]));
   }
   return rgb;
 }
@@ -98,7 +98,7 @@ int main(int argc, char const *argv[]) {
   std::ifstream input_file("input_file.txt", std::ios::in);
   std::string output_file_name, file_string = "";
   int image_type_number, n_col, n_row;
-  int* upper_left, upper_right, lower_left, lower_right;
+  std::vector<int> *upper_left, *upper_right, *lower_left, *lower_right;
   if (input_file.is_open()) {
     std::string line;
     //getting file name
@@ -120,6 +120,9 @@ int main(int argc, char const *argv[]) {
 
     //getting four point rgb
     upper_left = get_point_rgb(line, "UPPER_LEFT");
+    lower_left = get_point_rgb(line, "LOWER_LEFT");
+    upper_right = get_point_rgb(line, "UPPER_RIGHT");
+    lower_right = get_point_rgb(line, "LOWER_RIGHT");
 
     input_file.close();
   }
