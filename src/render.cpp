@@ -61,7 +61,7 @@ int number_of_col(std::string line, std::string str) {
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   int n_col = -1;
-  if (strs[0].compare "WIDTH" + strs[1].compare("=") == 0) {
+  if (strs[0].compare("WIDTH") + strs[1].compare("=") == 0) {
     str += strs[2] + " ";
     n_col = std::stoi(strs[2]);
   }
@@ -69,25 +69,36 @@ int number_of_col(std::string line, std::string str) {
 }
 
 
-int number_of_col(std::string line, std::string str) {
+int number_of_rows(std::string line, std::string str) {
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   int n_row = -1;
-  if (strs[0].compare "HEIGHT" + strs[1].compare("=") == 0) {
+  if (strs[0].compare("HEIGHT") + strs[1].compare("=") == 0) {
     str += strs[2] + " ";
     n_row = std::stoi(strs[2]);
   }
   return n_row;
 }
 
+int* get_point_rgb(std::string line, std::string point){
+  del_comments(line);
+  std::vector<std::string> strs = split_string(line, " ");
+  int *rgb;
+  if (strs[0].compare(point) + strs[1].compare("=") == 0) {
+    rgb[0] = std::stoi(strs[2]);
+    rgb[1] = std::stoi(strs[3]);
+    rgb[2] = std::stoi(strs[4]);
+  }
+  return rgb;
+}
 
 int main(int argc, char const *argv[]) {
   std::string input_file_name = argv[0];
   // std::ifstream input_file(input_file_name, std::ios::in);
   std::ifstream input_file("input_file.txt", std::ios::in);
-  std::string output_file_name;
+  std::string output_file_name, file_string = "";
   int image_type_number, n_col, n_row;
-
+  int* upper_left, upper_right, lower_left, lower_right;
   if (input_file.is_open()) {
     std::string line;
     //getting file name
@@ -106,6 +117,9 @@ int main(int argc, char const *argv[]) {
     //getting number of rows
     std::getline(input_file,line);
     n_row = number_of_rows(line, file_string);
+
+    //getting four point rgb
+    upper_left = get_point_rgb(line, "UPPER_LEFT");
 
     input_file.close();
   }
