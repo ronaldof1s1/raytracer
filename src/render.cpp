@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "../utility/vector3.h"
 #include "../utility/ray.h"
 using namespace utility;
@@ -9,25 +10,71 @@ using namespace utility;
 #ifdef TRADITIONAL_RT
 Image Raytrace (Camera cam, Scene scene, int width, int height)
 {
-	Image image = new Image (width, height) ;
-	for (int i = 0 ; i < height ; i++)
-		for (int j = 0 ; j < width ; j++) {
-			Ray ray = RayThruPixel (cam, i, j) ;
-			Intersection hit = Intersect (ray, scene) ;
-			image[i][j] = FindColor (hit) ;
-			}
-	return image ;
+    Image image = new Image (width, height) ;
+    for (int i = 0 ; i < height ; i++)
+        for (int j = 0 ; j < width ; j++) {
+            Ray ray = RayThruPixel (cam, i, j) ;
+            Intersection hit = Intersect (ray, scene) ;
+            image[i][j] = FindColor (hit) ;
+            }
+    return image ;
 }
 #endif
+
+float hit_sphere(const Ray & r, const point3 & center, const float radius) {
+    auto a = vector3.dot(r.get_direction(), r.get_direction());
+    auto b = 2 * vector3.dot((r.get_origin() - center), r.get_direction());
+    auto c = dot((r.get(origin) - center), r.get_origin() - center) - radius*radius;
+
+    auto delta = b*b - 4*a*c;
+
+    float f;
+
+    if(delta < 0){
+        f = -1;
+    }
+    else{
+        auto f1 = (-b + sqrt(delta))/2*a;
+        auto f2 = (-b - sqrt(delta))/2*a;
+
+        if(f1 < f2 && f1 >= 0){
+            f = f1;
+        }
+        else {
+            f = f2;
+        }
+        return f;
+    }
+}
+
 rgb color( const Ray & r_ )
 {
     rgb bottom (0.5, 0.7, 0 );
     rgb top(1,1,1);
+    rgb rgb_ = top;
     // TODO: determine the background color, which is an linear interpolation between bottom->top.
     // The interpolation is based on where the ray hits the background.
     // Imagine that the background is attached to the view-plane; in other words,
     // the virtual world we want to visualize is empty!
-    return top; // Stub, replace it accordingly
+
+    point3 center(0,0,-1);
+    float radius = 0.5;
+    //esferas: todo
+    // {point3(0,-100.5,-30), 100.f},
+    // {point3(0.3, 0, -1), 0.4},
+    // {point3(0, 1, -2), 0.6},
+    // {point3(-0.4, 0, -3), 0.7}
+
+
+    auto t = hit_sphere(r_, center, radius);
+    if(t > 0){
+        auto normal = unit_vector(r_.point_at(t) - center);
+        normal += new vector3(1,1,1);
+        normal *= 0.5;
+        return normal * rgb_;
+    }
+
+    return rgb_; // Stub, replace it accordingly
 }
 int main( void )
 {
@@ -46,9 +93,9 @@ int main( void )
     point3 origin(0, 0, 0); // the camera's origin.
     
      // NOTICE: We loop rows from bottom to top.
-    for ( auto row{n_rows-1} ; row >= 0 ; --row ) // Y
+    for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
     {
-        for( auto col{0} ; col < n_cols ; col++ ) // X
+        for( auto col = 0 ; col < n_cols ; col++ ) // X
         {
             // Determine how much we have 'walked' on the image: in [0,1]
             auto u = float(col) / float( n_cols ); // walked u% of the horizontal dimension of the view plane.
