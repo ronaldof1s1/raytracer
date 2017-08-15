@@ -4,6 +4,7 @@
 #include <limits>
 #include "../utility/vector3.h"
 #include "../utility/ray.h"
+#include "../utility/camera.h"
 
 using namespace utility;
 /*
@@ -145,28 +146,13 @@ int main(int argc, char const *argv[])
       vector3 vertical(0, 2, 0); // Vertical dimension of the view plane.
       point3 origin(0, 0, 0); // the camera's origin.
 
+      camera cam (lower_left_corner, horizontal, vertical, origin);
        // NOTICE: We loop rows from bottom to top.
       for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
           for( auto col = 0 ; col < n_cols ; col++ ) // X
           {
-              // Determine how much we have 'walked' on the image: in [0,1]
-              auto u = float(col) / float( n_cols ); // walked u% of the horizontal dimension of the view plane.
-              auto v = float(row) / float( n_rows ); // walked v% of the vertical dimension of the view plane.
-
-              // Determine the ray's direction, based on the pixel coordinate (col,row).
-              // We are mapping (matching) the view plane (vp) to the image.
-              // To create a ray we need: (a) an origin, and (b) an end point.
-              //
-              // (a) The ray's origin is the origin of the camera frame (which is the same as the world's frame).
-              //
-              // (b) To get the end point of ray we just have to 'walk' from the
-              // vp's origin + horizontal displacement (proportional to 'col') +
-              // vertical displacement (proportional to 'row').
-              point3 end_point = lower_left_corner + u*horizontal + v*vertical ;
-
-              // The ray:
-              Ray r( origin, end_point - origin );
+              Ray r = cam.get_ray(row, col, n_rows, n_cols);
 
               // Determine the color of the ray, as it travels through the virtual space.
               auto c = color( r, 1 );
