@@ -28,24 +28,21 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
 
     auto delta = b*b - 4*a*c;
 
-    float f;
 
     if(delta < 0){
-        f = -1;
+        return -1.0;
     }
     else{
         auto f1 = (-b + sqrt(delta))/2*a;
         auto f2 = (-b - sqrt(delta))/2*a;
 
-        if(f1 < f2 && f1 >= 0){
-            f = f1;
+        if(f1 >= 0){
+          if(f1 < f2 || f2 < 0){
+            return f1;
+          }
         }
-        else {
-            f = f2;
-        }
+        return f2;
     }
-    return f;
-
 }
 
 
@@ -53,10 +50,6 @@ rgb color( const Ray & r_ )
 {
     rgb bottom (0.5, 0.7, 1.0 );
     rgb top(1,1,1);
-    // TODO: determine the background color, which is an linear interpolation between bottom->top.
-    // The interpolation is based on where the ray hits the background.
-    // Imagine that the background is attached to the view-plane; in other words,
-    // the virtual world we want to visualize is empty!
 
     rgb rgb_ = unit_vector(r_.get_direction());
     float i = 0.5*(rgb_.y() + 1);
@@ -64,7 +57,7 @@ rgb color( const Ray & r_ )
 
     point3 center(0,0,-1);
     float radius = 0.5;
-    //esferas: todo
+    // esferas: TODO
     // {point3(0,-100.5,-30), 100.f},
     // {point3(0.3, 0, -1), 0.4},
     // {point3(0, 1, -2), 0.6},
