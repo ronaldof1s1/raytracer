@@ -55,25 +55,31 @@ rgb color( const Ray & r_ )
     int max_spheres = 4;
     point3 centers[max_spheres];
     float radius[max_spheres];
-    centers[0] = point3(0,-100.5,-30);  radius[0] = 100.f;
+    centers[0] = point3(0,-100.5,-3);  radius[0] = 99.f;
     centers[1] = point3(0.3, 0, -1);    radius[1] = 0.4;
     centers[2] = point3(0, 1, -2);      radius [2] = 0.6;
     centers[3] = point3(-0.4, 0, -3);   radius [3] = 0.7;
     
-    auto previous_t = hit_sphere(r_, centers[0], radius[0]);
+    float min_t = 99999999.f;
+
+    vector3 normal;
+    bool hit_any_sphere = false;
     
     for (int i = 0; i < max_spheres; i++) {
-    auto t = hit_sphere(r_, centers[i], radius[i]);
+      float t = hit_sphere(r_, centers[i], radius[i]);
+
+      if(t > 0 && t < min_t){
+        hit_any_sphere = true;
+        min_t = t;
+        vector3 unit(1,1,1);
+        normal = unit_vector(r_.point_at(t) - centers[i]);
+        normal += unit;
+        normal *= 0.5;
+        }
     
-    if(t > 0 && t < previous_t){
-      previous_t = t;
-      vector3 unit(1,1,1);
-      auto normal = unit_vector(r_.point_at(t) - centers[i]);
-      normal += unit;
-      normal *= 0.5;
-      return normal;
     }
-    
+    if(hit_any_sphere){
+      return normal;
     }
     
     rgb bottom (0.5, 0.7, 1.0 );
@@ -87,8 +93,8 @@ rgb color( const Ray & r_ )
 }
 int main( void )
 {
-    int n_cols{ 200 };
-    int n_rows{ 100 };
+    int n_cols{ 1200 };
+    int n_rows{ 600 };
 
     std::cout << "P3\n"
               << n_cols << " " << n_rows << "\n"
