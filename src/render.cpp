@@ -22,19 +22,20 @@ Image Raytrace (Camera cam, Scene scene, int width, int height)
 #endif
 
 float hit_sphere(const Ray & r, const point3 & center, const float radius) {
-    auto a = dot(r.get_direction(), r.get_direction());
-    auto b = 2 * dot((r.get_origin() - center), r.get_direction());
-    auto c = dot((r.get_origin() - center), r.get_origin() - center) - radius*radius;
+    auto oc = r.get_origin() - center;
+    float a = dot(r.get_direction(), r.get_direction());
+    float b = 2 * dot(oc, r.get_direction());
+    float c = dot(oc,oc) - radius*radius;
 
-    auto delta = b*b - 4*a*c;
+    float delta = b*b - 4*a*c;
 
 
     if(delta < 0){
         return -1.0;
     }
     else{
-        auto f1 = (-b + sqrt(delta))/2*a;
-        auto f2 = (-b - sqrt(delta))/2*a;
+        auto f1 = (-b + sqrt(delta))/(2.0*a);
+        auto f2 = (-b - sqrt(delta))/(2.0*a);
 
         if(f1 >= 0){
           if(f1 < f2 || f2 < 0){
@@ -48,13 +49,7 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
 
 rgb color( const Ray & r_ )
 {
-    rgb bottom (0.5, 0.7, 1.0 );
-    rgb top(1,1,1);
-
-    rgb rgb_ = unit_vector(r_.get_direction());
-    float i = 0.5*(rgb_.y() + 1);
-    rgb_ = (1-i)*top + i* bottom;
-
+    // sphere 1
     point3 center(0,0,-1);
     float radius = 0.5;
     // esferas: TODO
@@ -65,15 +60,23 @@ rgb color( const Ray & r_ )
 
 
     auto t = hit_sphere(r_, center, radius);
+    //t = -1;
     if(t > 0){
       vector3 unit(1,1,1);
-        auto normal = unit_vector(r_.point_at(t) - center);
-        normal += unit;
-        normal *= 0.5;
-        return normal * rgb_;
+      auto normal = unit_vector(r_.point_at(t) - center);
+      normal += unit;
+      normal *= 0.5;
+      return normal;
     }
 
-    return rgb_; // Stub, replace it accordingly
+    rgb bottom (0.5, 0.7, 1.0 );
+    rgb top(1,1,1);
+
+    rgb unit_direction = unit_vector(r_.get_direction());
+    float i = 0.5*(unit_direction.y() + 1);
+    unit_direction = (1-i)*top + i* bottom;
+
+    return unit_direction; // Stub, replace it accordingly
 }
 int main( void )
 {
