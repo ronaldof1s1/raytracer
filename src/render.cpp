@@ -37,6 +37,8 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
         auto f1 = (-b + sqrt(delta))/(2.0*a);
         auto f2 = (-b - sqrt(delta))/(2.0*a);
 
+        // returns the minimum positive root 
+        // or any negative root (if the two are negatives)
         if(f1 >= 0){
           if(f1 < f2 || f2 < 0){
             return f1;
@@ -49,26 +51,31 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
 
 rgb color( const Ray & r_ )
 {
-    // sphere 1
-    point3 center(0,0,-1);
-    float radius = 0.5;
-    // esferas: TODO
-    // {point3(0,-100.5,-30), 100.f},
-    // {point3(0.3, 0, -1), 0.4},
-    // {point3(0, 1, -2), 0.6},
-    // {point3(-0.4, 0, -3), 0.7}
-
-
-    auto t = hit_sphere(r_, center, radius);
-    //t = -1;
-    if(t > 0){
+    // spheres
+    int max_spheres = 4;
+    point3 centers[max_spheres];
+    float radius[max_spheres];
+    centers[0] = point3(0,-100.5,-30);  radius[0] = 100.f;
+    centers[1] = point3(0.3, 0, -1);    radius[1] = 0.4;
+    centers[2] = point3(0, 1, -2);      radius [2] = 0.6;
+    centers[3] = point3(-0.4, 0, -3);   radius [3] = 0.7;
+    
+    auto previous_t = hit_sphere(r_, centers[0], radius[0]);
+    
+    for (int i = 0; i < max_spheres; i++) {
+    auto t = hit_sphere(r_, centers[i], radius[i]);
+    
+    if(t > 0 && t < previous_t){
+      previous_t = t;
       vector3 unit(1,1,1);
-      auto normal = unit_vector(r_.point_at(t) - center);
+      auto normal = unit_vector(r_.point_at(t) - centers[i]);
       normal += unit;
       normal *= 0.5;
       return normal;
     }
-
+    
+    }
+    
     rgb bottom (0.5, 0.7, 1.0 );
     rgb top(1,1,1);
 
