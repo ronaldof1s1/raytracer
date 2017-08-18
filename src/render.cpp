@@ -1,7 +1,10 @@
 #include <iostream>
+#include <fstream>
 #include <cmath>
+#include <limits>
 #include "../utility/vector3.h"
 #include "../utility/ray.h"
+
 using namespace utility;
 /*
  *  In the near future we'll want to refactor our project to become
@@ -37,7 +40,7 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
         auto f1 = (-b + sqrt(delta))/(2.0*a);
         auto f2 = (-b - sqrt(delta))/(2.0*a);
 
-        // returns the minimum positive root 
+        // returns the minimum positive root
         // or any negative root (if the two are negatives)
         if(f1 >= 0){
           if(f1 < f2 || f2 < 0){
@@ -47,9 +50,32 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
         return f2;
     }
 }
+vector3 normal_calculation(const Ray & r, const point3 & center, const float t) {
+  vector3 normal;
+  vector3 unit(1,1,1);
+  normal = unit_vector(r.point_at(t) - center);
+  normal += unit;
+  normal *= 0.5;
+  return normal;
+}
 
+rgb depth_map(const Ray & r, float t, float max_depth){
+  rgb background_color(1,1,1);
+  rgb foreground_color(0,0,0);
 
-rgb color( const Ray & r_ )
+  float depth = (r.point_at(t) - r.get_origin()).length();
+  depth /= max_depth;
+
+  // evading color overflow
+    if(depth > 1){
+      depth = 1.0;
+    }
+
+  rgb depth_color = (1.0 - depth) * (foreground_color) + depth * background_color;
+  return depth_color;
+}
+
+rgb color( const Ray & r_, int depth_or_normal )
 {
     // spheres
     int max_spheres = 4;
@@ -59,29 +85,38 @@ rgb color( const Ray & r_ )
     centers[1] = point3(0.3, 0, -1);    radius[1] = 0.4;
     centers[2] = point3(0, 1, -2);      radius [2] = 0.6;
     centers[3] = point3(-0.4, 0, -3);   radius [3] = 0.7;
-    
-    float min_t = 99999999.f;
 
-    vector3 normal;
+    float min_t = std::numeric_limits<float>::max();
+
+    vector3 rgb_to_paint;
     bool hit_any_sphere = false;
-    
+
     for (int i = 0; i < max_spheres; i++) {
       float t = hit_sphere(r_, centers[i], radius[i]);
 
       if(t > 0 && t < min_t){
         hit_any_sphere = true;
         min_t = t;
-        vector3 unit(1,1,1);
-        normal = unit_vector(r_.point_at(t) - centers[i]);
-        normal += unit;
-        normal *= 0.5;
+
+        if(depth_or_normal == 1) {
+          float max_depth = 4.0;
+          rgb_to_paint = depth_map(r_, t, max_depth);
         }
-    
+        else {
+          rgb_to_paint = normal_calculation(r_, centers[i], t);
+        }
+      }
     }
     if(hit_any_sphere){
-      return normal;
+      return rgb_to_paint;
     }
-    
+
+
+    if(depth_or_normal == 1){
+      //white background
+      rgb bg(1,1,1);
+      return bg;
+    }
     rgb bottom (0.5, 0.7, 1.0 );
     rgb top(1,1,1);
 
@@ -91,52 +126,58 @@ rgb color( const Ray & r_ )
 
     return unit_direction; // Stub, replace it accordingly
 }
-int main( void )
+
+int main(int argc, char const *argv[])
 {
     int n_cols{ 1200 };
     int n_rows{ 600 };
 
-    std::cout << "P3\n"
-              << n_cols << " " << n_rows << "\n"
-              << "255\n";
+    std::ofstream image(argv[1], std::ios::out);
+    if (image.is_open()) {
+      image << "P3\n"
+                << n_cols << " " << n_rows << "\n"
+                << "255\n";
 
 
-    //=== Defining our 'camera'
-    point3 lower_left_corner( -2, -1, -1 ); // lower left corner of the view plane.
-    vector3 horizontal( 4, 0, 0 ); // Horizontal dimension of the view plane.
-    vector3 vertical(0, 2, 0); // Vertical dimension of the view plane.
-    point3 origin(0, 0, 0); // the camera's origin.
+      //=== Defining our 'camera'
+      point3 lower_left_corner( -2, -1, -1 ); // lower left corner of the view plane.
+      vector3 horizontal( 4, 0, 0 ); // Horizontal dimension of the view plane.
+      vector3 vertical(0, 2, 0); // Vertical dimension of the view plane.
+      point3 origin(0, 0, 0); // the camera's origin.
 
-     // NOTICE: We loop rows from bottom to top.
-    for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
-    {
-        for( auto col = 0 ; col < n_cols ; col++ ) // X
-        {
-            // Determine how much we have 'walked' on the image: in [0,1]
-            auto u = float(col) / float( n_cols ); // walked u% of the horizontal dimension of the view plane.
-            auto v = float(row) / float( n_rows ); // walked v% of the vertical dimension of the view plane.
+       // NOTICE: We loop rows from bottom to top.
+      for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
+      {
+          for( auto col = 0 ; col < n_cols ; col++ ) // X
+          {
+              // Determine how much we have 'walked' on the image: in [0,1]
+              auto u = float(col) / float( n_cols ); // walked u% of the horizontal dimension of the view plane.
+              auto v = float(row) / float( n_rows ); // walked v% of the vertical dimension of the view plane.
 
-            // Determine the ray's direction, based on the pixel coordinate (col,row).
-            // We are mapping (matching) the view plane (vp) to the image.
-            // To create a ray we need: (a) an origin, and (b) an end point.
-            //
-            // (a) The ray's origin is the origin of the camera frame (which is the same as the world's frame).
-            //
-            // (b) To get the end point of ray we just have to 'walk' from the
-            // vp's origin + horizontal displacement (proportional to 'col') +
-            // vertical displacement (proportional to 'row').
-            point3 end_point = lower_left_corner + u*horizontal + v*vertical ;
+              // Determine the ray's direction, based on the pixel coordinate (col,row).
+              // We are mapping (matching) the view plane (vp) to the image.
+              // To create a ray we need: (a) an origin, and (b) an end point.
+              //
+              // (a) The ray's origin is the origin of the camera frame (which is the same as the world's frame).
+              //
+              // (b) To get the end point of ray we just have to 'walk' from the
+              // vp's origin + horizontal displacement (proportional to 'col') +
+              // vertical displacement (proportional to 'row').
+              point3 end_point = lower_left_corner + u*horizontal + v*vertical ;
 
-            // The ray:
-            Ray r( origin, end_point - origin );
+              // The ray:
+              Ray r( origin, end_point - origin );
 
-            // Determine the color of the ray, as it travels through the virtual space.
-            auto c = color( r );
-            int ir = int( 255.99f * c[rgb::R] );
-            int ig = int( 255.99f * c[rgb::G] );
-            int ib = int( 255.99f * c[rgb::B] );
-            std::cout << ir << " " << ig << " " << ib << "\n";
-        }
+              // Determine the color of the ray, as it travels through the virtual space.
+              auto c = color( r, 1 );
+              int ir = int( 255.99f * c[rgb::R] );
+              int ig = int( 255.99f * c[rgb::G] );
+              int ib = int( 255.99f * c[rgb::B] );
+              image << ir << " " << ig << " " << ib << "\n";
+          }
+      }
+      image.close();
     }
+
     return 0;
 }
