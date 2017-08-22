@@ -5,14 +5,21 @@
 #include "scene.h"
 
 class raytrace {
+	camera cam;
+	scene sce;
+	int n_cols;
+	int n_rows;
 	// //fields
-	// +camera
-	// +scene
+	
 	// +resource_manager
-	// +ncols
-	// +nrows
+	
 	// +background
-
+	raytrace(camera c, scene s, int rows, int cols){
+		cam = c;
+		sce = s;
+		n_rows = rows;
+		n_cols = cols;
+	}
 	// //methods
 	// +init
 	// +hit_anything

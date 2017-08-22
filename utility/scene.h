@@ -2,8 +2,11 @@
 #define SCENE_H_
 include "hitable.h"
 include <list>
+using namespace utility;
 
 class scene{
+public:
+
 	// fields
 	std::list< hitable > objects;
 
@@ -13,6 +16,7 @@ class scene{
 	}
 
 	std::list< hitable > get_all_objects() {return objects}
+	
 	hitable get_object(int i) {
 		std::list< hitable >::iterator it = objects.begin();
 		while(i-- > 0 && it !=objects.end()){
