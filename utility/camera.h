@@ -17,13 +17,13 @@ public:
 		lower_left_corner = llc;
 		vertical_axis = va;
 		horizontal_axis = ha;
-		origin = origin_
+		origin = origin_;
 	};
 
-	vector3 get_lower_left_corner() {return lower_left_corner};
-	vector3 get_vertical_axis() {return vertical_axis};
-	vector3 get_horizontal_axis() {return horizontal_axis};
-	vector3 get_origin() {return origin};
+	vector3 get_lower_left_corner() {return lower_left_corner;};
+	vector3 get_vertical_axis() {return vertical_axis;};
+	vector3 get_horizontal_axis() {return horizontal_axis;};
+	vector3 get_origin() {return origin;};
 
 	Ray get_ray(float u, float v){
 		// Determine the ray's direction, based on the pixel coordinate (col,row).
