@@ -124,7 +124,7 @@ int main(int argc, char const *argv[])
               Ray r = cam.get_ray(row, col, n_rows, n_cols);
 
               // Determine the color of the ray, as it travels through the virtual space.
-              auto c = color( r, depth_map, scene_ );
+              auto c = color( r, rgb_normal, scene_ );
               int ir = int( 255.99f * c[rgb::R] );
               int ig = int( 255.99f * c[rgb::G] );
               int ib = int( 255.99f * c[rgb::B] );
