@@ -95,11 +95,11 @@ int main(int argc, char const *argv[])
 
       //=== Defining our 'camera'
       point3 lower_left_corner( -2, -1, -1 ); // lower left corner of the view plane.
-      vector3 horizontal( 4, 0, 0 ); // Horizontal dimension of the view plane.
       vector3 vertical(0, 2, 0); // Vertical dimension of the view plane.
+      vector3 horizontal( 4, 0, 0 ); // Horizontal dimension of the view plane.
       point3 origin(0, 0, 0); // the camera's origin.
 
-      camera cam (lower_left_corner, horizontal, vertical, origin);
+      camera cam (lower_left_corner, vertical, horizontal, origin);
        // NOTICE: We loop rows from bottom to top.
 
 
