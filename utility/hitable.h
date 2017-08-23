@@ -5,13 +5,17 @@
 
 struct hit_record {
 	float t;
-  vector3  p;
+  point3  p;
   vector3 normal;
 };
 
 class hitable {
+ 
 public:
-  virtual bool hit(const ray & r, float t_min, float t_max, hit_record & rec) const = 0;
+  point3 center;
+  point3 get_center(){return center;}
+
+  virtual bool hit(const Ray & r, float t_min, float t_max, hit_record & rec) const = 0;
 };
 
 #endif
