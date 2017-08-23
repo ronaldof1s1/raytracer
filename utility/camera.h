@@ -35,7 +35,7 @@ public:
 		// (b) To get the end point of ray we just have to 'walk' from the
 		// vp's origin + horizontal displacement (proportional to 'col') +
 		// vertical displacement (proportional to 'row').
-		point3 end_point = origin + u*horizontal_axis + v*vertical_axis;
+		point3 end_point = lower_left_corner + u*horizontal_axis + v*vertical_axis;
 		Ray r (origin, end_point - origin);
 		return r;
 	}

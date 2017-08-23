@@ -52,7 +52,6 @@ rgb color( const Ray & r_, int depth_or_normal, scene & scene_ )
     float min_t = 0.0;
     vector3 rgb_to_paint;
     hit_record rec;
-    
     if(scene_.hit_anything(r_, min_t, max_t, rec)){
       if(depth_or_normal == 1) {
           float max_depth = 4.0;
