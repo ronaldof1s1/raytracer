@@ -1,30 +1,30 @@
 #ifndef SCENE_H_
 #define SCENE_H_
-include "hitable.h"
-include <list>
+
+#include "hitable.h"
+#include <list>
+
 using namespace utility;
 
 class scene{
 public:
 
 	// fields
-	std::list< hitable > objects;
+	std::list< hitable* > objects;
 
-	// TODO: constructors & gettes & methods
-	scene(std::list< hitable > obj){
+	scene(){};
+	scene(std::list< hitable* > & obj){
 		objects = obj;
-	}
+	};
 
-	std::list< hitable > get_all_objects() {return objects}
+	inline unsigned int size(){return objects.size();}
+	std::list< hitable* > get_objects() {return objects;}
 	
-	hitable get_object(int i) {
-		std::list< hitable >::iterator it = objects.begin();
-		while(i-- > 0 && it !=objects.end()){
-			it.next();
-		}
-		return *it;	
-	}
-	void add_object(hitable object) {objects.push_back(object)}
+	inline void add_object(hitable * object);
+
+	inline bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec);
  };
 
+
+#include "scene.inl"
 #endif
