@@ -4,7 +4,7 @@
 #include "../hitable.h"
 
 class sphere : public hitable{
-    
+
 
 public:
     float radius;
@@ -19,7 +19,7 @@ public:
 
     float get_radius(){return radius;}
 
-    virtual bool hit( const Ray & r, float t_min, float t_max, hit_record & rec) const;     
+    virtual bool hit( const Ray & r, float t_min, float t_max, hit_record & rec) const;
 };
 
 bool sphere::hit(const Ray & r, float t_min, float t_max, hit_record & rec) const {
@@ -29,21 +29,22 @@ bool sphere::hit(const Ray & r, float t_min, float t_max, hit_record & rec) cons
     float c = dot(oc,oc) - radius*radius;
 
     float delta = b*b - 4*a*c;
-
-
-    if (delta > 0) {
-        float t1 = (-b + sqrt(delta))/(2.0*a);
+    
+    if (delta >= 0) {
+        float t1 = (-b - sqrt(delta))/(2.0*a);
+        float t2 = (-b + sqrt(delta))/(2.0*a);
 
         if(t1 > t_min && t1 < t_max){
+            if(t1 < t2 || t2 < 0){
+            //std::cout << "t1: " << t1 << std::endl;
             rec.t = t1;
             rec.p = r.point_at(t1);
             rec.normal = (rec.p - center)/radius;
             return true;
+            }
         }
-
-        float t2 = (-b - sqrt(delta))/(2.0*a);
-
         if(t2 > t_min && t2 < t_max){
+            //std::cout << "t2: " << t2 << std::endl;
             rec.t = t2;
             rec.p = r.point_at(t2);
             rec.normal = (rec.p - center)/radius;

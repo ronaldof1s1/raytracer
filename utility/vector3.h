@@ -13,7 +13,7 @@ namespace utility {
      * points, directions, vectors, colors, offset
      */
     class vector3
-    {
+    { 
         public:
             // Aliases
             typedef float value_type;

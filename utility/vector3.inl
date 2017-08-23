@@ -95,7 +95,7 @@ namespace utility {
         return vector3( v.e[vector3::X] / t,
                 v.e[vector3::Y] / t,
                 v.e[vector3::Z] / t );
-    }
+    } 
 
     //inner (dot) product
     inline vector3::value_type dot( const vector3 & v1, const vector3 & v2 )

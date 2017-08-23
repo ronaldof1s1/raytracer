@@ -6,7 +6,7 @@ class Ray {
     private:
         point3 O; // the origin of the ray.
         vector3 D; // The ray's direction.
-    public:
+    public: 
 
         //=== Alias
         typedef float real_type;

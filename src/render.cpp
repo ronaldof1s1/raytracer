@@ -29,33 +29,6 @@ Image Raytrace (Camera cam, Scene scene, int width, int height)
 }
 #endif
 
-float hit_sphere(const Ray & r, const point3 & center, const float radius) {
-    vector3 oc = r.get_origin() - center;
-    float a = dot(r.get_direction(), r.get_direction());
-    float b = 2 * dot(oc, r.get_direction());
-    float c = dot(oc,oc) - radius*radius;
-
-    float delta = b*b - 4*a*c;
-
-
-    if(delta < 0){
-        return -1.0;
-    }
-    else{
-        auto f1 = (-b + sqrt(delta))/(2.0*a);
-        auto f2 = (-b - sqrt(delta))/(2.0*a);
-
-        // returns the minimum positive root
-        // or any negative root (if the two are negatives)
-        if(f1 >= 0){
-          if(f1 < f2 || f2 < 0){
-            return f1;
-          }
-        }
-        return f2;
-    }
-}
-
 rgb depth_map(const Ray & r, point3 & p, float max_depth){
   rgb background_color(1,1,1);
   rgb foreground_color(0,0,0);
@@ -102,9 +75,9 @@ rgb color( const Ray & r_, int depth_or_normal, scene & scene_ )
 
     rgb unit_direction = unit_vector(r_.get_direction());
     float i = 0.5*(unit_direction.y() + 1);
-    unit_direction = (1-i)*top + i* bottom;
+    rgb_to_paint = (1-i)*top + i* bottom;
 
-    return unit_direction; // Stub, replace it accordingly
+    return rgb_to_paint; // Stub, replace it accordingly
 }
 
 int main(int argc, char const *argv[])
@@ -119,9 +92,6 @@ int main(int argc, char const *argv[])
       image << "P3\n"
                 << n_cols << " " << n_rows << "\n"
                 << "255\n";
-
-
-
 
       //=== Defining our 'camera'
       point3 lower_left_corner( -2, -1, -1 ); // lower left corner of the view plane.
