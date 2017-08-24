@@ -13,6 +13,7 @@ public:
 	vector3 origin;
 
 	// TODO: constructors & getters
+	camera(){};
 	camera(point3 llc, vector3 va, vector3 ha, point3 origin_){
 		lower_left_corner = llc;
 		vertical_axis = va;

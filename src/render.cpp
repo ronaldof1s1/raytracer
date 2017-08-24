@@ -8,6 +8,7 @@
 #include "../utility/camera.h"
 #include "../utility/scene.h"
 #include "../utility/hitables/sphere.h"
+#include "../utility/Raytrace.h"
 
 
 using namespace utility;
@@ -29,7 +30,7 @@ Image Raytrace (Camera cam, Scene scene, int width, int height)
 }
 #endif
 
-rgb depth_map(const Ray & r, point3 & p, float max_depth){
+/*rgb depth_map(const Ray & r, point3 & p, float max_depth){
   rgb background_color(1,1,1);
   rgb foreground_color(0,0,0);
 
@@ -77,20 +78,22 @@ rgb color( const Ray & r_, int depth_or_normal, scene & scene_ )
     rgb_to_paint = (1-i)*top + i* bottom;
 
     return rgb_to_paint; // Stub, replace it accordingly
-}
+}*/
 
 int main(int argc, char const *argv[])
 {
-    int n_cols{ 1200 };
-    int n_rows{ 600 };
+    int n_cols = 1200;
+    int n_rows = 600;
+
     int depth_map = 1;
     int rgb_normal = 0;
 
     std::ofstream image(argv[1], std::ios::out);
-    if (image.is_open()) {
+
+    /*if (image.is_open()) {
       image << "P3\n"
                 << n_cols << " " << n_rows << "\n"
-                << "255\n";
+                << "255\n";*/
 
       //=== Defining our 'camera'
       point3 lower_left_corner( -2, -1, -1 ); // lower left corner of the view plane.
@@ -98,26 +101,28 @@ int main(int argc, char const *argv[])
       vector3 horizontal( 4, 0, 0 ); // Horizontal dimension of the view plane.
       point3 origin(0, 0, 0); // the camera's origin.
 
-      camera cam (lower_left_corner, vertical, horizontal, origin);
+      camera cam(lower_left_corner, vertical, horizontal, origin);
        // NOTICE: We loop rows from bottom to top.
 
-
       //creating scene:
-      std::list< hitable* > * objects = new std::list< hitable* >() ;
+      std::list< hitable* > *objects = new std::list< hitable* >() ;
       scene scene_(*objects);
 
       //filling with spheres
-      sphere s1 (point3(0,-100.5,-3), 99.f);
+      sphere s1(point3(0,-100.5,-3), 99.f);
       scene_.add_object(&s1);
-      sphere s2 (point3(0.3, 0, -1), 0.4);
+      sphere s2(point3(0.3, 0, -1), 0.4);
       scene_.add_object(&s2);
-      sphere s3 (point3(0, 1, -2), 0.6);
+      sphere s3(point3(0, 1, -2), 0.6);
       scene_.add_object(&s3);
       sphere s4(point3(-0.4, 0, -3), 0.7);  
       scene_.add_object(&s4);
 
+      Raytrace my_raytrace(cam, scene_, n_rows, n_cols);
+      my_raytrace.render(image, rgb_normal);
 
-      for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
+
+      /*for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
           for( auto col = 0 ; col < n_cols ; col++ ) // X
           {
@@ -132,7 +137,7 @@ int main(int argc, char const *argv[])
           }
       }
       image.close();
-    }
+    }*/
 
     return 0;
 }
