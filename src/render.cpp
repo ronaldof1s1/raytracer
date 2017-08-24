@@ -12,23 +12,6 @@
 
 
 using namespace utility;
-/*
- *  In the near future we'll want to refactor our project to become
- *  something like the code below.
- */
-/*#ifdef TRADITIONAL_RT
-Image Raytrace (Camera cam, Scene scene, int width, int height)
-{
-    Image image = new Image (width, height) ;
-    for (int i = 0 ; i < height ; i++)
-        for (int j = 0 ; j < width ; j++) {
-            Ray ray = RayThruPixel (cam, i, j) ;
-            Intersection hit = Intersect (ray, scene) ;
-            image[i][j] = FindColor (hit) ;
-            }
-    return image ;
-}
-#endif*/
 
 int main(int argc, char const *argv[])
 {
