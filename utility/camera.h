@@ -41,7 +41,7 @@ public:
 		return r;
 	}
 
-	Ray get_ray(int row, int col, int n_rows, int n_cols){
+	Ray get_ray(float row, float col, int n_rows, int n_cols){
 		float u = float(col) / float( n_cols ); // walked u% of the horizontal dimension of the view plane.
 		float v = float(row) / float( n_rows ); // walked v% of the vertical dimension of the view plane.
 

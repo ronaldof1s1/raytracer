@@ -25,7 +25,7 @@ public:
 			n_cols = cols;
 		}
 
-	void render(std::ofstream &image, int rgb_normal);
+	void render(std::ofstream &image, int rgb_normal, int n_samples);
 
 	rgb depth_map(const Ray &r, point3 &p, float max_depth);
 

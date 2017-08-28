@@ -1,7 +1,7 @@
 #include "Raytrace.h"
+#include <cstdlib>
 
-
-	void Raytrace::render(std::ofstream &image, int rgb_normal){
+	void Raytrace::render(std::ofstream &image, int rgb_normal, int n_samples){
 		if (image.is_open()) {
 
 	      image << "P3\n"
@@ -12,10 +12,17 @@
 	      {
 	          for( int col = 0 ; col < n_cols ; col++ ) // X
 	          {
-	              Ray r = cam.get_ray(row, col, n_rows, n_cols);
+              rgb c(0,0,0);
+              for(int sample = 0; sample < n_samples; sample++){
+
+                // Ray r = cam.get_ray(row , col, n_rows, n_cols);
+                Ray r = cam.get_ray(row + drand48(), col+ drand48(), n_rows, n_cols);
 
 	              // Determine the color of the ray, as it travels through the virtual space.
-	              rgb c = color( r, rgb_normal, sce );
+	              c += color( r, rgb_normal, sce );
+
+              }
+                c /= n_samples;
 	              int ir = int( 255.99f * c[rgb::R] );
 	              int ig = int( 255.99f * c[rgb::G] );
 	              int ib = int( 255.99f * c[rgb::B] );

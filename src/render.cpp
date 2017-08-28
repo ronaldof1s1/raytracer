@@ -21,6 +21,8 @@ int main(int argc, char const *argv[])
     int depth_map = 1;
     int rgb_normal = 0;
 
+    int n_samples = 16;
+
     std::ofstream image(argv[1], std::ios::out);
 
     //=== Defining our 'camera'
@@ -42,11 +44,11 @@ int main(int argc, char const *argv[])
     scene_.add_object(&s2);
     sphere s3(point3(0, 1, -2), 0.6);
     scene_.add_object(&s3);
-    sphere s4(point3(-0.4, 0, -3), 0.7);  
+    sphere s4(point3(-0.4, 0, -3), 0.7);
     scene_.add_object(&s4);
 
     Raytrace my_raytrace(cam, scene_, n_rows, n_cols);
-    my_raytrace.render(image, rgb_normal);
+    my_raytrace.render(image, rgb_normal, n_samples);
 
     return 0;
 }
