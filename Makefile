@@ -8,7 +8,7 @@ SRC_PATH = src
 BUILD_PATH = build
 BIN_PATH = $(BUILD_PATH)/bin
 # executable #
-BIN_NAME = render
+BIN_NAME = Render
 # extensions #
 SRC_EXT = cpp
 # code lists #
@@ -69,4 +69,3 @@ $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	@echo "Compiling: $< -> $@"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
- 

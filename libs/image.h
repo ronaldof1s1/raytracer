@@ -1,7 +1,7 @@
 #ifndef IMAGE_H_
 #define IMAGE_H_
-	
-class image{
+
+class Image{
 	int width, height;
 	char * pixels;
 public:
@@ -16,6 +16,6 @@ public:
 	int get_height(){return height;}
 
 	char* get_image_pixels(return pixels;)
-}
+};
 
 #endif

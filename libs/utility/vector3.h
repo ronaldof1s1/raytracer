@@ -1,5 +1,5 @@
-#ifndef _vector3_H_
-#define _vector3_H_
+#ifndef _Vector3_H_
+#define _Vector3_H_
 #include <cmath>        // sqrt, fabs
 #include <iostream>     // cout, cin, endl
 #include <cassert>      // assert()
@@ -12,8 +12,8 @@ namespace utility {
      * Represents a 3D vector, that might be used to represent
      * points, directions, vectors, colors, offset
      */
-    class vector3
-    { 
+    class Vector3
+    {
         public:
             // Aliases
             typedef float value_type;
@@ -23,15 +23,15 @@ namespace utility {
             value_type e[ 3 ];
 
             //=== Constructors
-            explicit vector3( value_type e0_=0.f, value_type e1_=0.f, value_type e2_=0.f )
+            explicit Vector3( value_type e0_=0.f, value_type e1_=0.f, value_type e2_=0.f )
                 : e{ e0_, e1_, e2_ }
             { /* empty */ }
 
-            vector3( const vector3 & other_ )
+            Vector3( const Vector3 & other_ )
                 : e{ other_.e[X], other_.e[Y], other_.e[Z] }
             { /* empty */ }
 
-            vector3( std::initializer_list< value_type > il_ )
+            Vector3( std::initializer_list< value_type > il_ )
             {
                 assert( il_.size() >= 3 ) ;
                 std::copy( il_.begin(), std::next( il_.begin(), 3 ), std::begin(e) );
@@ -51,20 +51,20 @@ namespace utility {
             inline value_type& operator[]( size_t idx ) { return e[ idx ]; }
 
             //=== Algebraic operators
-            bool operator==( const vector3 & other_ ) const
+            bool operator==( const Vector3 & other_ ) const
             {
                 return fabs( e[X] - other_.e[X] ) < 0.00001f and
                     fabs( e[Y] - other_.e[Y] ) < 0.00001f and
                     fabs( e[Z] - other_.e[Z] ) < 0.00001f    ;
             }
-            vector3 & operator=( const vector3 & other_ )
+            Vector3 & operator=( const Vector3 & other_ )
             {
                 e[X] = other_.e[X];
                 e[Y] = other_.e[Y];
                 e[Z] = other_.e[Z];
                 return *this;
             }
-            vector3 & operator=(std::initializer_list< value_type > il_ )
+            Vector3 & operator=(std::initializer_list< value_type > il_ )
             {
                 assert( il_.size() >= 3 ) ;
                 std::copy( il_.begin(), std::next( il_.begin(), 3 ), std::begin(e) );
@@ -72,18 +72,18 @@ namespace utility {
             }
 
             // Unary '+'
-            inline const vector3& operator+( void ) const { return *this; }
+            inline const Vector3& operator+( void ) const { return *this; }
 
             // Unary '-'
-            inline vector3 operator-( void ) const { return vector3( -e[X], -e[Y], -e[Z] ); }
+            inline Vector3 operator-( void ) const { return Vector3( -e[X], -e[Y], -e[Z] ); }
 
             // Algebraic binary operators
-            inline vector3& operator+=( const vector3& );
-            inline vector3& operator-=( const vector3& );
-            inline vector3& operator*=( const vector3& );
-            inline vector3& operator/=( const vector3& );
-            inline vector3& operator*=( const value_type );
-            inline vector3& operator/=( const value_type );
+            inline Vector3& operator+=( const Vector3& );
+            inline Vector3& operator-=( const Vector3& );
+            inline Vector3& operator*=( const Vector3& );
+            inline Vector3& operator/=( const Vector3& );
+            inline Vector3& operator*=( const value_type );
+            inline Vector3& operator/=( const value_type );
 
             // Returns vector length (|vector|)
             inline value_type length( void ) const
@@ -98,9 +98,9 @@ namespace utility {
     };
 
     // Aliases for vectors
-    typedef vector3 rgb;
-    typedef vector3 offset;
-    typedef vector3 point3;
+    typedef Vector3 RGB;
+    typedef Vector3 Offset;
+    typedef Vector3 Point3;
 } // namespace utility
-#include "vector3.inl"
+#include "Vector3.inl"
 #endif

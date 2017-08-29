@@ -1,39 +1,47 @@
-build/render.o: src/render.cpp src/../utility/vector3.h \
- src/../utility/vector3.inl src/../utility/vector3.h src/../utility/ray.h \
- src/../utility/camera.h src/../utility/ray.h src/../utility/scene.h \
- src/../utility/hitable.h src/../utility/scene.inl src/../utility/scene.h \
- src/../utility/hitables/sphere.h src/../utility/hitables/../hitable.h \
- src/../utility/Raytrace.h src/../utility/camera.h \
- src/../utility/Raytrace.cpp src/../utility/Raytrace.h
+build/Render.o: src/Render.cpp src/../libs/utility/Vector3.h \
+ src/../libs/utility/Vector3.inl src/../libs/utility/Vector3.h \
+ src/../libs/utility/Ray.h src/../libs/Camera.h \
+ src/../libs/utility\Vector3.h src/../libs/utility\Ray.h \
+ src/../libs/Scene.h src/../libs/Hitable.h src/../libs/Scene.inl \
+ src/../libs/Scene.h src/../libs/hitables/Sphere.h \
+ src/../libs/hitables/../Hitable.h src/../libs/hitables/Sphere.cpp \
+ src/../libs/hitables/Sphere.h src/../libs/Raytrace.h \
+ src/../libs/camera.h src/../libs/Raytrace.cpp src/../libs/Raytrace.h
 
-src/../utility/vector3.h:
+src/../libs/utility/Vector3.h:
 
-src/../utility/vector3.inl:
+src/../libs/utility/Vector3.inl:
 
-src/../utility/vector3.h:
+src/../libs/utility/Vector3.h:
 
-src/../utility/ray.h:
+src/../libs/utility/Ray.h:
 
-src/../utility/camera.h:
+src/../libs/Camera.h:
 
-src/../utility/ray.h:
+src/../libs/utility\Vector3.h:
 
-src/../utility/scene.h:
+src/../libs/utility\Ray.h:
 
-src/../utility/hitable.h:
+src/../libs/Scene.h:
 
-src/../utility/scene.inl:
+src/../libs/Hitable.h:
 
-src/../utility/scene.h:
+src/../libs/Scene.inl:
 
-src/../utility/hitables/sphere.h:
+src/../libs/Scene.h:
 
-src/../utility/hitables/../hitable.h:
+src/../libs/hitables/Sphere.h:
 
-src/../utility/Raytrace.h:
+src/../libs/hitables/../Hitable.h:
 
-src/../utility/camera.h:
+src/../libs/hitables/Sphere.cpp:
 
-src/../utility/Raytrace.cpp:
+src/../libs/hitables/Sphere.h:
 
-src/../utility/Raytrace.h:
+src/../libs/Raytrace.h:
+
+src/../libs/camera.h:
+
+src/../libs/Raytrace.cpp:
+
+src/../libs/Raytrace.h:

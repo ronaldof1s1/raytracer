@@ -1,19 +1,19 @@
 #ifndef HITABLE_H_
 #define HITABLE_H_
 
-#include "utility\ray.h"
+#include "utility\Ray.h"
 
 struct hit_record {
 	float t;
-  point3  p;
-  vector3 normal;
+  Point3  p;
+  Vector3 normal;
 };
 
-class hitable {
+class Hitable {
 
 public:
-  point3 center;
-  point3 get_center(){return center;}
+  Point3 center;
+  Point3 get_center(){return center;}
 
   virtual bool hit(const Ray & r, float t_min, float t_max, hit_record & rec) const = 0;
 };

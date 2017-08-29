@@ -1,6 +1,6 @@
 #ifndef MATERIAL_H_
 #define MATERIAL_H_
-  class material (
+  class Material (
   public:
     float albedo;
   )

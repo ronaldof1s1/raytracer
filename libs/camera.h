@@ -1,30 +1,30 @@
 #ifndef CAMERA_H_
 #define CAMERA_H_
 
-#include "utility\vector3.h"
-#include "utility\ray.h"
+#include "utility\Vector3.h"
+#include "utility\Ray.h"
 
 class camera{
 public:
 	// fields
-	vector3 lower_left_corner;
-	vector3 vertical_axis;
-	vector3 horizontal_axis;
-	vector3 origin;
+	Vector3 lower_left_corner;
+	Vector3 vertical_axis;
+	Vector3 horizontal_axis;
+	Vector3 origin;
 
 	// TODO: constructors & getters
 	camera(){};
-	camera(point3 llc, vector3 va, vector3 ha, point3 origin_){
+	camera(Point3 llc, Vector3 va, Vector3 ha, Point3 origin_){
 		lower_left_corner = llc;
 		vertical_axis = va;
 		horizontal_axis = ha;
 		origin = origin_;
 	};
 
-	vector3 get_lower_left_corner() {return lower_left_corner;};
-	vector3 get_vertical_axis() {return vertical_axis;};
-	vector3 get_horizontal_axis() {return horizontal_axis;};
-	vector3 get_origin() {return origin;};
+	Vector3 get_lower_left_corner() {return lower_left_corner;};
+	Vector3 get_vertical_axis() {return vertical_axis;};
+	Vector3 get_horizontal_axis() {return horizontal_axis;};
+	Vector3 get_origin() {return origin;};
 
 	Ray get_ray(float u, float v){
 		// Determine the ray's direction, based on the pixel coordinate (col,row).
@@ -36,7 +36,7 @@ public:
 		// (b) To get the end point of ray we just have to 'walk' from the
 		// vp's origin + horizontal displacement (proportional to 'col') +
 		// vertical displacement (proportional to 'row').
-		point3 end_point = lower_left_corner + u*horizontal_axis + v*vertical_axis;
+		Point3 end_point = lower_left_corner + u*horizontal_axis + v*vertical_axis;
 		Ray r (origin, end_point - origin);
 		return r;
 	}

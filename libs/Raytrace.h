@@ -3,12 +3,13 @@
 
 #include <iostream>
 #include <fstream>
+#include <random>
 #include "camera.h"
-#include "scene.h"
+#include "Scene.h"
 
 class Raytrace {
 	camera cam;
-	scene sce;
+	Scene sce;
 	int n_cols;
 	int n_rows;
 	// //fields
@@ -18,7 +19,7 @@ class Raytrace {
 	// +background
 
 public:
-		Raytrace(camera &c, scene &s, int rows, int cols){
+		Raytrace(camera &c, Scene &s, int rows, int cols){
 			cam = c;
 			sce = s;
 			n_rows = rows;
@@ -27,9 +28,9 @@ public:
 
 	void render(std::ofstream &image, int rgb_normal, int n_samples);
 
-	rgb depth_map(const Ray &r, point3 &p, float max_depth);
+	RGB depth_map(const Ray &r, Point3 &p, float max_depth);
 
-	rgb color( const Ray &r_, int depth_or_normal, scene &scene_ );
+	RGB color( const Ray &r_, int depth_or_normal, Scene &Scene_ );
 	// //methods
 	// +init
 	// +hit_anything
