@@ -1,7 +1,7 @@
 #ifndef HITABLE_H_
 #define HITABLE_H_
 
-#include "ray.h"
+#include "utility\ray.h"
 
 struct hit_record {
 	float t;
@@ -10,7 +10,7 @@ struct hit_record {
 };
 
 class hitable {
- 
+
 public:
   point3 center;
   point3 get_center(){return center;}
