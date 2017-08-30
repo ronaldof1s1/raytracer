@@ -4,27 +4,15 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-#include "camera.h"
-#include "Scene.h"
-
+#include "Image.h"
 class Raytrace {
-	camera cam;
-	Scene sce;
-	int n_cols;
-	int n_rows;
-	// //fields
-
+	Image image;
 	// +resource_manager
 
 	// +background
 
 public:
-		Raytrace(camera &c, Scene &s, int rows, int cols){
-			cam = c;
-			sce = s;
-			n_rows = rows;
-			n_cols = cols;
-		}
+	Raytrace(Image img){image = img;}
 
 	void render(std::ofstream &image, int rgb_normal, int n_samples);
 

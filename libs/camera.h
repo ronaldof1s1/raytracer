@@ -4,7 +4,7 @@
 #include "utility\Vector3.h"
 #include "utility\Ray.h"
 
-class camera{
+class Camera{
 public:
 	// fields
 	Vector3 lower_left_corner;
@@ -13,8 +13,8 @@ public:
 	Vector3 origin;
 
 	// TODO: constructors & getters
-	camera(){};
-	camera(Point3 llc, Vector3 va, Vector3 ha, Point3 origin_){
+	Camera(){};
+	Camera(Point3 llc, Vector3 va, Vector3 ha, Point3 origin_){
 		lower_left_corner = llc;
 		vertical_axis = va;
 		horizontal_axis = ha;

@@ -1,37 +1,41 @@
 #include "Raytrace.h"
 
-	void Raytrace::render(std::ofstream &image, int rgb_normal, int n_samples){
-		if (image.is_open()) {
+	void Raytrace::render(std::ofstream &output_image, int rgb_normal, int n_samples){
+		if (output_image.is_open()) {
+			int n_cols = image.get_width();
+			int n_rows = image.get_height();
+			Scene scene = image.get_scene();
+      output_image << "P" << image.get_type() << "\n"
+                << n_cols << " " << n_rows << "\n"
+                << image.get_max_color() << "\n";
 
-	      image << "P3\n"
-	                << n_cols << " " << n_rows << "\n"
-	                << "255\n";
+      for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
+      {
+          for( int col = 0 ; col < n_cols ; col++ ) // X
+          {
+            RGB c(0,0,0);
+						//getting antialiasing samples
+            for(int sample = 0; sample < n_samples; sample++){
+							//generate random u and v for antialiasing;
+							std::mt19937 random_generator(time(0));
+							float u = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
+							float v = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
 
-	      for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
-	      {
-	          for( int col = 0 ; col < n_cols ; col++ ) // X
-	          {
-              RGB c(0,0,0);
-              for(int sample = 0; sample < n_samples; sample++){
-								//generate random u and v;
-								std::mt19937 random_generator(time(0));
-								float u = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
-								float v = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
-                // Ray r = cam.get_ray(row , col, n_rows, n_cols);
-                Ray r = cam.get_ray(row + u, col + v, n_rows, n_cols);
+							// generate Ray shoot from camera to point (row + u, col + v)
+						  Ray r = image.get_camera().get_ray(row + u, col + v, n_rows, n_cols);
 
-	              // Determine the color of the ray, as it travels through the virtual space.
-	              c += color( r, rgb_normal, sce );
+              // Determine the color of one of the rays, as it travels through the virtual space.
+              c += color( r, rgb_normal, scene );
 
-              }
-                c /= n_samples;
-	              int ir = int( 255.99f * c[RGB::R] );
-	              int ig = int( 255.99f * c[RGB::G] );
-	              int ib = int( 255.99f * c[RGB::B] );
-	              image << ir << " " << ig << " " << ib << "\n";
-	          }
+            }
+              c /= n_samples; //mean color from antialiasing
+              int ir = int( 255.99f * c[RGB::R] );
+              int ig = int( 255.99f * c[RGB::G] );
+              int ib = int( 255.99f * c[RGB::B] );
+              output_image << ir << " " << ig << " " << ib << "\n";
+          }
 	      }
-	      image.close();
+	      output_image.close();
     	}
 	}
 

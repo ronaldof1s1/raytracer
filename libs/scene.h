@@ -6,25 +6,51 @@
 
 using namespace utility;
 
+struct Background{
+	Point3 upper_left;
+	Point3 lower_left;
+	Point3 upper_right;
+	Point3 lower_right;
+};
+
 class Scene{
 public:
 
 	// fields
 	std::list< Hitable* > objects;
+	Background background;
 
+	//constructors
 	Scene(){};
 	Scene(std::list< Hitable* > & obj){
 		objects = obj;
+		background.upper_left = Point3(1.0,1.0,1.0);
+		background.lower_left = Point3(1.0,1.0,1.0);
+		background.upper_right = Point3(1.0,1.0,1.0);
+		background.lower_right = Point3(1.0,1.0,1.0);
 	};
 
-	inline unsigned int size(){return objects.size();}
+	Scene(Background & bg){
+		background = bg;
+	}
+
+	Scene(std::list< Hitable* > & objs, Background & bg){
+		objects = objs;
+		background = bg;
+	}
+
+	//Methods
+	unsigned int size(){return objects.size();}
+
 	std::list< Hitable* > get_objects() {return objects;}
 
-	inline void add_object(Hitable * object);
+	Background get_background() {return background;}
 
-	inline bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec);
+	void add_object(Hitable * object);
+
+	bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec);
  };
 
 
-#include "Scene.inl"
+#include "Scene.cpp"
 #endif

@@ -2,7 +2,7 @@
 #define SHADER_H_
 
   class Shader(
-    float a;
+    
   );
 
 #endif
