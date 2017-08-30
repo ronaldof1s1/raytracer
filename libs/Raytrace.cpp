@@ -5,6 +5,7 @@
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();
+			int pixel = 0;
       output_image << "P" << image.get_type() << "\n"
                 << n_cols << " " << n_rows << "\n"
                 << image.get_max_color() << "\n";
@@ -33,7 +34,11 @@
               int ig = int( 255.99f * c[RGB::G] );
               int ib = int( 255.99f * c[RGB::B] );
               output_image << ir << " " << ig << " " << ib << "\n";
+
+
           }
+					int percentage =  (n_rows-row)/(n_rows*n_cols) ;
+					std::cout << "Percentage concluded:" << percentage << "%\r";
 	      }
 	      output_image.close();
     	}
