@@ -3,7 +3,7 @@
 #include "../Shader.h"
 
   class Depth_map : public Shader{
-   float max_depth;
+    float max_depth;
   public:
     Depth_map(){}
     Depth_map(){
@@ -16,7 +16,7 @@
 
   };
 
-  &color Depth_map::shade(Ray &ray, Scene &scene){
+  color Depth_map::shade(Ray &ray, Scene &scene){
 
     float max_t = std::numeric_limits<float>::max();
     float min_t = 0.0;
