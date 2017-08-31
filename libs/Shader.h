@@ -4,6 +4,7 @@
 #include "Scene.h"
 
   class Shader{
+  public:
     virtual RGB shade(Ray &ray, Scene &scene) const = 0;
   };
 

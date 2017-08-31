@@ -5,6 +5,7 @@
 #include <fstream>
 #include <random>
 #include "Image.h"
+#include "Shader.h"
 class Raytrace {
 	Image image;
 	// +resource_manager
@@ -14,15 +15,11 @@ class Raytrace {
 public:
 	Raytrace(Image img){image = img;}
 
-	void render(std::ofstream &image, int rgb_normal, int n_samples);
+	void render(std::ofstream &image, Shader *shader, int n_samples);
 
-	RGB depth_map(const Ray &r, Point3 &p, float max_depth);
-
-	RGB color( const Ray &r_, int depth_or_normal, Scene &Scene_ );
 	// //methods
 	// +init
 	// +hit_anything
-	// +render
 };
 #include "Raytrace.cpp"
 #endif
