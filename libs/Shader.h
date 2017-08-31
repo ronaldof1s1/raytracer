@@ -3,8 +3,8 @@
 #include "utility/Ray.h"
 #include "Scene.h"
 
-  class Shader(
+  class Shader{
     virtual RGB shade(Ray &ray, Scene &scene) const = 0;
-  );
+  };
 
 #endif

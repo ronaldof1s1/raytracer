@@ -6,11 +6,11 @@
   public:
     Normal_to_RGB(){}
 
-    virtual color shade(Ray &ray, Scene &scene);
+    virtual RGB shade(Ray &ray, Scene &scene);
 
   };
 
-  color shade(Ray &ray, Scene &scene){
+  RGB shade(Ray &ray, Scene &scene){
     	    float max_t = std::numeric_limits<float>::max();
     	    float min_t = 0.0;
 

@@ -12,11 +12,11 @@
     Depth_map(float depth){
       max_depth = depth;
     }
-    virtual color shade(Ray &ray, Scene &scene);
+    virtual RGB shade(Ray &ray, Scene &scene);
 
   };
 
-  color Depth_map::shade(Ray &ray, Scene &scene){
+  RGB Depth_map::shade(Ray &ray, Scene &scene){
 
     float max_t = std::numeric_limits<float>::max();
     float min_t = 0.0;
