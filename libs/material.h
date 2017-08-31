@@ -1,7 +1,8 @@
 #ifndef MATERIAL_H_
 #define MATERIAL_H_
-  class Material (
+  class Material {
   public:
-    float albedo;
-  )
+    RGB albedo;
+    RGB rgb;
+  };
 #endif

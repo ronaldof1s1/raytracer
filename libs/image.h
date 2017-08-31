@@ -11,7 +11,7 @@ class Image{
 	int width, height;
 	Scene scene;
 	Camera camera;
-
+	
 public:
 	Image(){}
 	Image(int t, int w, int h, Scene &sce, Camera &cam){
