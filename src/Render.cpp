@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cmath>
 #include <limits>
+#include <ctime>
 #include "../libs/hitables/Sphere.h"
 #include "../libs/Raytrace.h"
 #include "../libs/Image.h"
@@ -15,8 +16,9 @@ using namespace utility;
 
 int main(int argc, char const *argv[])
 {
-    int n_cols = 1200;
-    int n_rows = 600;
+    clock_t total_time_start = clock();
+    int n_cols = 400;
+    int n_rows = 200;
 
     int n_samples = 16;
 
@@ -51,7 +53,12 @@ int main(int argc, char const *argv[])
       Raytrace my_raytrace(image);
 
       Shader *shader = new Depth_map();
+
+      clock_t start = clock();
+
       my_raytrace.render(output_image, shader, n_samples);
+      std::cout << "time to Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << std::endl
+                << "time total: " << (double)(clock() - total_time_start)/CLOCKS_PER_SEC << std::endl;
 
       output_image.close();
     }
