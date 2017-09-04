@@ -13,11 +13,11 @@
     }
 
     float get_max_depth(){return max_depth;}
-    virtual RGB shade(Ray &ray, Scene &scene) const override;
+    virtual RGB shade(const Ray &ray, const Scene &scene) const override;
 
   };
 
-  RGB Depth_map::shade(Ray &ray, Scene &scene) const{
+  RGB Depth_map::shade(const Ray &ray, const Scene &scene) const{
 
     float max_t = std::numeric_limits<float>::max();
     float min_t = 0.0;
