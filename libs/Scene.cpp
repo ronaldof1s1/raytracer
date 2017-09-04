@@ -4,7 +4,7 @@ inline void Scene::add_object(Hitable * object){
 	objects.push_back(object);
 }
 
-bool Scene::hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec) {
+bool Scene::hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec) const{
 
 	bool hit_anything = false;
 	for (auto i = objects.begin(); i != objects.end(); i++ ) {

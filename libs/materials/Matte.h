@@ -4,18 +4,16 @@
 
 class Matte : public Material{
 public:
-  Matte(){
-    albedo = RGB(0,0,0);
-    rgb = RGB(1,1,1);
-  }
-
-  Matte(RGB rgb_){
-    rgb = rgb_;
+  RGB albedo;
+  Matte():Material(){
     albedo = RGB(0,0,0);
   }
 
-  Matte(RGB a, RGB rgb_){
-    rgb = rgb_;
+  Matte(RGB rgb_):Material(rgb_){
+    albedo = RGB(0,0,0);
+  }
+
+  Matte(RGB a, RGB rgb_):Material(rgb_){
     albedo = a;
   }
 };

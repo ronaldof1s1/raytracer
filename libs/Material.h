@@ -2,7 +2,13 @@
 #define MATERIAL_H_
   class Material {
   public:
-    RGB albedo;
     RGB rgb;
+    
+    Material(){
+      rgb = RGB(1,1,1);
+    }
+    Material(RGB rgb_){
+      rgb = rgb_;
+    }
   };
 #endif

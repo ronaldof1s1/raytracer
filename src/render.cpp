@@ -9,7 +9,7 @@
 #include "../libs/Image.h"
 #include "../libs/shaders/Normal_to_RGB.h"
 #include "../libs/shaders/Depth_map.h"
-//#include "../libs/shaders/Lambertian.h"
+#include "../libs/shaders/Lambertian.h"
 //#include "../libs/shaders/Blinn-Phong.h"
 
 using namespace utility;
@@ -39,20 +39,22 @@ int main(int argc, char const *argv[])
       Scene scene(*objects);
 
       //filling with Spheres
-      Sphere s1(Point3(0,-100.5,-3), 99.f);
+      Sphere s1(Point3(0,-100.5,-3), 99.f, new Matte(RGB(1,1,1)));
       scene.add_object(&s1);
-      Sphere s2(Point3(0.3, 0, -1), 0.4);
+      Sphere s2(Point3(0.3, 0, -1), 0.4, new Matte(RGB(1,0,0)));
       scene.add_object(&s2);
-      Sphere s3(Point3(0, 1, -2), 0.6);
+      Sphere s3(Point3(0, 1, -2), 0.6, new Matte(RGB(0,1,0)));
       scene.add_object(&s3);
-      Sphere s4(Point3(-0.4, 0, -3), 0.7);
+      Sphere s4(Point3(-0.4, 0, -3), 0.7, new Matte(RGB(0,0,1)));
       scene.add_object(&s4);
 
       Image image(3, 255, n_cols, n_rows, scene, cam);
 
       Raytrace my_raytrace(image);
 
-      Shader *shader = new Depth_map();
+      // Shader *shader = new Depth_map();
+      // Shader *shader = new Normal_to_RGB();
+      Shader *shader = new Lambertian(4);
 
       clock_t start = clock();
 

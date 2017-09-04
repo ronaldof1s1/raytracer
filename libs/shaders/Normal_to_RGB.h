@@ -23,9 +23,11 @@
 
     }
     else{
-      rgb_to_paint = interpolate_background(ray, scene.get_background())
+
+      rgb_to_paint = interpolate_background(ray, scene.get_background());
+
     }
 
-    return rgb_to_paint; // Stub, replace it accordingly
+    return rgb_to_paint;
   }
 #endif

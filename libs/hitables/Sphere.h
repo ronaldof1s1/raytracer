@@ -15,12 +15,12 @@ public:
     Sphere(Point3 cen, float r){
       center = cen;
       radius = r;
-      mat = new Matte();
+      material = new Matte();
     }
     Sphere(Point3 cen, float radius_, Material *mat_){
       center = cen;
       radius = radius_;
-      mat = mat_;
+      material = mat_;
     }
 
     float get_radius(){return radius;}

@@ -11,13 +11,13 @@ public:
   Lambertian():Shader(){ iterations = 1; };
   Lambertian(int iter):Shader(){ iterations = iter;}
 
-  Vector3 random_unit_vector();
-  RGB Shade(const Ray &ray, const Scene &scene) const override;
-  RGB Shade(const Ray &ray, const Scene &scene, int iteration);
+  Vector3 random_vector_in_unit_sphere() const;
+  RGB shade(const Ray &ray, const Scene &scene) const override;
+  RGB shade(const Ray &ray, const Scene &scene, int iteration) const;
 
 };
 
-  Vector3 Lambertian::random_unit_vector(){
+  Vector3 Lambertian::random_vector_in_unit_sphere() const{
     Vector3 v;
     do {
       std::knuth_b random_generator(time(0));
@@ -25,13 +25,47 @@ public:
       float y = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
       float z = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
 
-      v = 0.5 * Vector3(x,y,z) + Vector3(1,1,1)
+      v = 2 * Vector3(x,y,z) - Vector3(1,1,1);
     } while(dot(v,v) >= 1.0);
 
     return v;
   }
 
-  RGB Lambertian::Shade(const Ray &ray, const Scene &scene) const {
-    
+  RGB Lambertian::shade(const Ray &ray, const Scene &scene, int iteration) const {
+    float max_t = std::numeric_limits<float>::max();
+    float min_t = 0.0;
+
+    Vector3 rgb_to_paint;
+    hit_record rec;
+
+    if(scene.hit_anything(ray, min_t, max_t, rec)){
+
+      if(iteration >= 1){
+        Vector3 target = rec.normal + random_vector_in_unit_sphere();
+        Vector3 unit_light = unit_vector(scene.get_light_source()-rec.p);
+        /*float cos_ = dot(unit_light, rec.normal);
+        if(cos_ <= 0){
+          rgb_to_paint = RGB(0,0,0);
+        }
+        else{
+          // std::cout << rec.material->rgb; */
+          rgb_to_paint = 0.5 * shade(Ray(rec.p, target), scene, --iteration);
+        //}
+      }
+      else{
+        rgb_to_paint = RGB(0,0,0);
+      }
+    }
+    else{
+
+      rgb_to_paint = interpolate_background(ray, scene.get_background());
+
+    }
+
+    return rgb_to_paint;
+  }
+
+  RGB Lambertian::shade(const Ray &ray, const Scene &scene) const {
+    return shade(ray, scene, iterations);
   }
 #endif

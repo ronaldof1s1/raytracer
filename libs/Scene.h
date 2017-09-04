@@ -19,10 +19,17 @@ public:
 	// fields
 	std::list< Hitable* > objects;
 	Background background;
+	Point3 light_source;
 
 	//constructors
-	Scene(){};
-	Scene(std::list< Hitable* > & obj){
+	Scene(Point3 light_source = Point3(-1.0,1.0,1.0)){
+		objects = std::list< Hitable* >();
+		background.upper_left = Point3(1.0,1.0,1.0);
+		background.lower_left = Point3(1.0,1.0,1.0);
+		background.upper_right = Point3(1.0,1.0,1.0);
+		background.lower_right = Point3(1.0,1.0,1.0);
+	};
+	Scene(std::list< Hitable* > & obj, Point3 light_source = Point3(-1.0,1.0,1.0)){
 		objects = obj;
 		background.upper_left = Point3(1.0,1.0,1.0);
 		background.lower_left = Point3(1.0,1.0,1.0);
@@ -30,26 +37,31 @@ public:
 		background.lower_right = Point3(1.0,1.0,1.0);
 	};
 
-	Scene(Background & bg){
+	Scene(Background & bg, Point3 light_source = Point3(-1.0,1.0,1.0)){
 		objects = std::list< Hitable* >();
 		background = bg;
+		light_source = Point3(-1,1,1);
 	}
 
-	Scene(std::list< Hitable* > & objs, Background & bg){
+	Scene(std::list< Hitable* > & objs, Background & bg, Point3 light_source = Point3(-1.0,1.0,1.0)){
 		objects = objs;
 		background = bg;
+		light_source = Point3(-1,1,1);
+
 	}
 
 	//Methods
-	unsigned int size(){return objects.size();}
+	unsigned int size() const {return objects.size();}
 
-	std::list< Hitable* > get_objects() {return objects;}
+	std::list< Hitable* > get_objects() const {return objects;}
 
-	Background get_background() {return background;}
+	Background get_background() const {return background;}
+
+	Point3 get_light_source() const {return light_source;}
 
 	void add_object(Hitable * object);
 
-	bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec);
+	bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec) const;
  };
 
 

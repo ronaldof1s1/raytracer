@@ -1,4 +1,4 @@
-build/render.o: src/render.cpp src/../libs/hitables/Sphere.h \
+build/Render.o: src/Render.cpp src/../libs/hitables/Sphere.h \
  src/../libs/hitables/../Hitable.h src/../libs/hitables/../utility/Ray.h \
  src/../libs/hitables/../utility/Vector3.h \
  src/../libs/hitables/../utility/Vector3.inl \
@@ -11,8 +11,7 @@ build/render.o: src/render.cpp src/../libs/hitables/Sphere.h \
  src/../libs/utility/Vector3.h src/../libs/utility/Ray.h \
  src/../libs/Shader.h src/../libs/Raytrace.cpp src/../libs/Raytrace.h \
  src/../libs/Image.h src/../libs/shaders/Normal_to_RGB.h \
- src/../libs/shaders/../Shader.h src/../libs/shaders/Depth_map.h \
- src/../libs/shaders/Lambertian.h
+ src/../libs/shaders/../Shader.h src/../libs/shaders/Depth_map.h
 
 src/../libs/hitables/Sphere.h:
 
@@ -63,5 +62,3 @@ src/../libs/shaders/Normal_to_RGB.h:
 src/../libs/shaders/../Shader.h:
 
 src/../libs/shaders/Depth_map.h:
-
-src/../libs/shaders/Lambertian.h:
