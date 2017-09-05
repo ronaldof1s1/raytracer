@@ -17,7 +17,7 @@ public:
     albedo = a;
   }
 
-  Matte(RGB a, RGB rgb_, float k_a_, float k_d_, float k_s_): Material(rgb_, k_a_, k_d_, k_s_) {
+  Matte(RGB a, RGB rgb_, RGB k_a_, RGB k_d_, RGB k_s_): Material(rgb_, k_a_, k_d_, k_s_) {
     albedo = a;
   }
 };
