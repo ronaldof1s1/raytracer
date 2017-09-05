@@ -2,7 +2,7 @@
 #define SPHERE_H_
 
 #include "../Hitable.h"
-#include "../materials/Matte.h"
+#include "../materials/Lambertian.h"
 class Sphere : public Hitable{
 
 
@@ -15,7 +15,7 @@ public:
     Sphere(Point3 cen, float r){
       center = cen;
       radius = r;
-      material = new Matte();
+      material = new Lambertian();
     }
     Sphere(Point3 cen, float radius_, Material *mat_){
       center = cen;

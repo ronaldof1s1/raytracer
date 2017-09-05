@@ -11,7 +11,6 @@
 #include "../libs/shaders/Depth_map.h"
 #include "../libs/shaders/Recursive.h"
 #include "../libs/materials/Lambertian.h"
-#include "../libs/materials/Matte.h"
 //#include "../libs/shaders/Blinn-Phong.h"
 
 using namespace utility;
