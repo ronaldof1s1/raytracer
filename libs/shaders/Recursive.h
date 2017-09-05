@@ -12,6 +12,7 @@ public:
 
   Recursive():Shader(){ iterations = 1; };
   Recursive(int iter):Shader(){ iterations = iter;}
+  Recursive(int iter, bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = iter;}
 
   Vector3 random_vector_in_unit_sphere() const;
   RGB shade(const Ray &ray, const Scene &scene) const override;
@@ -53,7 +54,7 @@ std::knuth_b random_generator(1);
             target = unit_vector( rec.normal + random_vector_in_unit_sphere() );
 
             Ray new_ray(rec.p + (rec.normal * Vector3(0.01,0.01,0.01)), target);
-            rgb_to_paint += rec.material->k_d * shade(new_ray, scene, iteration - 1);
+            rgb_to_paint += rec.material->k_d * shade(new_ray, scene, iteration - 1) * use_diffuse;
           }
           rgb_to_paint /= 10;
         }
@@ -65,15 +66,15 @@ std::knuth_b random_generator(1);
             rgb_to_paint += RGB(0,0,0);
           }
           else{
-            rgb_to_paint += cos_ * light->intensity * rec.material->k_d;
+            rgb_to_paint += cos_ * light->intensity * rec.material->k_d * use_diffuse;
           }
         }
         Ray new_ray(rec.p + (rec.normal * Vector3(0.01,0.01,0.01)), target);
 
         iteration--;
 
-        rgb_to_paint += rec.material->k_a * scene.get_ambient_light();
-        rgb_to_paint +=  rec.material->k_d * shade(new_ray, scene, iteration);
+        rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
+        rgb_to_paint +=  rec.material->k_d * shade(new_ray, scene, iteration) * use_diffuse;
 
       }
       else{

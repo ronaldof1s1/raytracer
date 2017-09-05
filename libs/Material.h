@@ -8,28 +8,21 @@
 
     int shininess; // Shininess coefficient for reflecting light on some shaders
 
-    // Constructors
-    Material(){
+    //Constructors
+    Material(int sh=4){
       k_a = RGB(0.1f);
       k_d = RGB(0.f); //Black sphere
       k_s = RGB(0.f);
-      shininess = 4;
+      shininess = sh;
     }
-    Material(RGB rgb_){
+    Material(RGB rgb_, int sh=4){
       k_a = RGB(0.1f);
       k_d = rgb_;
       k_s = RGB(0.f);
-      shininess = 4;
+      shininess = sh;
     }
 
-    Material(RGB k_a_, RGB k_d_, RGB k_s_ ){
-      k_a = k_a_;
-      k_d = k_d_;
-      k_s = k_s_;
-      shininess = 4;
-    }
-
-    Material(RGB k_a_, RGB k_d_, RGB k_s_, int sh ){
+    Material(RGB k_a_, RGB k_d_, RGB k_s_, int sh=4 ){
       k_a = k_a_;
       k_d = k_d_;
       k_s = k_s_;
