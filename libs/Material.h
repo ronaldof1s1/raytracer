@@ -11,7 +11,7 @@
     // Constructors
     Material(){
       k_a = RGB(0.1f);
-      k_d = RGB(0.f);
+      k_d = RGB(0.f); //Black sphere
       k_s = RGB(0.f);
       shininess = 4;
     }
