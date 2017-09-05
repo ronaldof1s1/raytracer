@@ -19,8 +19,8 @@ using namespace utility;
 int main(int argc, char const *argv[])
 {
     clock_t total_time_start = clock();
-    int n_cols = 400;
-    int n_rows = 200;
+    int n_cols = 1200;
+    int n_rows = 600;
 
     int n_samples = 16;
 
@@ -39,25 +39,26 @@ int main(int argc, char const *argv[])
       //creating Scene:
       std::list< Hitable* > *objects = new std::list< Hitable* >() ;
       Background bg;
-      bg.lower_left = RGB(1,1,1);
-      bg.upper_left = RGB(1,1,1);
-      bg.lower_right = RGB(1,1,1);
-      bg.upper_right = RGB(1,1,1);
+      bg.lower_left = RGB(0.2,0.2,0.2);
+      bg.upper_left = RGB(0.2,0.2,0.2);
+      bg.lower_right = RGB(0.2,0.2,0.2);
+      bg.upper_right = RGB(0.2,0.2,0.2);
       std::list< Light > lights;
       Light light;
       light.source = Vector3(-1,1,2);
+      // light.intensity = Vector3(0.5,0.5,0.5);
       light.intensity = Vector3(1,1,1);
       lights.push_back(light);
       Scene scene(*objects, bg, lights);
 
       //filling with Spheres
-      Sphere s1(Point3(0,-100.5,-3), 99.f, new Lambertian_material(RGB(1,1,1)));
+      Sphere s1(Point3(0,-100.5,-30), 100.f, new Lambertian_material(RGB(0,0,1)));
       scene.add_object(&s1);
       Sphere s2(Point3(0.3, 0, -1), 0.4, new Lambertian_material(RGB(1,0,0)));
       scene.add_object(&s2);
       Sphere s3(Point3(0, 1, -2), 0.6, new Lambertian_material(RGB(0,1,0)));
       scene.add_object(&s3);
-      Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian_material(RGB(0,0,1)));
+      Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian_material(RGB(1,1,1)));
       scene.add_object(&s4);
 
       Image image(3, 255, n_cols, n_rows, scene, cam);
@@ -66,7 +67,7 @@ int main(int argc, char const *argv[])
 
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
-      Shader *shader = new Lambertian(4);
+      Shader *shader = new Lambertian(40);
 
       clock_t start = clock();
 
