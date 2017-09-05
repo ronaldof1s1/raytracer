@@ -7,7 +7,7 @@ class Lambertian_material : public Material{
 public:
   Lambertian_material():Material(){}
   Lambertian_material(RGB rgb_ ):Material(rgb_){}
-  Lambertian_material(RGB rgb_, RGB k_a, RGB k_d, RGB k_s):Material(rgb_, k_a, k_d, k_s){}
+  Lambertian_material(RGB k_a, RGB k_d, RGB k_s):Material(k_a, k_d, k_s){}
 };
 
 #endif

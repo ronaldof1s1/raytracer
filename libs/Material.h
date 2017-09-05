@@ -17,7 +17,7 @@
       k_s = RGB(0,0,0);
     }
 
-    Material(RGB rgb_, RGB k_a_, RGB k_d_, RGB k_s_ ){
+    Material(RGB k_a_, RGB k_d_, RGB k_s_ ){
       k_a = k_a_;
       k_d = k_d_;
       k_s = k_s_;
