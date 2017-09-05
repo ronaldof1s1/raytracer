@@ -23,10 +23,13 @@ namespace utility {
             value_type e[ 3 ];
 
             //=== Constructors
-            explicit Vector3( value_type e0_=0.f, value_type e1_=0.f, value_type e2_=0.f )
+            explicit Vector3( value_type e0_, value_type e1_, value_type e2_ )
                 : e{ e0_, e1_, e2_ }
             { /* empty */ }
 
+            Vector3(value_type v = 0.f)
+                : e{v, v, v}
+            { /* empty */ }
             Vector3( const Vector3 & other_ )
                 : e{ other_.e[X], other_.e[Y], other_.e[Z] }
             { /* empty */ }
