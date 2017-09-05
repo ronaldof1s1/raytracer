@@ -6,8 +6,9 @@
     RGB k_d; // The coefficient of diffuse reflectance
     RGB k_s; // The coefficient of specular reflectance
 
-    int shininess; // add comment
+    int shininess; // Shininess coefficient for reflecting light on some shaders
 
+    // Constructors
     Material(){
       k_a = RGB(0.1f);
       k_d = RGB(0.f);
