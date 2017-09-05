@@ -7,6 +7,7 @@
 
 class Recursive : public Shader{
   int iterations;
+
 public:
 
   Recursive():Shader(){ iterations = 1; };
@@ -71,6 +72,7 @@ std::knuth_b random_generator(1);
 
         iteration--;
 
+        rgb_to_paint += rec.material->k_a * scene.get_ambient_light();
         rgb_to_paint +=  rec.material->k_d * shade(new_ray, scene, iteration);
 
       }
