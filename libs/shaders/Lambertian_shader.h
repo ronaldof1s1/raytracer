@@ -41,16 +41,21 @@ public:
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
       if(iteration >= 1){
-        Vector3 target = rec.normal + random_vector_in_unit_sphere();
-        Vector3 unit_light = unit_vector(scene.get_light_source()-rec.p);
-        /*float cos_ = dot(unit_light, rec.normal);
-        if(cos_ <= 0){
-          rgb_to_paint = RGB(0,0,0);
+        for(auto light = scene.lights.begin(); light != scene.lights.end(); light++){
+          Vector3 target = rec.normal + random_vector_in_unit_sphere();
+          // Vector3 unit_light = unit_vector(scene.get_light_source() - rec.p);
+          Vector3 unit_light = unit_vector(light->source - rec.p);
+          float cos_ = dot(unit_light, rec.normal);
+          if(cos_ <= 0){
+            rgb_to_paint = RGB(0,0,0);
+          }
+          else{
+            // std::cout << rec.material->rgb;
+            // rgb_to_paint = rec.material->k_d * rec.material->rgb * shade(Ray(rec.p + Vector3(0.01,0.01,0.01), target), scene, --iteration);
+            // std::cout << "RGB: " << rec.material->k_d * rec.material->rgb;
+            rgb_to_paint += light->intensity * rec.material->k_d * shade(Ray(rec.p + Vector3(0.01,0.01,0.01), target), scene, --iteration);
+          }
         }
-        else{
-          // std::cout << rec.material->rgb; */
-          rgb_to_paint = 0.5 * shade(Ray(rec.p, target), scene, --iteration);
-        //}
       }
       else{
         rgb_to_paint = RGB(0,0,0);

@@ -16,7 +16,7 @@ struct Background{
 struct Light{
 	Point3 source;
 	RGB intensity;
-}
+};
 
 class Scene{
 public:
@@ -34,6 +34,10 @@ public:
 		background.lower_left = Point3(1.0,1.0,1.0);
 		background.upper_right = Point3(1.0,1.0,1.0);
 		background.lower_right = Point3(1.0,1.0,1.0);
+		Light light;
+		light.source = light_source;
+		light.intensity = RGB(1,1,1);
+		lights.push_back(light);
 	};
 	Scene(std::list< Hitable* > & obj, Point3 light_source = Point3(-1.0,1.0,1.0)){
 		objects = obj;
@@ -41,18 +45,28 @@ public:
 		background.lower_left = Point3(1.0,1.0,1.0);
 		background.upper_right = Point3(1.0,1.0,1.0);
 		background.lower_right = Point3(1.0,1.0,1.0);
+		Light light;
+		light.source = light_source;
+		light.intensity = RGB(1,1,1);
+		lights.push_back(light);
 	};
 
 	Scene(Background & bg, Point3 light_source = Point3(-1.0,1.0,1.0)){
 		objects = std::list< Hitable* >();
 		background = bg;
-		light_source = Point3(-1,1,1);
+		Light light;
+		light.source = light_source;
+		light.intensity = RGB(1,1,1);
+		lights.push_back(light);
 	}
 
 	Scene(std::list< Hitable* > & objs, Background & bg, Point3 light_source = Point3(-1.0,1.0,1.0)){
 		objects = objs;
 		background = bg;
-		light_source = Point3(-1,1,1);
+		Light light;
+		light.source = light_source;
+		light.intensity = RGB(1,1,1);
+		lights.push_back(light);
 
 	}
 
@@ -70,7 +84,7 @@ public:
 
 	Background get_background() const {return background;}
 
-	Point3 get_light_source() const {return light_source;} 
+	Point3 get_light_source() const {return light_source;}
 
 	std::list<Light> get_lights() const { return lights; }
 
