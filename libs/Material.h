@@ -7,14 +7,14 @@
     RGB k_s; // The coefficient of specular reflectance
 
     Material(){
-      k_a = RGB(1,1,1);
-      k_d = RGB(0,0,0);
-      k_s = RGB(0,0,0);
+      k_a = RGB(0.1f);
+      k_d = RGB(0.f);
+      k_s = RGB(0.f);
     }
     Material(RGB rgb_){
-      k_a = RGB(1,1,1);
+      k_a = RGB(0.1f);
       k_d = rgb_;
-      k_s = RGB(0,0,0);
+      k_s = RGB(0.f);
     }
 
     Material(RGB k_a_, RGB k_d_, RGB k_s_ ){
