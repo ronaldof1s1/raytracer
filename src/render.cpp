@@ -9,8 +9,8 @@
 #include "../libs/Image.h"
 #include "../libs/shaders/Normal_to_RGB.h"
 #include "../libs/shaders/Depth_map.h"
-#include "../libs/shaders/Lambertian_shader.h"
-#include "../libs/materials/Lambertian_material.h"
+#include "../libs/shaders/Recursive.h"
+#include "../libs/materials/Lambertian.h"
 #include "../libs/materials/Matte.h"
 //#include "../libs/shaders/Blinn-Phong.h"
 
@@ -52,13 +52,13 @@ int main(int argc, char const *argv[])
       Scene scene(*objects, bg, lights);
 
       //filling with Spheres
-      Sphere s1(Point3(0,-100.5,-30), 100.f, new Lambertian_material(RGB(0,0,1)));
+      Sphere s1(Point3(0,-100.5,-30), 100.f, new Lambertian(RGB(0,1,0)));
       scene.add_object(&s1);
-      Sphere s2(Point3(0.3, 0, -1), 0.4, new Lambertian_material(RGB(1,0,0)));
+      Sphere s2(Point3(0.3, 0, -1), 0.4, new Lambertian(RGB(1,0,0)));
       scene.add_object(&s2);
-      Sphere s3(Point3(0, 1, -2), 0.6, new Lambertian_material(RGB(0,1,0)));
+      Sphere s3(Point3(0, 1, -2), 0.6, new Lambertian(RGB(0,0,1)));
       scene.add_object(&s3);
-      Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian_material(RGB(1,1,1)));
+      Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian(RGB(1,1,1)));
       scene.add_object(&s4);
 
       Image image(3, 255, n_cols, n_rows, scene, cam);
@@ -67,7 +67,7 @@ int main(int argc, char const *argv[])
 
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
-      Shader *shader = new Lambertian(40);
+      Shader *shader = new Recursive(40);
 
       clock_t start = clock();
 
