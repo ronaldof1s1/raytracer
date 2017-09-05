@@ -15,7 +15,7 @@ class Raytrace {
 public:
 	Raytrace(Image &img){image = img;}
 
-	void render(std::ofstream &image, Shader *shader, int n_samples);
+	void render(std::ofstream &image, Shader *shader, int n_samples, float gamma);
 
 	// //methods
 	// +init

@@ -1,6 +1,8 @@
 #include "Raytrace.h"
 #include <cstdio>
-	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples){
+#include <cmath>
+
+	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples, float gamma=2.2){
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();
@@ -31,9 +33,9 @@
 
           }
             c /= n_samples; //mean color from antialiasing
-            int ir = int( 255.99f * c[RGB::R] );
-            int ig = int( 255.99f * c[RGB::G] );
-            int ib = int( 255.99f * c[RGB::B] );
+            int ir = int( 255.99f * std::pow(c[RGB::R], 1/gamma) );
+            int ig = int( 255.99f * std::pow(c[RGB::G], 1/gamma) );
+            int ib = int( 255.99f * std::pow(c[RGB::B], 1/gamma) );
             output_image << ir << " " << ig << " " << ib << "\n";
         }
 	    }
