@@ -12,7 +12,7 @@ public:
 	Vector3 horizontal_axis;
 	Vector3 origin;
 
-	// TODO: constructors & getters
+	// Constructors & getters
 	Camera(){};
 	Camera(Point3 llc, Vector3 va, Vector3 ha, Point3 origin_){
 		lower_left_corner = llc;
@@ -21,11 +21,14 @@ public:
 		origin = origin_;
 	};
 
+
+	//Getters
 	Vector3 get_lower_left_corner() {return lower_left_corner;};
 	Vector3 get_vertical_axis() {return vertical_axis;};
 	Vector3 get_horizontal_axis() {return horizontal_axis;};
 	Vector3 get_origin() {return origin;};
 
+	//Getting ray shoot from the camera
 	Ray get_ray(float u, float v){
 		// Determine the ray's direction, based on the pixel coordinate (col,row).
 		// We are mapping (matching) the view plane (vp) to the image.

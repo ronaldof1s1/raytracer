@@ -6,6 +6,7 @@
 
 using namespace utility;
 
+//used for interpolation
 struct Background{
 	Point3 upper_left;
 	Point3 lower_left;
@@ -13,6 +14,7 @@ struct Background{
 	Point3 lower_right;
 };
 
+//pontual light
 struct Light{
 	Point3 source;
 	RGB intensity;
@@ -23,10 +25,15 @@ public:
 
 	// fields
 	std::list< Hitable* > objects;
+
 	Background background;
-	std::list< Light > lights;
-	RGB ambient_light;
-	//constructors
+
+	std::list< Light > lights; //list of pontual lights
+
+	RGB ambient_light; //ambient light, have no source
+
+	//Constructors
+
 	Scene(RGB al = RGB(1,1,1)){
 		objects = std::list< Hitable* >();
 
@@ -42,7 +49,8 @@ public:
 		lights.push_back(light);
 
 		ambient_light = al;
-	};
+	}
+
 	Scene(std::list< Hitable* > & obj, RGB al = RGB(1,1,1)){
 		objects = obj;
 
@@ -58,7 +66,7 @@ public:
 		lights.push_back(light);
 
 		ambient_light = al;
-	};
+	}
 
 	Scene(Background & bg, RGB al = RGB(1,1,1)){
 
@@ -98,16 +106,18 @@ public:
 		ambient_light = al;
 	}
 
-	//Methods
-	unsigned int size() const {return objects.size();}
-
+	//Getters
 	std::list< Hitable* > get_objects() const {return objects;}
 
 	Background get_background() const {return background;}
 
 	RGB get_ambient_light() const {return ambient_light;}
 
-	std::list<Light> get_lights() const { return lights; }
+	std::list< Light > get_lights() const { return lights; }
+
+	//Methods
+
+	unsigned int size() const {return objects.size();} //Number of objects
 
 	void add_object(Hitable * object);
 

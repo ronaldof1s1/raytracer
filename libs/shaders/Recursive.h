@@ -6,29 +6,41 @@
 #include <algorithm>
 
 class Recursive : public Shader{
-  int iterations;
+
+  int iterations; //Number of iterations
 
 public:
 
+  //Constructors
   Recursive():Shader(){ iterations = 1; };
   Recursive(int iter):Shader(){ iterations = iter;}
   Recursive(int iter, bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = iter;}
 
+  //Methods
+
+  //Create a random vector inside a sphere of radius 1
   Vector3 random_vector_in_unit_sphere() const;
+
+  //Calls the other shade with iterations
   RGB shade(const Ray &ray, const Scene &scene) const override;
+
+  //Actually gets the color
   RGB shade(const Ray &ray, const Scene &scene, int iteration) const;
 
 };
 
+//Global random generator with seed = 1
 std::knuth_b random_generator(1);
 
   Vector3 Recursive::random_vector_in_unit_sphere() const{
-    Vector3 v;
+
+    Vector3 v();
     do {
+      //Get random x, y and z
       float x = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
       float y = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
       float z = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
-
+      //
       v = 2 * Vector3(x,y,z) - Vector3(1,1,1);
     } while(dot(v,v) >= 1.0);
 

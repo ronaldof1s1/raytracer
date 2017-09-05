@@ -5,17 +5,17 @@
 #include "../materials/Lambertian.h"
 class Sphere : public Hitable{
 
+  float radius;
 
 public:
-    float radius;
     Sphere(){
-      center = Point3(0,0,0);
-      radius = 0.f;
+      center = Point3(0); //create sphere on the center
+      radius = 0.f; //sphere with 0 radius
     };
     Sphere(Point3 cen, float r){
       center = cen;
       radius = r;
-      material = new Lambertian();
+      material = new Lambertian(); //standard material
     }
     Sphere(Point3 cen, float radius_, Material *mat_){
       center = cen;

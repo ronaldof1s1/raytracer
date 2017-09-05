@@ -5,6 +5,7 @@
 
 class Lambertian : public Material{
 public:
+  //Constructors
   Lambertian():Material(){}
   Lambertian(RGB rgb_ ):Material(rgb_){}
   Lambertian(RGB k_a, RGB k_d, RGB k_s):Material(k_a, k_d, k_s){}

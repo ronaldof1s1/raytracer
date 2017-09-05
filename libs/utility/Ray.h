@@ -3,9 +3,12 @@
 #include "Vector3.h" // necessário para acessar Vector3
 using namespace utility;
 class Ray {
+
     private:
+
         Point3 O; // the origin of the ray.
         Vector3 D; // The ray's direction.
+
     public:
 
         //=== Alias

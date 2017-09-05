@@ -6,13 +6,15 @@
 
 
 class Image{
-	int type;
+	int type; //ppm ascii, binary, etc
 	int max_color;
 	int width, height;
-	Scene scene;
+	Scene scene //background, list of objects, lights and ambient light;
 	Camera camera;
-	
+
 public:
+	//Constructors
+
 	Image(){}
 	Image(int t, int w, int h, Scene &sce, Camera &cam){
 		width = w;
@@ -31,6 +33,7 @@ public:
 		max_color = color;
 	}
 
+	//Getters
 	int get_width(){return width;}
 	int get_height(){return height;}
 	int get_type(){return type;}

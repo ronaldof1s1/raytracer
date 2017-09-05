@@ -5,18 +5,29 @@
 
   class Shader{
   protected:
-    float use_ambient, use_diffuse, use_specular;
+
+    float use_ambient, use_diffuse, use_specular; //float to multiply if coefficients are used or no in the shader
+
   public:
+
+    //Constructors
     Shader(){
-      use_ambient = use_diffuse = use_specular = 1.f;
+      use_ambient = use_diffuse = use_specular = 1.f; //use all coefficients in the shaders
     }
+
     Shader(bool amb, bool diff, bool spec){
       use_ambient  = amb  ? 1.f : 0.f;
       use_diffuse  = diff ? 1.f : 0.f;
       use_specular = spec ? 1.f : 0.f;
     }
-    virtual RGB shade(const Ray &ray, const Scene &scene) const = 0;
-    RGB interpolate_background(const Ray &ray, const Background &background) const;
+
+
+    //Methods
+
+    //virtual, implement in other shaders
+    virtual RGB shade(const Ray &ray, const Scene &scene) const = 0; //Main function to get color of a point, given a ray and the scene
+
+    RGB interpolate_background(const Ray &ray, const Background &background) const; //Method to interpolate and generate the background
   };
 
     RGB Shader::interpolate_background(const Ray &ray, const Background &background) const{
