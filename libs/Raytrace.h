@@ -8,18 +8,13 @@
 #include "Shader.h"
 class Raytrace {
 	Image image;
-	// +resource_manager
-
-	// +background
 
 public:
+	//Constructors
 	Raytrace(Image &img){image = img;}
+	//Render fuction
+	void render(std::ofstream &image, Shader *shader, int n_samples, float gamma);
 
-	void render(std::ofstream &image, Shader *shader, int n_samples);
-
-	// //methods
-	// +init
-	// +hit_anything
 };
 #include "Raytrace.cpp"
 #endif

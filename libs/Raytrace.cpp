@@ -1,13 +1,15 @@
 #include "Raytrace.h"
 #include <cstdio>
 	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples){
+			//getting image data
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();
 
+			//start writing image file
       output_image << "P" << image.get_type() << "\n"
-                << n_cols << " " << n_rows << "\n"
-                << image.get_max_color() << "\n";
+                	 << n_cols << " " << n_rows << "\n"
+                	 << image.get_max_color() << "\n";
 
       for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
@@ -15,7 +17,7 @@
 				// printf("%f\r", percentage);
         for( int col = 0 ; col < n_cols ; col++ ) // X
         {
-          RGB c(0,0,0);
+          RGB c(0);
 					//getting antialiasing samples
           for(int sample = 0; sample < n_samples; sample++){
 						//generate random u and v for antialiasing;
@@ -30,7 +32,7 @@
             c += shader->shade( r, scene );
 
           }
-            c /= n_samples; //mean color from antialiasing
+            c /= n_samples; //mean of colors from antialiasing
             int ir = int( 255.99f * c[RGB::R] );
             int ig = int( 255.99f * c[RGB::G] );
             int ib = int( 255.99f * c[RGB::B] );
