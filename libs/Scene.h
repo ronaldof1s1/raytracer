@@ -13,6 +13,11 @@ struct Background{
 	Point3 lower_right;
 };
 
+struct Light{
+	Point3 source;
+	RGB intensity;
+}
+
 class Scene{
 public:
 
@@ -20,6 +25,7 @@ public:
 	std::list< Hitable* > objects;
 	Background background;
 	Point3 light_source;
+	std::list< Light > lights;
 
 	//constructors
 	Scene(Point3 light_source = Point3(-1.0,1.0,1.0)){
@@ -50,6 +56,13 @@ public:
 
 	}
 
+	Scene(std::list< Hitable* > & objs, Background & bg, std::list< Light > &lights_){
+		objects = objs;
+		background = bg;
+		lights = lights_;
+
+	}
+
 	//Methods
 	unsigned int size() const {return objects.size();}
 
@@ -57,7 +70,9 @@ public:
 
 	Background get_background() const {return background;}
 
-	Point3 get_light_source() const {return light_source;}
+	Point3 get_light_source() const {return light_source;} 
+
+	std::list<Light> get_lights() const { return lights; }
 
 	void add_object(Hitable * object);
 
