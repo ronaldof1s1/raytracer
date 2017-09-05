@@ -24,57 +24,78 @@ public:
 	// fields
 	std::list< Hitable* > objects;
 	Background background;
-	Point3 light_source;
 	std::list< Light > lights;
-
+	RGB ambient_light;
 	//constructors
-	Scene(Point3 light_source = Point3(-1.0,1.0,1.0)){
+	Scene(RGB al = RGB(1,1,1)){
 		objects = std::list< Hitable* >();
+
 		background.upper_left = Point3(1.0,1.0,1.0);
 		background.lower_left = Point3(1.0,1.0,1.0);
 		background.upper_right = Point3(1.0,1.0,1.0);
 		background.lower_right = Point3(1.0,1.0,1.0);
+
 		Light light;
-		light.source = light_source;
+		light.source = Point3(-1,1,1);
 		light.intensity = RGB(1,1,1);
+
 		lights.push_back(light);
+
+		ambient_light = al;
 	};
-	Scene(std::list< Hitable* > & obj, Point3 light_source = Point3(-1.0,1.0,1.0)){
+	Scene(std::list< Hitable* > & obj, RGB al = RGB(1,1,1)){
 		objects = obj;
+
 		background.upper_left = Point3(1.0,1.0,1.0);
 		background.lower_left = Point3(1.0,1.0,1.0);
 		background.upper_right = Point3(1.0,1.0,1.0);
 		background.lower_right = Point3(1.0,1.0,1.0);
+
 		Light light;
-		light.source = light_source;
+		light.source = Point3(-1,1,1);
 		light.intensity = RGB(1,1,1);
+
 		lights.push_back(light);
+
+		ambient_light = al;
 	};
 
-	Scene(Background & bg, Point3 light_source = Point3(-1.0,1.0,1.0)){
+	Scene(Background & bg, RGB al = RGB(1,1,1)){
+
 		objects = std::list< Hitable* >();
-		background = bg;
-		Light light;
-		light.source = light_source;
-		light.intensity = RGB(1,1,1);
-		lights.push_back(light);
-	}
 
-	Scene(std::list< Hitable* > & objs, Background & bg, Point3 light_source = Point3(-1.0,1.0,1.0)){
-		objects = objs;
 		background = bg;
+
 		Light light;
-		light.source = light_source;
+		light.source = Point3(-1,1,1);
 		light.intensity = RGB(1,1,1);
 		lights.push_back(light);
 
+		ambient_light = al;
 	}
 
-	Scene(std::list< Hitable* > & objs, Background & bg, std::list< Light > &lights_){
+	Scene(std::list< Hitable* > & objs, Background & bg, RGB al = RGB(1,1,1)){
 		objects = objs;
+
 		background = bg;
+
+		Light light;
+		light.source = Point3(-1,1,1);
+		light.intensity = RGB(1,1,1);
+
+		lights.push_back(light);
+
+		ambient_light = al;
+	}
+
+	Scene(std::list< Hitable* > & objs, Background & bg, std::list< Light > &lights_, RGB al = RGB(1,1,1)){
+		objects = objs;
+
+		background = bg;
+
 		lights = lights_;
 
+		ambient_light = al;
 	}
 
 	//Methods
@@ -84,7 +105,7 @@ public:
 
 	Background get_background() const {return background;}
 
-	Point3 get_light_source() const {return light_source;}
+	RGB get_ambient_light() const {return ambient_light;}
 
 	std::list<Light> get_lights() const { return lights; }
 
