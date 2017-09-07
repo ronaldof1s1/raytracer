@@ -17,7 +17,6 @@ using namespace utility;
 
 int main(int argc, char const *argv[])
 {
-    clock_t total_time_start = clock();
     int n_cols = 1200;
     int n_rows = 600;
 
@@ -78,9 +77,7 @@ int main(int argc, char const *argv[])
       clock_t start = clock();
 
       my_raytrace.render(output_image, shader, n_samples);
-      std::cout << "time to Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << std::endl
-                << "time total: " << (double)(clock() - total_time_start)/CLOCKS_PER_SEC << std::endl;
-
+      std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << std::endl;
       output_image.close();
     }
     else{

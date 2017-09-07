@@ -21,8 +21,8 @@
 
       for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
-				// double percentage =  100.0*double(n_rows-row)/double(n_rows*n_cols) ;
-				// printf("%f\r", percentage);
+				int percentage =  int(100.0*double(n_rows-row)/double(n_rows)) ;
+				std::cout << "\r" << percentage << "%" << std::flush;
         for( int col = 0 ; col < n_cols ; col++ ) // X
         {
           RGB color(0);
@@ -50,5 +50,6 @@
             output_image << ir << " " << ig << " " << ib << "\n";
         }
 	    }
+			std::cout << std::endl;
 
 	}
