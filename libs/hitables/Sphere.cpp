@@ -23,7 +23,7 @@ bool Sphere::hit(const Ray & r, float t_min, float t_max, hit_record & rec) cons
             if(t1 < t2 || t2 < 0){
             rec.t = t1;
             rec.p = r.point_at(t1);
-            rec.normal = (rec.p - center)/radius; //already normalized
+            rec.normal = unit_vector((rec.p - center)/radius);
             rec.material = material;
             return true;
             }
@@ -31,7 +31,7 @@ bool Sphere::hit(const Ray & r, float t_min, float t_max, hit_record & rec) cons
         if(t2 > t_min && t2 < t_max){
             rec.t = t2;
             rec.p = r.point_at(t2);
-            rec.normal = (rec.p - center)/radius; //already normalized
+            rec.normal = unit_vector((rec.p - center)/radius);
             rec.material = material;
             return true;
         }
