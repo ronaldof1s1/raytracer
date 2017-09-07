@@ -39,9 +39,9 @@ std::knuth_b random_generator(1);
     Vector3 v;
     do {
       //Get random x, y and z
-      float x = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
-      float y = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
-      float z = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
+      double x = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
+      double y = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
+      double z = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
 
       v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [0,1]
     } while(dot(v,v) >= 1.0); //until len^2 < 1
@@ -51,8 +51,8 @@ std::knuth_b random_generator(1);
 
   //real color function, with number of iterations
   RGB Recursive::shade(const Ray &ray, const Scene &scene, int iteration) const {
-    float max_t = std::numeric_limits<float>::max();
-    float min_t = 0.0;
+    double max_t = std::numeric_limits<double>::max();
+    double min_t = 0.0;
 
     Vector3 rgb_to_paint;
     hit_record rec;
@@ -73,7 +73,7 @@ std::knuth_b random_generator(1);
 
             // creates new ray with origin on point that was hit (with a slight add of 0.1 for evading
             // collision inside the sphere), and the direction is the target vector;
-            Vector3 origin = rec.p + (rec.normal * Vector3(0.01,0.01,0.01));
+            Vector3 origin = rec.p + (rec.normal * Vector3(0.01));
             Ray new_ray(origin, target);
 
             // sums the painting rgb with the diffuse coefficient of the material * the recursive Call
@@ -91,14 +91,14 @@ std::knuth_b random_generator(1);
           Vector3 unit_light = unit_vector(light->source - rec.p);
 
           //calculate the cossene with the normal of that point
-          float cos_ = dot(unit_light, rec.normal);
-          if (cos_ > 0){ //means that the light did not return to the source
+          double cos_light_normal = dot(unit_light, rec.normal);
+          cos_light_normal = std::max(0.0, cos_light_normal); //cos < 0 means the light did not hit surface
 
             // then we sum the color with the light intensity applyed to the
             // diffuse coefficient, applyed to the conssene we found
-            rgb_to_paint += cos_ * light->intensity * rec.material->k_d * use_diffuse;
+          rgb_to_paint += cos_light_normal * light->intensity * rec.material->k_d * use_diffuse;
 
-          }
+
 
         }
 
@@ -126,9 +126,9 @@ std::knuth_b random_generator(1);
     }
 
     // now we truncate the color to paint to 1, if greater;
-    rgb_to_paint.e[0] = std::min(1.f, rgb_to_paint.r());
-    rgb_to_paint.e[1] = std::min(1.f, rgb_to_paint.g());
-    rgb_to_paint.e[2] = std::min(1.f, rgb_to_paint.b());
+    rgb_to_paint.e[0] = std::min(1.d, rgb_to_paint.r());
+    rgb_to_paint.e[1] = std::min(1.d, rgb_to_paint.g());
+    rgb_to_paint.e[2] = std::min(1.d, rgb_to_paint.b());
 
 
     return rgb_to_paint;

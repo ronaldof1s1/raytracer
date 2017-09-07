@@ -14,11 +14,11 @@ public:
 
 	// Constructors & getters
 	Camera(){};
-	Camera(Point3 llc, Vector3 va, Vector3 ha, Point3 origin_){
+	Camera(Point3 origin_, Point3 llc, Vector3 va, Vector3 ha){
+		origin = origin_;
 		lower_left_corner = llc;
 		vertical_axis = va;
 		horizontal_axis = ha;
-		origin = origin_;
 	};
 
 
@@ -29,7 +29,7 @@ public:
 	Vector3 get_origin() {return origin;};
 
 	//Getting ray shoot from the camera
-	Ray get_ray(float u, float v){
+	Ray get_ray(double u, double v){
 		// Determine the ray's direction, based on the pixel coordinate (col,row).
 		// We are mapping (matching) the view plane (vp) to the image.
 		// To create a ray we need: (a) an origin, and (b) an end point.
@@ -40,13 +40,13 @@ public:
 		// vp's origin + horizontal displacement (proportional to 'col') +
 		// vertical displacement (proportional to 'row').
 		Point3 end_point = lower_left_corner + u*horizontal_axis + v*vertical_axis;
-		Ray r (origin, end_point - origin);
+		Ray r (origin, unit_vector(end_point - origin));
 		return r;
 	}
 
-	Ray get_ray(float row, float col, int n_rows, int n_cols){
-		float u = float(col) / float( n_cols ); // walked u% of the horizontal dimension of the view plane.
-		float v = float(row) / float( n_rows ); // walked v% of the vertical dimension of the view plane.
+	Ray get_ray(double row, double col, int n_rows, int n_cols){
+		double u = double(col) / double( n_cols ); // walked u% of the horizontal dimension of the view plane.
+		double v = double(row) / double( n_rows ); // walked v% of the vertical dimension of the view plane.
 
 		return get_ray(u, v);
 	}

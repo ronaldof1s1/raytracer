@@ -4,7 +4,7 @@
 
   class Depth_map : public Shader{
 
-    float max_depth;
+    double max_depth;
 
   public:
 
@@ -13,12 +13,12 @@
       max_depth = 4.0;
     }
 
-    Depth_map(float depth):Shader(){
+    Depth_map(double depth):Shader(){
       max_depth = depth;
     }
 
     //Getters
-    float get_max_depth(){return max_depth;}
+    double get_max_depth(){return max_depth;}
 
     //Methods
     virtual RGB shade(const Ray &ray, const Scene &scene) const override; //Override method from Shader.h
@@ -27,8 +27,8 @@
 
   RGB Depth_map::shade(const Ray &ray, const Scene &scene) const{
 
-    float max_t = std::numeric_limits<float>::max();
-    float min_t = 0.0;
+    double max_t = std::numeric_limits<double>::max();
+    double min_t = 0.0;
 
     Vector3 rgb_to_paint;
     hit_record rec;
@@ -39,7 +39,7 @@
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
 
-  	  float depth = (rec.p - ray.get_origin()).length(); //Distance from ray origin to hit point
+  	  double depth = (rec.p - ray.get_origin()).length(); //Distance from ray origin to hit point
   	  depth /= max_depth; //Normalize to [0,1]
 
   	  // evading color overflow

@@ -8,12 +8,12 @@
 #include "Shader.h"
 class Raytrace {
 	Image image;
-
+	double gamma;
 public:
 	//Constructors
 	Raytrace(Image &img){image = img;}
 	//Render fuction
-	void render(std::ofstream &image, Shader *shader, int n_samples, float gamma);
+	void render(std::ofstream &image, Shader *shader, int n_samples);
 
 };
 #include "Raytrace.cpp"

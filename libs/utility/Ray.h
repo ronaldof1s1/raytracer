@@ -12,7 +12,7 @@ class Ray {
     public:
 
         //=== Alias
-        typedef float real_type;
+        typedef double real_type;
 
         //=== Constructor
         Ray( Point3 o_=Point3(), Vector3 d_=Vector3() )

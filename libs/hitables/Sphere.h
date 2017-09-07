@@ -5,27 +5,27 @@
 #include "../materials/Lambertian.h"
 class Sphere : public Hitable{
 
-  float radius;
+  double radius;
 
 public:
     Sphere(){
       center = Point3(0); //create sphere on the center
-      radius = 0.f; //sphere with 0 radius
+      radius = 0.d; //sphere with 0 radius
     };
-    Sphere(Point3 cen, float r){
+    Sphere(Point3 cen, double r){
       center = cen;
       radius = r;
       material = new Lambertian(); //standard material
     }
-    Sphere(Point3 cen, float radius_, Material *mat_){
+    Sphere(Point3 cen, double radius_, Material *mat_){
       center = cen;
       radius = radius_;
       material = mat_;
     }
 
-    float get_radius(){return radius;}
+    double get_radius(){return radius;}
 
-    virtual bool hit( const Ray & r, float t_min, float t_max, hit_record & rec) const;
+    virtual bool hit( const Ray & r, double t_min, double t_max, hit_record & rec) const;
 };
 
 #include "Sphere.cpp"

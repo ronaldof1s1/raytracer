@@ -15,15 +15,15 @@ public:
   Blinn_Phong(int iter, bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = iter;}
   Blinn_Phong(bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = 1; }
 
-  Vector3 random_vector_in_unit_sphere() const;
+  // Vector3 random_vector_in_unit_sphere() const;
   RGB shade(const Ray &ray, const Scene &scene) const override;
   //RGB shade(const Ray &ray, const Scene &scene, int iteration) const;
 
 };
 
 RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
-  float max_t = std::numeric_limits<float>::max();
-  float min_t = 0.0;
+  double max_t = std::numeric_limits<double>::max();
+  double min_t = 0.0;
 
   RGB rgb_to_paint = RGB(0);
   hit_record rec;
@@ -36,27 +36,34 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     auto lights = scene.get_lights();
     for (auto light = lights.begin(); light != lights.end(); light++)
     {
-      Vector3 unit_light = unit_vector(light->source);
 
-      float cos_ = dot(unit_light, rec.normal);
+      Point3 new_origin = rec.p + (rec.normal * Vector3(0.01));
+      Vector3 light_direction = unit_vector(light->source);
+      Ray new_ray(new_origin, light_direction - new_origin);
+      if(!is_shadow(new_ray, scene)){
 
-      if(cos_ > 0){
-          Point3 origin = rec.p + rec.normal * Vector3(0.01);
-          Ray new_ray(origin, unit_light);
-          if(!is_shadow(new_ray, scene)){
+        double cos_light_normal = dot(light_direction, rec.normal);
+        cos_light_normal = std::max(0.0, cos_light_normal);
 
-            rgb_to_paint += (rec.material->k_d * light->intensity) * cos_ * use_diffuse;
+        RGB diffuse_intensity = light->intensity * cos_light_normal;
 
-          }
+        rgb_to_paint += rec.material->k_d * diffuse_intensity * use_diffuse;
+
+        // Vector3 vdir = unit_vector(ray.get_origin() - rec.p); // = -ray.get_direction
+        Vector3 halfway_vector = unit_vector(light_direction - ray.get_direction());
+        double cos_normal_halfway = dot(rec.normal, halfway_vector);
+        cos_normal_halfway = std::max(0.0, cos_normal_halfway);
+        // cos_normal_halfway = std::min(cos_normal_halfway, 1.0f);
+
+        RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, rec.material->shininess);
+
+        rgb_to_paint += rec.material->k_s * shininess_intensity * use_specular;
+
       }
 
-        Vector3 halfway_vector = unit_vector(unit_light - ray.get_direction());
-        float dot_n_h = dot(rec.normal, halfway_vector);
-        dot_n_h = std::pow(dot_n_h, rec.material->shininess);
 
-        rgb_to_paint += (rec.material->k_s * light->intensity) * dot_n_h * use_specular;
 
-      }
+    }
 
     }
   else{
@@ -65,9 +72,9 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
 
   }
 
-    rgb_to_paint.e[0] = std::min(1.f, rgb_to_paint.r());
-    rgb_to_paint.e[1] = std::min(1.f, rgb_to_paint.g());
-    rgb_to_paint.e[2] = std::min(1.f, rgb_to_paint.b());
+    rgb_to_paint.e[0] = std::min(1.d, rgb_to_paint.r());
+    rgb_to_paint.e[1] = std::min(1.d, rgb_to_paint.g());
+    rgb_to_paint.e[2] = std::min(1.d, rgb_to_paint.b());
 
     return rgb_to_paint;
   }

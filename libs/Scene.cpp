@@ -17,7 +17,7 @@ void Scene::add_light(Point3 source_, RGB intensity_){
 }
 
 //Check in the list of objects if it hits an object
-bool Scene::hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec) const{
+bool Scene::hit_anything(const Ray & r, double t_min, double t_max, hit_record & rec) const{
 
 	bool hit_anything = false;
 
@@ -38,8 +38,8 @@ bool Scene::hit_anything(const Ray & r, float t_min, float t_max, hit_record & r
 bool Scene::hit_first_object(const Ray &r, hit_record & rec) const{
 	bool hit = false;
 
-	float min_t = 0.0;
-	float max_t = std::numeric_limits<float>::max();
+	double min_t = 0.0;
+	double max_t = std::numeric_limits<double>::max();
 
 	for(auto i = objects.begin(); i != objects.end(); i++){
 		Hitable *obj = *i;

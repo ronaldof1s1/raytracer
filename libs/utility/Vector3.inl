@@ -21,8 +21,8 @@ namespace utility {
          */
         auto v_dot_v = e[X]*e[X] + e[Y]*e[Y] + e[Z]*e[Z] ;
         // make sure we divide by zero here.
-        assert( fabs( v_dot_v - 0.f ) > 0.000001 );
-        value_type k = 1.f/ sqrt( v_dot_v );
+        assert( fabs( v_dot_v - 0.d ) > 0.000001 );
+        value_type k = 1.d/ sqrt( v_dot_v );
         e[X] *= k;
         e[Y] *= k;
         e[Z] *= k;
@@ -149,8 +149,8 @@ namespace utility {
     }
     inline Vector3& Vector3::operator/=( const value_type t )
     {
-        assert( fabs( t - 0.f ) > 0.000001 );
-        value_type k = 1.f/t;
+        assert( fabs( t - 0.d ) > 0.000001 );
+        value_type k = 1.d/t;
         e[X] *= k;
         e[Y] *= k;
         e[Z] *= k;

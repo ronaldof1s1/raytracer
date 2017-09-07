@@ -2,7 +2,14 @@
 #include <cstdio>
 #include <cmath>
 
-	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples, float gamma=2.2){
+	void gamma_correction(RGB &rgb, double gamma = 2.2f){
+		double r = std::pow(rgb[RGB::R], 1.d/gamma);
+		double g = std::pow(rgb[RGB::G], 1.d/gamma);
+		double b = std::pow(rgb[RGB::B], 1.d/gamma);
+		rgb = RGB(r,g,b);
+	}
+
+	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples){
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();
@@ -14,29 +21,32 @@
 
       for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
-				// float percentage =  100.0*float(n_rows-row)/float(n_rows*n_cols) ;
+				// double percentage =  100.0*double(n_rows-row)/double(n_rows*n_cols) ;
 				// printf("%f\r", percentage);
         for( int col = 0 ; col < n_cols ; col++ ) // X
         {
-          RGB c(0);
+          RGB color(0);
 					//getting antialiasing samples
           for(int sample = 0; sample < n_samples; sample++){
 						//generate random u and v for antialiasing;
 						std::knuth_b random_generator(sample);
-						float u = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
-						float v = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
+						double u = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
+						double v = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
 
 						// generate Ray shoot from camera to point (row + u, col + v)
 					  Ray r = image.get_camera().get_ray(row + u, col + v, n_rows, n_cols);
 
             // Determine the color of one of the rays, as it travels through the virtual space.
-            c += shader->shade( r, scene );
+            color += shader->shade( r, scene );
 
           }
-            c /= n_samples; //mean color from antialiasing
-            int ir = int( 255.99f * std::pow(c[RGB::R], 1/gamma) );
-            int ig = int( 255.99f * std::pow(c[RGB::G], 1/gamma) );
-            int ib = int( 255.99f * std::pow(c[RGB::B], 1/gamma) );
+            color /= n_samples; //mean color from antialiasing
+
+						gamma_correction(color);
+
+            int ir = int( 255.99f * color[RGB::R] );
+            int ig = int( 255.99f * color[RGB::G] );
+            int ib = int( 255.99f * color[RGB::B] );
             output_image << ir << " " << ig << " " << ib << "\n";
         }
 	    }

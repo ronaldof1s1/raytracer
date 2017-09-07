@@ -14,8 +14,8 @@
 
   RGB Normal_to_RGB::shade(const Ray &ray, const Scene &scene) const {
 
-    float max_t = std::numeric_limits<float>::max(); //most distant object
-    float min_t = 0.0; //camera distance
+    double max_t = std::numeric_limits<double>::max(); //most distant object
+    double min_t = 0.0; //camera distance
 
     Vector3 rgb_to_paint;
     hit_record rec;

@@ -102,7 +102,7 @@ public:
 
 	void add_light(Point3 source, RGB intensity);
 
-	bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec) const;
+	bool hit_anything(const Ray & r, double t_min, double t_max, hit_record & rec) const;
 
 	bool hit_first_object(const Ray &r, hit_record & rec) const;
  };

@@ -17,7 +17,7 @@ namespace utility {
         public:
 
             // Aliases
-            typedef float value_type;
+            typedef double value_type;
             enum field_t { X=0, Y=1, Z=2, R=0, G=1, B=2 };
 
             //=== Fields
@@ -28,10 +28,10 @@ namespace utility {
                 : e{ e0_, e1_, e2_ }
             { /* empty */ }
 
-            Vector3(value_type v = 0.f)
+            Vector3(value_type v = 0.d)
                 : e{v, v, v}
             { /* empty */ }
-            
+
             Vector3( const Vector3 & other_ )
                 : e{ other_.e[X], other_.e[Y], other_.e[Z] }
             { /* empty */ }
