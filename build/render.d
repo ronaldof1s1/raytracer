@@ -12,7 +12,8 @@ build/render.o: src/render.cpp src/../libs/hitables/Sphere.h \
  src/../libs/Shader.h src/../libs/Raytrace.cpp src/../libs/Raytrace.h \
  src/../libs/Image.h src/../libs/shaders/Normal_to_RGB.h \
  src/../libs/shaders/../Shader.h src/../libs/shaders/Depth_map.h \
- src/../libs/shaders/Recursive.h src/../libs/materials/Lambertian.h
+ src/../libs/shaders/Recursive.h src/../libs/materials/Lambertian.h \
+ src/../libs/shaders/Blinn_Phong.h
 
 src/../libs/hitables/Sphere.h:
 
@@ -67,3 +68,5 @@ src/../libs/shaders/Depth_map.h:
 src/../libs/shaders/Recursive.h:
 
 src/../libs/materials/Lambertian.h:
+
+src/../libs/shaders/Blinn_Phong.h:

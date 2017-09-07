@@ -42,13 +42,11 @@ int main(int argc, char const *argv[])
       bg.upper_left = RGB(1.f);
       bg.lower_right = RGB(1.f);
       bg.upper_right = RGB(1.f);
-      std::list< Light > lights;
-      Light light;
-      light.source = Vector3(20,10,5);
-      // light.intensity = Vector3(0.5,0.5,0.5);
-      light.intensity = RGB(1.f);
-      lights.push_back(light);
-      Scene scene(*objects, bg, lights, RGB(0.4));
+        // light.intensity = Vector3(0.5,0.5,0.5);
+      Scene scene(*objects, bg, RGB(0.4));
+      scene.add_light(Point3(20,10,5), RGB(1.f));
+      scene.add_light(Point3(-20,10,5), RGB(1.f));
+
 
       //filling with Spheres
       /*Sphere s1(Point3(0,-100.5,-30), 100.f, new Lambertian(RGB(0,1,0)));
@@ -71,7 +69,7 @@ int main(int argc, char const *argv[])
 
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
-      Shader *shader = new Blinn_Phong(false, true, true);
+      Shader *shader = new Blinn_Phong(true, true, true);
 
       clock_t start = clock();
 
