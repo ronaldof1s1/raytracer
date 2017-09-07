@@ -28,6 +28,8 @@
     virtual RGB shade(const Ray &ray, const Scene &scene) const = 0; //Main function to get color of a point, given a ray and the scene
 
     RGB interpolate_background(const Ray &ray, const Background &background) const; //Method to interpolate and generate the background
+
+    bool is_shadow(const Ray &ray, const Scene &scene) const;
   };
 
     RGB Shader::interpolate_background(const Ray &ray, const Background &background) const{
@@ -39,6 +41,15 @@
 
       float y = 0.5*(unit_direction.y() + 1);
       return (1-y) * top + y * bottom;
+    }
+
+    bool Shader::is_shadow(const Ray &ray, const Scene &scene) const{
+    
+      hit_record rec;
+      if(scene.hit_first_object(ray, rec)){
+        return true;
+      }
+      return false;
     }
 
 #endif
