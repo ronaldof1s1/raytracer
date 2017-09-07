@@ -1,6 +1,7 @@
 #include "Raytrace.h"
 #include <cstdio>
 #include <cmath>
+#include <ctime>
 
 	void gamma_correction(RGB &rgb, double gamma = 2.2f){
 		double r = std::pow(rgb[RGB::R], 1.d/gamma);
@@ -8,6 +9,8 @@
 		double b = std::pow(rgb[RGB::B], 1.d/gamma);
 		rgb = RGB(r,g,b);
 	}
+
+clock_t start;
 
 	void show_percentage(int percentage){
 		std::cout << "\r" << percentage << "%" << "\t"
@@ -20,12 +23,14 @@
 			std::cout << "=" << std::flush;
 		}
 		else{
-			std::cout << ">" << std::flush;			
+			std::cout << ">" << std::flush;
 		}
 		for (size_t i = line_bar_percentage; i < 50; i++) {
 			std::cout << " " << std::flush;
 		}
-		std::cout << "]" << std::flush;
+		std::cout << "]\t" << std::flush;
+		std::cout << "time: " << (double)(clock() - start)/CLOCKS_PER_SEC << "s" << std::flush;
+
 	}
 
 	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples){
@@ -38,6 +43,7 @@
                 	 << n_cols << " " << n_rows << "\n"
                 	 << image.get_max_color() << "\n";
 
+			start = clock();
       for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
 				int percentage =  int(100.0*double(n_rows-row)/double(n_rows)) ;
