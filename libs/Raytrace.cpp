@@ -9,6 +9,25 @@
 		rgb = RGB(r,g,b);
 	}
 
+	void show_percentage(int percentage){
+		std::cout << "\r" << percentage << "%" << "\t"
+							<< "[";
+		int line_bar_percentage = percentage/2;
+		for (size_t i = 50 - line_bar_percentage; i < 50; i++) {
+			std::cout << "=" << std::flush;
+		}
+		if(line_bar_percentage == 50){
+			std::cout << "=" << std::flush;
+		}
+		else{
+			std::cout << ">" << std::flush;			
+		}
+		for (size_t i = line_bar_percentage; i < 50; i++) {
+			std::cout << " " << std::flush;
+		}
+		std::cout << "]" << std::flush;
+	}
+
 	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples){
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
@@ -22,8 +41,9 @@
       for ( int row = n_rows-1 ; row >= 0 ; --row ) // Y
       {
 				int percentage =  int(100.0*double(n_rows-row)/double(n_rows)) ;
-				std::cout << "\r" << percentage << "%" << std::flush;
-        for( int col = 0 ; col < n_cols ; col++ ) // X
+
+				show_percentage(percentage);
+				for( int col = 0 ; col < n_cols ; col++ ) // X
         {
           RGB color(0);
 					//getting antialiasing samples

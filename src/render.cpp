@@ -57,9 +57,9 @@ int main(int argc, char const *argv[])
       Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian(RGB(1,1,1)));
       scene.add_object(&s4);*/
 
-      Sphere s1(Point3(0.0,-100.5f,-1.d), 100.d, new Material(RGB(0.1), RGB(0.4), RGB(1.d), 5));
+      Sphere s1(Point3(0.0,-100.5f,-1.d), 100.d, new Material(RGB(0.1), RGB(0.4), RGB(1.d), 4));
       scene.add_object(&s1);
-      Sphere s2(Point3(0.0,0.d,-1.d), 0.4, new Material(RGB(0.1), RGB(0.0,0.3,0.8), RGB(0.9), 64));
+      Sphere s2(Point3(0.0,0.d,-1.d), 0.4, new Material(RGB(0.1), RGB(0.0,0.3,0.8), RGB(0.9), 32));
       scene.add_object(&s2);
       // Sphere s3(Point3(-0.5,0.d,-1.d), 0.4f, new Material(RGB(0.1), RGB(0.0,0.3,0.8), RGB(0.9), 64));
       // scene.add_object(&s3);
@@ -73,12 +73,12 @@ int main(int argc, char const *argv[])
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
       // Shader *shader = new Recursive(40);
-      Shader *shader = new Blinn_Phong(true, true, true, false);//amb, diff, spec`
+      Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec`
 
       clock_t start = clock();
 
       my_raytrace.render(output_image, shader, n_samples);
-      std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << std::endl;
+      std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
       output_image.close();
     }
     else{
