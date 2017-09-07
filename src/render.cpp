@@ -58,20 +58,20 @@ int ascii_or_bin(std::string line, std::string& str, int type) {
   std::vector<std::string> strs = split_string(line, " ");
   int file_type = 0;
   if (strs[0].compare("CODIFICATION") + strs[1].compare("=") == 0) {
-    if (strs[2].compare("ascii")) {
+    if (strs[2].compare("ascii") == 0) {
       file_type = 1;
       str += "P" + std::to_string(type * file_type) + "\n";
 
     }
-    else if(strs[2].compare("binary")){
-      file_type = 1;
+    else if(strs[2].compare("binary")== 0){
+      file_type = 2;
       str += "P" + std::to_string(type * file_type) + "\n";
     }
   }
   return file_type;
 }
 
-int number_of_col(std::string line, std::string str) {
+int number_of_col(std::string line, std::string &str) {
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   int n_col = -1;
@@ -83,7 +83,7 @@ int number_of_col(std::string line, std::string str) {
 }
 
 
-int number_of_rows(std::string line, std::string str) {
+int number_of_rows(std::string line, std::string &str) {
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   int n_row = -1;
@@ -95,6 +95,7 @@ int number_of_rows(std::string line, std::string str) {
 }
 
 std::vector<int>* get_point_rgb(std::string line, std::string point){
+  std::cout << line<<std::endl;
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   std::vector<int> *rgb = new std::vector<int>();
@@ -106,21 +107,90 @@ std::vector<int>* get_point_rgb(std::string line, std::string point){
   return rgb;
 }
 
-std::string generate_ascii_ppm(int n_col, int n_row, std::vector< std::vector<int>* >& four_points) {
+void calc_rgb(int i, int j, int n_row, int n_col, std::vector< std::vector<int>* >& four_points, int rgb[] ) {
+  int rgb1[3], rgb2[3];
+  int r[4];
+  int g[4];
+  int b[4];
+  float x = float(j)/float(n_col);
+  float y = float(i)/float(n_row);
 
+  //calc r
+  r[0] = four_points.at(0)->at(0); //ul
+  r[1] = four_points.at(1)->at(0); //ll
+  r[2] = four_points.at(2)->at(0); //ur
+  r[3] = four_points.at(3)->at(0); //lr
+  rgb1[0] = (r[2] - r[0]) * x + r[0];
+  rgb2[0] = (r[3] - r[1]) * x + r[1];
+
+
+  //calc G
+  g[0] = four_points.at(0)->at(1); //ul
+  g[1] = four_points.at(1)->at(1); //ll
+  g[2] = four_points.at(2)->at(1); //ur
+  g[3] = four_points.at(3)->at(1); //lr
+  rgb1[1] = (g[2] - g[0]) * x + g[0];
+  rgb2[1] = (g[3] - g[1]) * x + g[1];
+
+
+  //calc b
+  b[0] = four_points.at(0)->at(2); //ul
+  b[1] = four_points.at(1)->at(2); //ll
+  b[2] = four_points.at(2)->at(2); //ur
+  b[3] = four_points.at(3)->at(2); //lr
+  rgb1[2] = (b[2] - b[0]) * x + b[0];
+  rgb2[2] = (b[3] - b[1]) * x + b[1];
+
+  //calc final rgb
+  rgb[0] = (rgb2[0] - rgb1[0]) * y + rgb1[0];
+  rgb[1] = (rgb2[1] - rgb1[1]) * y + rgb1[1];
+  rgb[2] = (rgb2[2] - rgb1[2]) * y + rgb1[2];
+  std::cout << rgb[0] << " " << rgb[1] << " " << rgb[2] << std::endl;
+  //return rgb;
+}
+
+std::string generate_ascii_ppm(int n_col, int n_row, std::vector< std::vector<int>* >& four_points) {
+  int rgb[3];
+  std::string str = "";
+  for (size_t i = 0; i < n_row; i++) {
+    for (size_t j = 0; j < n_col; j++) {
+      calc_rgb(i,j,n_row,n_col,four_points, rgb);
+      str += std::to_string(rgb[0]) + " ";
+      str += std::to_string(rgb[1]) + " ";
+      str += std::to_string(rgb[2]) + "\n";
+    }
+  }
+  //std::cout << str;
+  return str;
 }
 
 void generate_binary_ppm(int n_col, int n_row, std::vector< std::vector<int>* >& four_points, char buffer[]) {
 
+  int *rgb;
+  std::string str = "";
+  int count=0;
+  for (size_t i = 0; i < n_row; i++) {
+    for (size_t j = 0; j < n_col; j++) {
+      calc_rgb(i,j,n_row,n_col,four_points,rgb);
+      buffer[count++]= rgb[0];
+      buffer[count++]= rgb[1];
+      buffer[count++]= rgb[2];
+    }
+  }
 }
 
 void generate_image(std::ofstream& out_file, int type, int n_col, int n_row, std::vector< std::vector<int>* > &four_points) {
+
   if(type == 3) {
     std::string ascii_rgb = generate_ascii_ppm(n_col, n_row, four_points);
+    out_file << ascii_rgb;
   }
   if(type == 6) {
+
     char buffer[n_col * n_row * 3];
+
     generate_binary_ppm(n_col, n_row, four_points, buffer);
+    out_file.write(buffer, n_col*n_row*3);
   }
 }
 
@@ -140,6 +210,7 @@ int main(int argc, char const *argv[]) {
 
     //getting file tipe
     std::getline(input_file, line);
+
     image_type_number = image_type(line);
 
     //ascii or binary?
@@ -152,16 +223,18 @@ int main(int argc, char const *argv[]) {
 
     //getting number of rows
     std::getline(input_file,line);
+
     n_row = number_of_rows(line, file_string);
 
     //maxcolor = 255
     file_string += "255\n";
 
+
     //getting four point rgb
-    upper_left = get_point_rgb(line, "UPPER_LEFT");
-    lower_left = get_point_rgb(line, "LOWER_LEFT");
-    upper_right = get_point_rgb(line, "UPPER_RIGHT");
-    lower_right = get_point_rgb(line, "LOWER_RIGHT");
+    std::getline(input_file,line);upper_left = get_point_rgb(line, "UPPER_LEFT");
+    std::getline(input_file,line);lower_left = get_point_rgb(line, "LOWER_LEFT");
+    std::getline(input_file,line);upper_right = get_point_rgb(line, "UPPER_RIGHT");
+    std::getline(input_file,line);lower_right = get_point_rgb(line, "LOWER_RIGHT");
 
     four_points->push_back(upper_left);
     four_points->push_back(lower_left);
@@ -173,6 +246,7 @@ int main(int argc, char const *argv[]) {
     if (output_file.is_open()) {
 
       output_file << file_string;
+
       generate_image (output_file, image_type_number, n_col, n_row, *four_points);
       output_file.close();
     }
