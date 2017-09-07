@@ -42,12 +42,6 @@ public:
 		background.upper_right = Point3(1.0,1.0,1.0);
 		background.lower_right = Point3(1.0,1.0,1.0);
 
-		Light light;
-		light.source = Point3(-1,1,1);
-		light.intensity = RGB(1,1,1);
-
-		lights.push_back(light);
-
 		ambient_light = al;
 	}
 
@@ -59,12 +53,6 @@ public:
 		background.upper_right = Point3(1.0,1.0,1.0);
 		background.lower_right = Point3(1.0,1.0,1.0);
 
-		Light light;
-		light.source = Point3(-1,1,1);
-		light.intensity = RGB(1,1,1);
-
-		lights.push_back(light);
-
 		ambient_light = al;
 	}
 
@@ -74,11 +62,6 @@ public:
 
 		background = bg;
 
-		Light light;
-		light.source = Point3(-1,1,1);
-		light.intensity = RGB(1,1,1);
-		lights.push_back(light);
-
 		ambient_light = al;
 	}
 
@@ -86,12 +69,6 @@ public:
 		objects = objs;
 
 		background = bg;
-
-		Light light;
-		light.source = Point3(-1,1,1);
-		light.intensity = RGB(1,1,1);
-
-		lights.push_back(light);
 
 		ambient_light = al;
 	}
@@ -121,7 +98,13 @@ public:
 
 	void add_object(Hitable * object);
 
+	void add_light(Light &light);
+
+	void add_light(Point3 source, RGB intensity);
+
 	bool hit_anything(const Ray & r, float t_min, float t_max, hit_record & rec) const;
+
+	bool hit_first_object(const Ray &r, hit_record & rec) const;
  };
 
 

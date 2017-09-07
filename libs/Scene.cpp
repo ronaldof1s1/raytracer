@@ -1,7 +1,19 @@
 #include "Scene.h"
 
-inline void Scene::add_object(Hitable * object){
+void Scene::add_object(Hitable * object){
 	objects.push_back(object);
+}
+
+void Scene::add_light(Light &light){
+	lights.push_back(light);
+}
+
+void Scene::add_light(Point3 source_, RGB intensity_){
+	Light light;
+	light.source = source_;
+	light.intensity = intensity_;
+
+	lights.push_back(light);
 }
 
 //Check in the list of objects if it hits an object
@@ -21,4 +33,21 @@ bool Scene::hit_anything(const Ray & r, float t_min, float t_max, hit_record & r
 
 	}
 	return hit_anything;
+}
+
+bool Scene::hit_first_object(const Ray &r, hit_record & rec) const{
+	bool hit = false;
+
+	float min_t = 0.0;
+	float max_t = std::numeric_limits<float>::max();
+
+	for(auto i = objects.begin(); i != objects.end(); i++){
+		Hitable *obj = *i;
+
+		if(obj->hit(r, min_t, max_t, rec)){
+			hit = true;
+			break;
+		}
+	}
+	return hit;
 }
