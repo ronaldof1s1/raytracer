@@ -15,14 +15,6 @@ public:
 	//Render fuction
 	void render(std::ofstream &image, Shader *shader, int n_samples, float gamma);
 
-<<<<<<< HEAD
-=======
-	void render(std::ofstream &image, Shader *shader, int n_samples, float gamma);
-
-	// //methods
-	// +init
-	// +hit_anything
->>>>>>> 07cb3e9a5b6a358b54e5c0c380cbd6a3e7038b50
 };
 #include "Raytrace.cpp"
 #endif
