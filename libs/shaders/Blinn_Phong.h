@@ -38,8 +38,8 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     {
 
       Point3 new_origin = rec.p + (rec.normal * Vector3(0.01));
-      Vector3 light_direction = unit_vector(light->source);
-      Ray new_ray(new_origin, light_direction - new_origin);
+      Vector3 light_direction = unit_vector(light->source - new_origin);
+      Ray new_ray(new_origin, light_direction);
       if(!is_shadow(new_ray, scene)){
 
         double cos_light_normal = dot(light_direction, rec.normal);
