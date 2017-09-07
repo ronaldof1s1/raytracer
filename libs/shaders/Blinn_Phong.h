@@ -13,7 +13,7 @@ public:
   Blinn_Phong():Shader(){ iterations = 1; };
   Blinn_Phong(int iter):Shader(){ iterations = iter;}
   Blinn_Phong(int iter, bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = iter;}
-  Blinn_Phong(bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = 1; }
+  Blinn_Phong(bool amb, bool diff, bool spec, bool shadow):Shader(amb, diff, spec, shadow){ iterations = 1; }
 
   // Vector3 random_vector_in_unit_sphere() const;
   RGB shade(const Ray &ray, const Scene &scene) const override;
