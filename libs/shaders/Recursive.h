@@ -36,14 +36,14 @@ std::knuth_b random_generator(1);
   //used for random direction of reflected ray
   Vector3 Recursive::random_vector_in_unit_sphere() const{
 
-    Vector3 v();
+    Vector3 v;
     do {
       //Get random x, y and z
       float x = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
       float y = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
       float z = std::generate_canonical<float, std::numeric_limits<float>::digits> (random_generator);
 
-      v = 2 * Vector3(x,y,z) - Vector3(1,1,1);//normalize between [0,1]
+      v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [0,1]
     } while(dot(v,v) >= 1.0); //until len^2 < 1
 
     return v;
