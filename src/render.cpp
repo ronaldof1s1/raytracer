@@ -70,11 +70,11 @@ int main(int argc, char const *argv[])
 
       Raytrace my_raytrace(image);
 
+      // Shader *shader = new Standard_shader();
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
       // Shader *shader = new Recursive(40);
-      // Shader *shader = new Standard_shader();
-      Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec`
+      Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec, shadow
 
       clock_t start = clock();
 
