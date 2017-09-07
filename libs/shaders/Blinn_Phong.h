@@ -55,14 +55,11 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
         cos_normal_halfway = std::max(0.0, cos_normal_halfway);
         // cos_normal_halfway = std::min(cos_normal_halfway, 1.0f);
 
-        RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, rec.material->shininess);
+        RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, rec.material->specular_exponent);
 
         rgb_to_paint += rec.material->k_s * shininess_intensity * use_specular;
 
       }
-
-
-
     }
 
     }
