@@ -9,7 +9,7 @@ class Image{
 	int type; //ppm ascii, binary, etc
 	int max_color;
 	int width, height;
-	Scene scene //background, list of objects, lights and ambient light;
+	Scene scene; //background, list of objects, lights and ambient light;
 	Camera camera;
 
 public:
