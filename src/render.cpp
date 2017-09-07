@@ -12,7 +12,7 @@
 #include "../libs/shaders/Recursive.h"
 #include "../libs/materials/Lambertian.h"
 #include "../libs/shaders/Blinn_Phong.h"
-
+#include "../libs/shaders/Standard_shader.h"
 using namespace utility;
 
 int main(int argc, char const *argv[])
@@ -73,6 +73,7 @@ int main(int argc, char const *argv[])
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
       // Shader *shader = new Recursive(40);
+      // Shader *shader = new Standard_shader();
       Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec`
 
       clock_t start = clock();
