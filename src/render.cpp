@@ -37,7 +37,6 @@ std::string parse_file_name(std::string line) {
       }
     }
   }
-  std::cout << file_name << '\n';
   return file_name;
 }
 
@@ -95,7 +94,6 @@ int number_of_rows(std::string line, std::string &str) {
 }
 
 std::vector<int>* get_point_rgb(std::string line, std::string point){
-  std::cout << line<<std::endl;
   del_comments(line);
   std::vector<std::string> strs = split_string(line, " ");
   std::vector<int> *rgb = new std::vector<int>();
@@ -145,7 +143,6 @@ void calc_rgb(int i, int j, int n_row, int n_col, std::vector< std::vector<int>*
   rgb[0] = (rgb2[0] - rgb1[0]) * y + rgb1[0];
   rgb[1] = (rgb2[1] - rgb1[1]) * y + rgb1[1];
   rgb[2] = (rgb2[2] - rgb1[2]) * y + rgb1[2];
-  std::cout << rgb[0] << " " << rgb[1] << " " << rgb[2] << std::endl;
   //return rgb;
 }
 
@@ -160,7 +157,6 @@ std::string generate_ascii_ppm(int n_col, int n_row, std::vector< std::vector<in
       str += std::to_string(rgb[2]) + "\n";
     }
   }
-  //std::cout << str;
   return str;
 }
 
@@ -195,9 +191,9 @@ void generate_image(std::ofstream& out_file, int type, int n_col, int n_row, std
 }
 
 int main(int argc, char const *argv[]) {
-  std::string input_file_name = argv[0];
-  // std::ifstream input_file(input_file_name, std::ios::in);
-  std::ifstream input_file("input_file.txt", std::ios::in);
+  std::string input_file_name = argv[1];
+  std::ifstream input_file(input_file_name, std::ios::in);
+  //std::ifstream input_file("input_file.txt", std::ios::in);
   std::string output_file_name, file_string = "";
   int image_type_number, n_col, n_row;
   std::vector<int> *upper_left, *upper_right, *lower_left, *lower_right;
