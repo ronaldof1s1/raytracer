@@ -162,8 +162,7 @@ std::string generate_ascii_ppm(int n_col, int n_row, std::vector< std::vector<in
 
 void generate_binary_ppm(int n_col, int n_row, std::vector< std::vector<int>* >& four_points, char buffer[]) {
 
-  int *rgb;
-  std::string str = "";
+  int rgb[3];
   int count=0;
   for (size_t i = 0; i < n_row; i++) {
     for (size_t j = 0; j < n_col; j++) {
