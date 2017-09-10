@@ -1,4 +1,19 @@
 #include "Parser.h"
+
+bool string_to_bool(std::string word, bool &result){
+  if(word == "true"){
+    result = true;
+    return true;
+  }
+  else if(word == "false"){
+    result = false;
+    return true;
+  }
+  else{
+    return false;
+  }
+}
+
 void delete_comments(std::string &str){
   std::size_t pos = str.find('#');
   str = srt.substr(0,pos);
@@ -87,7 +102,214 @@ bool parse_antialiasing(std::vector< std::strig > &words, int &antialiasing){
   return false;
 }
 
-bool parse_object(Hitable *hitable, int &line_number){}
+bool parse_material(Material *material, int &line_number){
+  RGB ambient, diffuse, specular;
+  bool has_ambient, has_diffuse, has_specular;
+  bool is_lambertian, is_shiny;
+  int specular_exponent;
+
+  has_ambient = has_diffuse = has_specular = false;
+  is_lambertian = is_shiny = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      split_string(line, " ", words);
+      if(words[1] == "="){
+        switch (words[0]) {
+          case "material":
+            switch (words[1]) {
+              case "lambertian":
+                is_lambertian = true;
+                break;
+
+              case "shiny":
+                is_shiny = true;
+                break;
+
+              case default:
+                return false;
+                break;
+            }
+
+            case "ambient":
+              if(words.size() == 5){
+                double r = std::stod(words[2]);
+                double g = std::stod(words[3]);
+                double b = std::stod(words[4]);
+                ambient = RGB(r,g,b);
+                has_ambient = true;
+              }
+              else{
+                return false;
+              }
+              break;
+
+              case "diffuse":
+                if(words.size() == 5){
+                  double r = std::stod(words[2]);
+                  double g = std::stod(words[3]);
+                  double b = std::stod(words[4]);
+                  diffuse = RGB(r,g,b);
+                  has_diffuse = true;
+                }
+                else{
+                  return false;
+                }
+                break;
+
+              case "specular":
+                if(words.size() == 5){
+                  double r = std::stod(words[2]);
+                  double g = std::stod(words[3]);
+                  double b = std::stod(words[4]);
+                  specular = RGB(r,g,b);
+                  has_specular = true;
+                }
+                else{
+                  return false;
+                }
+                break;
+
+              case "specular_exponent":
+                if(words.size() == 3){
+                  specular_exponent = std::stoi(words[2]);
+                }
+                else{
+                  return false;
+                }
+                break;
+
+              case "END":
+                if(is_lambertian){
+                  if(has_diffuse){
+                    if(has_ambient){
+                      material = new Lambertian(diffuse, ambient);
+                    }
+                    else{
+                      material = new Lambertian(diffuse);
+                    }
+                  }
+                  material = new Lambertian();
+                }
+                else if(is_shiny){
+                  if (has_ambient and has_diffuse and has_specular) {
+                    material = new Shiny(ambient, diffuse, specular, specular_exponent);
+                  }
+                }
+                else{
+                  material = new Material(ambient, diffuse, specular, specular_exponent);
+                }
+                return (words[1] == "MATERIAL") ? true : false;
+              break;
+            break;
+        }
+      }
+      else{
+        return false;
+      }
+    }
+  }
+}
+
+bool parse_object(Hitable *hitable, int &line_number){
+  Point3 center;
+  Material *material;
+  double radius;
+
+  bool has_center = false;
+  bool has_radius = false;
+  bool has_material = false;
+
+  bool is_sphere = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      split_string(line, " ", words);
+
+        switch (words[0]) {
+          case "object":
+            if(words.size() == 3 and words[1] == "="){
+              switch (words[2]) {
+                case "sphere":
+                  is_sphere = true;
+                  break;
+
+                case default:
+                  return false;
+                  break;
+              }
+            }
+            break;
+
+            case "center":
+              if(words.size() == 5 and words[1] == "="){
+                double x = std::stod(words[2]);
+                double y = std::stod(words[3]);
+                double z = std::stod(words[4]);
+                center = Point3(x,y,z);
+                has_center = true;
+              }
+              break;
+
+            case "radius":
+              if(words.size() == 3 and words[1] == "="){
+                radius = std::stod(words[2]);
+                has_radius = true;
+              }
+              break;
+
+            case "BEGIN":
+              if(words.size() == 2){
+                if(words[1] == "MATERIAL"){
+                  if(!parse_material(material, line_number)){
+                    return false;
+                  }
+                  has_material = true;
+                }
+                return false;
+              }
+            break;
+
+            case "END":
+              if(words.size() == 2){
+                if(!has_center or !has_material){
+                  return false;
+                }
+                if(is_sphere){
+                  if(!has_radius){
+                    return false
+                  }
+                  hitable = new Sphere(center, radius, material);
+                  return (words[1] == "OBJECT") ? true : false;
+                }
+              }
+            break;
+        }
+      }
+    }
+  }
+
+}
 
 bool parse_background(Background &background, int &line_number){
 
@@ -237,7 +459,147 @@ bool parse_camera(Camera &camera, int &line_number){
 
 }
 
-bool parse_shader(Shader *shader, int &line_number){}
+bool parse_shader(Shader *shader, int &line_number){
+  bool ambient, diffuse, specular;
+  bool has_ambient, has_diffuse, has_specular, has_shader;
+  bool shadow = true;
+  double max_depth, iterations;
+  iterations = 1;
+  max_depth = 1.0;
+  has_shader = has_ambient = has_diffuse = has_specular = false;
+
+  bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard;
+  is_blinn_phong = is_depth_map = is_normal_to_rgb = is_recursive = is_standard;
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      split_string(line, " ", words);
+
+      if(words.size() == 3 && words[1] == "="){
+
+        switch (words[0]) {
+
+          case "ambient":
+            if(!string_to_bool(words[2], ambient)){
+              return false;
+            }
+            has_ambient = true;
+            break;
+
+          case "diffuse":
+            if(!string_to_bool(words[2], diffuse)){
+              return false;
+            }
+            has_diffuse = true;
+            break;
+
+          case "specular":
+            if(!string_to_bool(words[2], specular)){
+              return false;
+            }
+            has_specular = true;
+            break;
+
+          case "shadow":
+            if(!string_to_bool(words[2], shadow)){
+              return false;
+            }
+            break;
+
+          case "iterations":
+            iterations = std::stoi(words[2]);
+            break;
+
+          case "max_depth":
+            max_depth = std::stod(words[2]);
+            break;
+
+          case "shader":
+            if(is_recursive or is_standard or is_depth_map or is_blinn_phong or is_normal_to_rgb){
+              return false;
+            }
+            switch (words[2]) {
+              case "recursive":
+                is_recursive = true;
+                break;
+
+              case "normal2rgb"
+                is_normal_to_rgb = true;
+                break;
+
+              case "depthmap"
+                is_depth_map = true;
+                break;
+
+              case "standard"
+                is_standard = true;
+                break;
+
+              case "blinnphong"
+                is_blinn_phong = true;
+                break;
+
+              case default:
+                return false;
+                break;
+            }
+            has_shader = true;
+            break;
+
+              case "END":
+                if (has_shader){
+                  if(is_standard){
+                    shader = new Standard_shader();
+                  }
+                  if(is_normal_to_rgb){
+                    shader = new Normal_to_RGB();
+                  }
+                  if(is_depth_map){
+                    shader = new Depth_map();
+                  }
+                  if(is_recursive){
+                    if(has_ambient and has_diffuse){
+                      shader = new Recursive(iterations, ambient, diffuse);
+                    }
+                    else{
+                      shader = new Recursive(iterations);
+                    }
+                  }
+                  if(is_blinn_phong){
+                    if(has_ambient and has_diffuse and has_specular){
+                      shader = new Blinn_Phong(ambient, diffuse, specular, shadow);
+                    }
+                    else{
+                      shader = new Blinn_Phong();
+                    }
+                  }
+                  return (words[2] == "SHADER") ? true : false;
+                }
+                else{
+                  return false;
+                }
+                break;
+
+              case default:
+                return false;
+                break;
+            break;
+
+        }
+      }
+    }
+  }
+}
 
 void parse_file_name(Image &image, std::string output_file_name){}
 

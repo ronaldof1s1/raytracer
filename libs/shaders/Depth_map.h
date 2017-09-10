@@ -3,8 +3,8 @@
 #include "../Shader.h"
 
   class Depth_map : public Shader{
-
     double max_depth;
+    
 
   public:
 

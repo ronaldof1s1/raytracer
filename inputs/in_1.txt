@@ -7,11 +7,12 @@ BEGIN IMAGE
     antialiasing = 4
 
   BEGIN SHADER
-  shader = recursive
+    shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong
     iterations = 40
     ambient = true
     diffuse = true
     specular = true
+    shadow = true
   END SHADER
   BEGIN CAMERA
     origin = 0.0 0.0 0.0
@@ -35,11 +36,13 @@ BEGIN IMAGE
       object = sphere
       center = 0.0 0.0 0.0
       radius = 0.4
-      material = shiny
-      ambient = 0.1 0.1 0.1
-      diffuse = 0.0 0.3 0.8
-      specular = 1.0 1.0 1.0
-      exponent = 64
+      BEGIN MATERIAL
+        material = shiny
+        ambient = 0.1 0.1 0.1
+        diffuse = 0.0 0.3 0.8
+        specular = 1.0 1.0 1.0
+        specular_exponent = 64
+      END MATERIAL
     END OBJECT
   END SCENE
 END IMAGE

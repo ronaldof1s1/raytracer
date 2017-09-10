@@ -11,10 +11,13 @@ class Recursive : public Shader{
 
 public:
 
+
   //===>Constructors
   Recursive():Shader(){ iterations = 1; };
   Recursive(int iter):Shader(){ iterations = iter;}
-  Recursive(int iter, bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = iter;}
+  Recursive(int iter, bool amb, bool diff, bool spec = false):Shader(amb, diff, spec){ iterations = iter;}
+
+  //setter
 
   //===>Methods
 

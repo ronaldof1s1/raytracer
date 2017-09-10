@@ -7,17 +7,13 @@
 #include <algorithm>
 
 class Blinn_Phong : public Shader{
-  int iterations;
 public:
 
-  Blinn_Phong():Shader(){ iterations = 1; };
-  Blinn_Phong(int iter):Shader(){ iterations = iter;}
-  Blinn_Phong(int iter, bool amb, bool diff, bool spec):Shader(amb, diff, spec){ iterations = iter;}
-  Blinn_Phong(bool amb, bool diff, bool spec, bool shadow):Shader(amb, diff, spec, shadow){ iterations = 1; }
+  Blinn_Phong():Shader(){};
+  Blinn_Phong(bool amb, bool diff, bool spec):Shader(amb, diff, spec){}
+  Blinn_Phong(bool amb, bool diff, bool spec, bool shadow):Shader(amb, diff, spec, shadow){}
 
-  // Vector3 random_vector_in_unit_sphere() const;
   RGB shade(const Ray &ray, const Scene &scene) const override;
-  //RGB shade(const Ray &ray, const Scene &scene, int iteration) const;
 
 };
 
@@ -53,7 +49,6 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
         Vector3 halfway_vector = unit_vector(light_direction - ray.get_direction());
         double cos_normal_halfway = dot(rec.normal, halfway_vector);
         cos_normal_halfway = std::max(0.0, cos_normal_halfway);
-        // cos_normal_halfway = std::min(cos_normal_halfway, 1.0f);
 
         RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, rec.material->specular_exponent);
 
@@ -64,9 +59,7 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
 
     }
   else{
-
     rgb_to_paint = interpolate_background(ray, scene.get_background());
-
   }
 
     rgb_to_paint.e[0] = std::min(1.d, rgb_to_paint.r());

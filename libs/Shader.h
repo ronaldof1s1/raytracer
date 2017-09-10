@@ -4,12 +4,10 @@
 #include "Scene.h"
 
   class Shader{
-  protected:
-
-    double use_ambient, use_diffuse, use_specular; //double to multiply if coefficients are used or no in the shader
-    bool shadows;
 
   public:
+    double use_ambient, use_diffuse, use_specular; //double to multiply if coefficients are used or no in the shader
+    bool shadows; //activate shadows
 
     //Constructors
     Shader(bool sd = true){
