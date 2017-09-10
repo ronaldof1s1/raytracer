@@ -89,7 +89,77 @@ bool parse_antialiasing(std::vector< std::strig > &words, int &antialiasing){
 
 bool parse_object(Hitable *hitable, int &line_number){}
 
-bool parse_background(Background &background, int &line_number){}
+bool parse_background(Background &background, int &line_number){
+
+  bool has_upper_left, has_lower_left;
+  bool has_upper_right, has_lower_right;
+
+  has_upper_left = has_upper_right = has_lower_right = has_lower_left = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      split_string(line, " ", words);
+      if(words.size() == 5 && words[1] == "="){
+        switch (words[0]) {
+          case "lower_left":
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            background.lower_left = RGB(r,g,b);
+            has_lower_left = true;
+            break;
+
+          case "upper_left":
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            background.upper_left = Point3(r,g,b);
+            has_upper_left = true;
+            break;
+
+          case "upper_right":
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            background.upper_right = Vector3(r,g,b);
+            has_upper_right = true;
+            break;
+
+          case "lower_right":
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            background.lower_right = Vector3(r,g,b);
+            has_lower_right = true;
+            break;
+
+          case "END":
+            if(has_lower_left && has_lower_right && has_upper_right && has_upper_left){
+              return (words[2] == "BACKGROUND") ? true : false
+            }
+            return false;
+            break;
+
+          case default:
+            return false;
+        }
+      }
+      return false;
+    }
+  }
+
+
+}
 
 bool parse_scene(Scene &scene, int &line_number){}
 
@@ -280,6 +350,7 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
             return false;
       }
     }
+  }
 }
 
 bool Parser::parse(Image &image, Shader *shader){
