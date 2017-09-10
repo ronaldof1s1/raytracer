@@ -8,7 +8,7 @@
 class Image{
 
 public:
-
+	std::string name;
 	int type; //ppm ascii, binary, etc
 	int max_color;
 	int width, height;
@@ -19,14 +19,6 @@ public:
 	//Constructors
 
 	Image(){}
-	Image(int t, int w, int h, Scene &sce, Camera &cam, int a = 1){
-		width = w;
-		height = h;
-		scene = sce;
-		camera = cam;
-		type = t;
-		antialiasing = a;
-	}
 
 	Image(int t, int color, int w, int h, Scene &sce, Camera &cam, int a = 1){
 		width = w;
@@ -45,10 +37,13 @@ public:
 	int get_max_color(){return max_color;}
 	int get_antialiasing(){return antialiasing;}
 
+	std::string get_name() {return name;}
+
 	Camera get_camera(){return camera;}
 	Scene get_scene(){return scene;}
 	Background get_background(){return scene.get_background();}
 
+	void set_file_name(std::string name_){name = name_;}
 };
 
 #endif
