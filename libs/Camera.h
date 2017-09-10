@@ -7,13 +7,18 @@
 class Camera{
 public:
 	// fields
+	Vector3 origin;
 	Vector3 lower_left_corner;
 	Vector3 vertical_axis;
 	Vector3 horizontal_axis;
-	Vector3 origin;
 
 	// Constructors & getters
-	Camera(){};
+	Camera(){
+		origin = Point3(0);
+		lower_left_corner = Point3(0);
+		vertical_axis = Vector3(0);
+		horizontal_axis = Vector3(0);
+	};
 	Camera(Point3 origin_, Point3 llc, Vector3 va, Vector3 ha){
 		origin = origin_;
 		lower_left_corner = llc;
