@@ -1,5 +1,5 @@
-#ifndef LAMBERTIAN_MATERIAL_H_
-#define LAMBERTIAN_MATERIAL_H_
+#ifndef LAMBERTIAN_H_
+#define LAMBERTIAN__H_
 
 #include "../Material.h"
 
@@ -8,7 +8,7 @@ public:
   //Constructors
   Lambertian():Material(){}
   Lambertian(RGB rgb_ ):Material(rgb_){}
-  Lambertian(RGB k_a, RGB k_d, RGB k_s):Material(k_a, k_d, k_s){}
+  Lambertian(RGB k_a, RGB k_d):Material(k_a, k_d, RGB(0.0)){}
 };
 
 #endif
