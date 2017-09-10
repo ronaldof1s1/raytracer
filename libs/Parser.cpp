@@ -21,63 +21,154 @@ void split_string(std::string &str, std::string &delim, std::vector< std::string
 }
 
 bool parse_type(std::vector< std::strig > &words, int &type){
-  if(words[1] == "="){
-    if(words[2] == "ppm"){
-      type = 3;
-      return true;
+  if(words.size() == 3){
+    if(words[1] == "="){
+      if(words[2] == "ppm"){
+        type = 3;
+        return true;
+      }
     }
   }
   return false;
 }
 
 bool parse_codification(std::vector< std::strig > &words, int &type){
-  if(words[1] == "="){
-    if(words[2] == "ascii"){
-      return true;
-    }
-    else if(words[2] == "binary"){
-      type += 3;
-      return true;
+  if(words.size() == 3){
+    if(words[1] == "="){
+      if(words[2] == "ascii"){
+        return true;
+      }
+      else if(words[2] == "binary"){
+        type += 3;
+        return true;
+      }
     }
   }
   return false;
 }
 
 bool parse_width(std::vector< std::strig > &words, int &width){
-  if(words[1] == "="){
-    width = std::stoi(words[2]);
-    return true;
+  if(words.size() == 3){
+    if(words[1] == "="){
+      width = std::stoi(words[2]);
+      return true;
+    }
   }
   return false;
 }
 
 bool parse_height(std::vector< std::strig > &words, int &height){
-  if(words[1] == "="){
-    height = std::stoi(words[2]);
-    return true;
+  if(words.size() == 3){
+    if(words[1] == "="){
+      height = std::stoi(words[2]);
+      return true;
+    }
   }
   return false;
 }
 
 bool parse_max_color(std::vector< std::strig > &words, int &max_color){
-  if(words[1] == "="){
-    max_color = std::stoi(words[2]);
-    return true;
+  if(words.size() == 3){
+    if(words[1] == "="){
+      max_color = std::stoi(words[2]);
+      return true;
+    }
   }
   return false;
 }
 
 bool parse_antialiasing(std::vector< std::strig > &words, int &antialiasing){
-  if(words[1] == "="){
-    antialiasing = std::stoi(words[2]);
-    return true;
+  if(words.size() == 3){
+    if(words[1] == "="){
+      antialiasing = std::stoi(words[2]);
+      return true;
+    }
   }
   return false;
 }
 
-bool parse_object(Image &image, int &line_number){}
-bool parse_background(Image &image, int &line_number){}
-bool parse_scene(Image &image, int &line_number){}
+bool parse_object(Hitable *hitable, int &line_number){}
+
+bool parse_background(Background &background, int &line_number){}
+
+bool parse_scene(Scene &scene, int &line_number){}
+
+bool parse_camera(Camera &camera, int &line_number){
+  Point3 origin, lower_left_corner;
+  Vector3 vertical_axis, horizontal_axis;
+
+  bool has_origin, has_lower_left_corner;
+  bool has_vertical_axis, has_horizontal_axis;
+
+  has_origin = has_vertical_axis = has_horizontal_axis = has_lower_left_corner = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      split_string(line, " ", words);
+      if(words.size() == 5 && words[1] == "="){
+        switch (words[0]) {
+          case "origin":
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            origin = Point3(x,y,z);
+            has_origin = true;
+            break;
+
+          case "lower_left_corner":
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            lower_left_corner = Point3(x,y,z);
+            has_lower_left_corner = true;
+            break;
+
+          case "vertical_axis":
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            vertical_axis = Vector3(x,y,z);
+            has_vertical_axis = true;
+            break;
+
+          case "horizontal_axis":
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            horizontal_axis = Vector3(x,y,z);
+            has_horizontal_axis = true;
+            break;
+
+          case "END":
+            if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
+              camera = Camera(origin, lower_left_corner, horizontal_axis, vertical_axis);
+              return (words[2] == "CAMERA") ? true : false
+            }
+            return false;
+            break;
+
+          case default:
+            return false;
+        }
+      }
+      return false;
+    }
+  }
+
+}
+
+bool parse_shader(Shader *shader, int &line_number){}
+
 void parse_file_name(Image &image, std::string output_file_name){}
 
 bool parse_image(Image &image, Shader *shader, int &line_number){
@@ -91,7 +182,10 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
 
   Scene scene;
   Camera cam;
-  while (std::getline(input_stream, line)) {
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
 
     line_number++;
 
@@ -182,7 +276,8 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
             }
             break;
 
-
+          case default:
+            return false;
       }
     }
 }
