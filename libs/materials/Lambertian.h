@@ -1,5 +1,5 @@
 #ifndef LAMBERTIAN_H_
-#define LAMBERTIAN__H_
+#define LAMBERTIAN_H_
 
 #include "../Material.h"
 

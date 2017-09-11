@@ -1,5 +1,5 @@
-#ifndef LAMBERTIAN_H_
-#define LAMBERTIAN_H_
+#ifndef RECURSIVE_H_
+#define RECURSIVE_H_  
 
 #include "../Shader.h"
 #include <random>

@@ -4,6 +4,8 @@
 #include <cmath>
 #include <limits>
 #include <ctime>
+
+#include "../libs/Parser.h"
 #include "../libs/hitables/Sphere.h"
 #include "../libs/Raytrace.h"
 #include "../libs/Image.h"

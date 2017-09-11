@@ -1,8 +1,11 @@
 #ifndef PARSER_H_
-#define PARSER_H
+#define PARSER_H_
 #include <string>
 #include <fstream>
 #include "Image.h"
+#include "materials/Lambertian.h"
+#include "materials/Shiny.h"
+#include "hitables/Sphere.h"
 #include "shaders/Blinn_Phong.h"
 #include "shaders/Depth_map.h"
 #include "shaders/Normal_to_RGB.h"
@@ -10,11 +13,10 @@
 #include "shaders/Standard_shader.h"
 
 class Parser {
-  std::ifstream input_file;
+  std::string input_stream;
 public:
-  Parser(){}
-  Parser(std::ifstream input){
-    input_file = input;
+  explicit Parser(std::string input_name){
+    input_stream = input_name;
   }
 
   bool parse(Image &image, Shader *shader);
