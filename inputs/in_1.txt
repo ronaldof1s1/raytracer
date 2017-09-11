@@ -5,7 +5,6 @@ BEGIN IMAGE
     height = 600
     maxcolor = 255
     antialiasing = 4
-
   BEGIN SHADER
     shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong
     iterations = 40

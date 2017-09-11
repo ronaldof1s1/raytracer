@@ -1,6 +1,10 @@
 #include "Parser.h"
 
 std::ifstream input_file;
+bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard;
+bool shadow;
+int iterations;
+
 
 bool string_to_bool(std::string word, bool &result){
   if(word == "true"){
@@ -21,20 +25,16 @@ void delete_comments(std::string &str){
   str = str.substr(0,pos);
 }
 
-void split_string(std::string &str, std::string &delim, std::vector< std::string > &words){
-  std::string buff = "";
-  for(int i = 0; i < str.length(); i++){
-    std::string s = std::to_string(str[i]);
-    if (s != delim){
-      buff += s;
+void split_string(std::string &str, std::string &delimiter, std::vector< std::string > &words){
+  int i = 0;
+  size_t pos = str.find(delimiter);
+  while (pos != std::string::npos) {
+    words.push_back(str.substr(i,pos-i));
+    i = ++pos;
+    pos = str.find(delimiter, pos);
+    if (pos == std::string::npos) {
+      words.push_back(str.substr(i,str.length()));
     }
-    if(s == delim && buff != ""){
-      words.push_back(buff);
-      buff = "";
-    }
-  }
-  if (buff != ""){
-    words.push_back(buff);
   }
 }
 
@@ -121,6 +121,7 @@ bool parse_material(Material *material, int &line_number){
     line_number++;
 
     delete_comments(line);
+    std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -236,6 +237,7 @@ bool parse_object(Hitable *hitable, int &line_number){
     line_number++;
 
     delete_comments(line);
+    std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -318,6 +320,7 @@ bool parse_background(Background &background, int &line_number){
     line_number++;
 
     delete_comments(line);
+    std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -370,7 +373,120 @@ bool parse_background(Background &background, int &line_number){
   }
 }
 
-bool parse_scene(Scene &scene, int &line_number){}
+bool parse_light(Light &light, int &line_number){
+  RGB intensity(1);
+  Point3 source(0);
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+    std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words.size() == 5){
+        if(words[0] == "source"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          source = Point3(x,y,z);
+          light.source = source;
+        }
+        else if(words[0] == "intensity"){
+          double r = std::stod(words[2]);
+          double g = std::stod(words[3]);
+          double b = std::stod(words[4]);
+          intensity = RGB(r,g,b);
+          light.intensity = intensity;
+        }
+        else {
+          return false;
+        }
+      }
+      else if(words[0] == "END"){
+        return (words[1] == "LIGHT") ? true : false;
+      }
+      else{
+        return false;
+      }
+    }
+  }
+}
+
+bool parse_scene(Scene &scene, int &line_number){
+
+  RGB ambient_light(1);
+  scene = Scene();
+
+  std::string line;
+
+  while (std::getline(input_file, line)) {
+
+    line_number++;
+
+    delete_comments(line);
+    std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words[0] == "BEGIN"){
+        if(words[1] == "BACKGROUND"){
+          if(!parse_background(scene.background, line_number)){
+            return false;
+          }
+        }
+        else if(words[1] == "LIGHT"){
+          Light light;
+          if(!parse_light(light, line_number)){
+            return false;
+          }
+          else{
+            scene.add_light(light);
+          }
+        }
+        else if(words[1] == "OBJECT"){
+          Hitable *object;
+          if(!parse_object(object, line_number)){
+            return false;
+          }
+          else{
+            scene.add_object(object);
+          }
+        }
+        else{
+          return false;
+        }
+      }
+      else if(words.size() == 3 and words[0] == "ambient_light" and words[1] == "="){
+        double r = std::stod(words[2]);
+        double g = std::stod(words[3]);
+        double b = std::stod(words[4]);
+        ambient_light = RGB(r,g,b);
+        scene.ambient_light = ambient_light;
+      }
+      else if(words[0] ==  "END"){
+        return (words[1] == "SCENE") ? true : false;
+      }
+      else{
+        return false;
+      }
+    }
+  }
+}
 
 bool parse_camera(Camera &camera, int &line_number){
   Point3 origin, lower_left_corner;
@@ -388,6 +504,7 @@ bool parse_camera(Camera &camera, int &line_number){
     line_number++;
 
     delete_comments(line);
+    std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -447,13 +564,12 @@ bool parse_camera(Camera &camera, int &line_number){
 bool parse_shader(Shader *shader, int &line_number){
   bool ambient, diffuse, specular;
   bool has_ambient, has_diffuse, has_specular, has_shader;
-  bool shadow = true;
-  double max_depth, iterations;
+  double max_depth;
+  shadow = true;
   iterations = 1;
   max_depth = 1.0;
   has_shader = has_ambient = has_diffuse = has_specular = false;
 
-  bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard;
   is_blinn_phong = is_depth_map = is_normal_to_rgb = is_recursive = is_standard;
 
   std::string line;
@@ -463,6 +579,7 @@ bool parse_shader(Shader *shader, int &line_number){
     line_number++;
 
     delete_comments(line);
+    std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -571,7 +688,42 @@ bool parse_shader(Shader *shader, int &line_number){
   }
 }
 
-bool parse_file_name(Image &image, std::string output_file_name){}
+void parse_file_name(Image &image, Shader *shader){
+  std::string output_file_name = "";
+  output_file_name += "{" + std::to_string(image.get_width()) + "x" + std::to_string(image.get_height()) + "}_";
+  output_file_name += "{" + std::to_string(image.get_antialiasing()) + "x}_";
+  std::cout << output_file_name;
+  std::string shader_name = "";
+
+  if(is_blinn_phong){
+    shader_name += "Blinn_Phong";
+  }
+  else if(is_standard){
+    shader_name += "Standard_shader";
+  }
+  else if(is_depth_map){
+    shader_name += "Depth_map";
+  }
+  else if(is_normal_to_rgb){
+    shader_name += "Normal_to_RGB";
+  }
+  else if(is_recursive){
+    shader_name += "Recursive_" + std::to_string(iterations) + "_iterations";
+
+  }
+
+  output_file_name += "{" + shader_name + "}_";
+
+  if (shadow) {
+    output_file_name += "{shadow}";
+  }
+  else{
+    output_file_name += "{no_shadow}";
+  }
+
+  image.set_file_name(output_file_name);
+
+}
 
 bool parse_image(Image &image, Shader *shader, int &line_number){
 
@@ -592,6 +744,7 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
     line_number++;
 
     delete_comments(line);
+    std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -655,11 +808,7 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
       else if(words[0] == "END"){
         if(has_type && has_width && has_height && has_max_color){
           image = Image(type, max_color, width, height, scene, camera, antialiasing);
-          std::string name;
-          if(!parse_file_name(image, name)){
-            return false;
-          }
-          image.name = name;
+          parse_file_name(image, shader);
           return (words[1] == "IMAGE") ? true : false;
         }
         else{
@@ -686,6 +835,7 @@ bool Parser::parse(Image &image, Shader *shader){
       line_number++;
 
       delete_comments(line);
+      // std::cout << line <<std::endl;
 
       if(!line.empty()){
 
@@ -696,7 +846,8 @@ bool Parser::parse(Image &image, Shader *shader){
         split_string(line, delim, words);
 
         //first non empty line must be BEGIN IMAGE
-        if(words[0] == "BEGIN" && words[1] == "IMAGE"){
+        std:: cout << words[0] << std::endl;
+        if(words[0] == "BEGIN" and words[1] == "IMAGE"){
 
           if(parse_image(image, shader, line_number)){
             return true;
@@ -706,6 +857,10 @@ bool Parser::parse(Image &image, Shader *shader){
             return false;
           }
 
+        }
+        else{
+          std::cerr << "Error at line: " << line_number << std::endl;
+          return false;
         }
       }
     }

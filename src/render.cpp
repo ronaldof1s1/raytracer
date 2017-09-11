@@ -19,7 +19,7 @@ using namespace utility;
 
 int main(int argc, char const *argv[])
 {
-    int n_cols = 1200;
+    /*int n_cols = 1200;
     int n_rows = 600;
 
     int n_samples = 4;
@@ -58,7 +58,7 @@ int main(int argc, char const *argv[])
       scene.add_object(&s3);
       Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian(RGB(1,1,1)));
       scene.add_object(&s4);*/
-
+      /*
       Sphere s1(Point3(0.0,-100.5f,-1.d), 100.d, new Material(RGB(0.1), RGB(0.4), RGB(1.d), 4));
       scene.add_object(&s1);
       Sphere s2(Point3(0.0,0.d,-1.d), 0.4, new Material(RGB(0.1), RGB(0.0,0.3,0.8), RGB(0.9), 32));
@@ -69,23 +69,42 @@ int main(int argc, char const *argv[])
       scene.add_light(Point3(20.d,10.d,5.d), RGB(1.d));
 
       Image image(3, 255, n_cols, n_rows, scene, cam);
+      */
 
-      Raytrace my_raytrace(image);
+  Parser parser(argv[1]);
+
+  Image image;
+  Shader *shader;
+  clock_t start = clock();
+
+  if(!parser.parse(image, shader)){
+    std::cout << "error parsing" << std::endl;
+    return -1;
+  }
+
+  std::cout << "time to parse: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
+
+  std::string output_file_name = "";
+  output_file_name += "test_images/" + image.get_name() + ".ppm";
+
+  std::ofstream output_file(output_file_name, std::ios::out);
+  if (output_file.is_open()) {
+    Raytrace my_raytrace(image);
+
+    start = clock();
+    my_raytrace.render(output_file, shader);
+    std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
+    output_file.close();
+  }
 
       // Shader *shader = new Standard_shader();
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
       // Shader *shader = new Recursive(40);
-      Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec, shadow
+      // Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec, shadow
 
-      clock_t start = clock();
-
-      my_raytrace.render(output_image, shader, n_samples);
-      std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
-      output_image.close();
-    }
-    else{
-      std::cout << "could not open output image file" << std::endl;
-    }
-    return 0;
+  else{
+    std::cout << "could not open output image file" << std::endl;
+  }
+  return 0;
 }

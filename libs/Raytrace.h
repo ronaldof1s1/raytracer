@@ -13,7 +13,7 @@ public:
 	//Constructors
 	Raytrace(Image &img){image = img;}
 	//Render fuction
-	void render(std::ofstream &image, Shader *shader, int n_samples);
+	void render(std::ofstream &image, Shader *shader);
 
 };
 #include "Raytrace.cpp"

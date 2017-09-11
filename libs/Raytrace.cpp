@@ -33,10 +33,11 @@ clock_t start;
 
 	}
 
-	void Raytrace::render(std::ofstream &output_image, Shader *shader, int n_samples){
+	void Raytrace::render(std::ofstream &output_image, Shader *shader){
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();
+			int n_samples = image.get_antialiasing();
 
 			//start writing image file
       output_image << "P" << image.get_type() << "\n"
