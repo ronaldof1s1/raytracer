@@ -20,20 +20,32 @@ bool string_to_bool(std::string word, bool &result){
   }
 }
 
-void delete_comments(std::string &str){
+void clean_up(std::string &str){
   std::size_t pos = str.find('#');
-  str = str.substr(0,pos);
+  if(pos != std::string::npos){
+    str = str.substr(0,pos);
+  }
+  if(str.back() == '\r'){
+    str.pop_back();
+  }
 }
 
 void split_string(std::string &str, std::string &delimiter, std::vector< std::string > &words){
   int i = 0;
   size_t pos = str.find(delimiter);
+  std::string buff = "";
   while (pos != std::string::npos) {
-    words.push_back(str.substr(i,pos-i));
+    buff = str.substr(i,pos-i);
+    if(!buff.empty()){
+      words.push_back(buff);
+    }
     i = ++pos;
     pos = str.find(delimiter, pos);
     if (pos == std::string::npos) {
-      words.push_back(str.substr(i,str.length()));
+      buff = str.substr(i,str.length());
+      if(!buff.empty()){
+        words.push_back(buff);
+      }
     }
   }
 }
@@ -120,7 +132,7 @@ bool parse_material(Material *material, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -217,6 +229,7 @@ bool parse_material(Material *material, int &line_number){
       }
     }
   }
+  return false;
 }
 
 bool parse_object(Hitable *hitable, int &line_number){
@@ -236,7 +249,7 @@ bool parse_object(Hitable *hitable, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -303,7 +316,7 @@ bool parse_object(Hitable *hitable, int &line_number){
       }
     }
   }
-
+  return false;
 }
 
 bool parse_background(Background &background, int &line_number){
@@ -319,7 +332,7 @@ bool parse_background(Background &background, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -371,6 +384,7 @@ bool parse_background(Background &background, int &line_number){
       return false;
     }
   }
+  return false;
 }
 
 bool parse_light(Light &light, int &line_number){
@@ -383,7 +397,7 @@ bool parse_light(Light &light, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -420,6 +434,7 @@ bool parse_light(Light &light, int &line_number){
       }
     }
   }
+  return false;
 }
 
 bool parse_scene(Scene &scene, int &line_number){
@@ -433,7 +448,7 @@ bool parse_scene(Scene &scene, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -486,6 +501,7 @@ bool parse_scene(Scene &scene, int &line_number){
       }
     }
   }
+  return false;
 }
 
 bool parse_camera(Camera &camera, int &line_number){
@@ -503,7 +519,7 @@ bool parse_camera(Camera &camera, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -559,6 +575,7 @@ bool parse_camera(Camera &camera, int &line_number){
       }
     }
   }
+  return false;
 }
 
 bool parse_shader(Shader *shader, int &line_number){
@@ -578,7 +595,7 @@ bool parse_shader(Shader *shader, int &line_number){
 
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -686,9 +703,10 @@ bool parse_shader(Shader *shader, int &line_number){
       }
     }
   }
+  return false;
 }
 
-void parse_file_name(Image &image, Shader *shader){
+void parse_file_name(Image &image){
   std::string output_file_name = "";
   output_file_name += "{" + std::to_string(image.get_width()) + "x" + std::to_string(image.get_height()) + "}_";
   output_file_name += "{" + std::to_string(image.get_antialiasing()) + "x}_";
@@ -739,11 +757,14 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
-
+  std::cout << "aqui" << std::endl;
+  std::getline(input_file, line);
+  std::getline(input_file, line);
+  std::cout << line << '\n';
+  while (std::getline(input_file, line, '\n')) {
     line_number++;
 
-    delete_comments(line);
+    clean_up(line);
     std::cout << line <<std::endl;
 
     if(!line.empty()){
@@ -808,7 +829,7 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
       else if(words[0] == "END"){
         if(has_type && has_width && has_height && has_max_color){
           image = Image(type, max_color, width, height, scene, camera, antialiasing);
-          parse_file_name(image, shader);
+          parse_file_name(image);
           return (words[1] == "IMAGE") ? true : false;
         }
         else{
@@ -820,6 +841,7 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
       }
     }
   }
+  return false;
 }
 
 bool Parser::parse(Image &image, Shader *shader){
@@ -830,11 +852,10 @@ bool Parser::parse(Image &image, Shader *shader){
     std::string line = "";
     int line_number = 0;
 
-    while (std::getline(input_file, line)) {
-
+    while (std::getline(input_file, line, '\n')) {
       line_number++;
 
-      delete_comments(line);
+      clean_up(line);
       // std::cout << line <<std::endl;
 
       if(!line.empty()){
@@ -846,9 +867,8 @@ bool Parser::parse(Image &image, Shader *shader){
         split_string(line, delim, words);
 
         //first non empty line must be BEGIN IMAGE
-        std:: cout << words[0] << std::endl;
         if(words[0] == "BEGIN" and words[1] == "IMAGE"){
-
+          std::cout << line << std::endl;
           if(parse_image(image, shader, line_number)){
             return true;
           }
