@@ -53,11 +53,9 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
         RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, rec.material->specular_exponent);
 
         rgb_to_paint += rec.material->k_s * shininess_intensity * use_specular;
-
       }
     }
-
-    }
+  }
   else{
     rgb_to_paint = interpolate_background(ray, scene.get_background());
   }

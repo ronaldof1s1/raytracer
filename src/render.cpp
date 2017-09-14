@@ -14,6 +14,7 @@
 #include "../libs/shaders/Recursive.h"
 #include "../libs/materials/Lambertian.h"
 #include "../libs/materials/Metal.h"
+#include "../libs/materials/Shiny.h"
 #include "../libs/shaders/Blinn_Phong.h"
 #include "../libs/shaders/Standard_shader.h"
 using namespace utility;
@@ -23,7 +24,7 @@ int main(int argc, char const *argv[])
     int n_cols = 1200;
     int n_rows = 600;
 
-    int n_samples = 16;
+    int n_samples = 4;
 
     std::ofstream output_file(argv[1], std::ios::out);
     if (output_file.is_open()){
@@ -51,33 +52,17 @@ int main(int argc, char const *argv[])
 
 
       //filling with Spheres
-      /*Sphere s1(Point3(0,-100.5,-30), 100.d, new Lambertian(RGB(0,1,0)));
-      scene.add_object(&s1);
-      Sphere s2(Point3(0.3, 0, -1), 0.4, new Lambertian(RGB(1,0,0)));
-      scene.add_object(&s2);
-      Sphere s3(Point3(0, 1, -2), 0.6, new Lambertian(RGB(0,0,1)));
-      scene.add_object(&s3);
-      Sphere s4(Point3(-0.4, 0, -3), 0.7, new Lambertian(RGB(1,1,1)));
-      scene.add_object(&s4);*/
 
-      // Sphere s1(Point3(0.0,-100.5f,-1.d), 100.d, new Metal(RGB(0.1), RGB(0.4), RGB(1.d), 0.4));
-      // scene.add_object(&s1);
-      // Sphere s2(Point3(0.0,0.d,-1.d), 0.4, new Lambertian(RGB(0.1), RGB(0.0,0.3,0.8)));
-      // scene.add_object(&s2);
-      // Sphere s3(Point3(-0.5,0.d,-1.d), 0.4f, new Material(RGB(0.1), RGB(0.0,0.3,0.8), RGB(0.9), 64));
-      // scene.add_object(&s3);
 
-      Sphere s1(Point3(0.0,0.0,-1.0), 0.5, new Lambertian(RGB(0.1), RGB(0.8,0.3,0.3)));
+      Sphere s1(Point3(0.0,-100.5f,-1.d), 100.d, new Shiny(RGB(0.1), RGB(0.8), RGB(0.0), 64));
       scene.add_object(&s1);
-      Sphere s2(Point3(0.0,-100.5,-1.0), 100.0, new Lambertian(RGB(0.1), RGB(0.8,0.8,0.0)));
+      Sphere s2(Point3(0.0,0.d,-1.d), 0.5, new Shiny(RGB(0.1), RGB(0.7,0.2,0.1), RGB(1.d), 64));
       scene.add_object(&s2);
-      Sphere s3(Point3(1.0, 0.0, -1.0), 0.5, new Metal(RGB(0.1), RGB(0.8,0.6,0.2), RGB(1), 1.0));
-      scene.add_object(&s3);
-      Sphere s4(Point3(-1.0,0.0,-1.0), 0.5, new Metal(RGB(0.1), RGB(0.8,0.8,0.8), RGB(1), 0.3));
-      scene.add_object(&s4);
+
 
       //fill scene with pontual lights
-      // scene.add_light(Point3(20.d,10.d,5.d), RGB(1.d));
+      scene.add_light(Point3(20.d,10.d,15.d), RGB(0.5));
+      scene.add_light(Point3(-8.d,7.d,0.d), RGB(0.8));
 
       Image image(3, 255, n_cols, n_rows, scene, cam, n_samples);
       image.set_file_name("test");
@@ -106,8 +91,8 @@ int main(int argc, char const *argv[])
       // Shader *shader = new Standard_shader();
       // Shader *shader = new Depth_map();
       // Shader *shader = new Normal_to_RGB();
-      // Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec, shadow
-      Shader *shader = new Recursive(50, false, true);
+      Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec, shadow
+      // Shader *shader = new Recursive(3, false, true);
 
       start = clock();
       my_raytrace.render(output_file, shader);

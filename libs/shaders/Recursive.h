@@ -28,7 +28,7 @@ public:
   RGB shade(const Ray &ray, const Scene &scene) const override;
 
   //Actually gets the color
-  RGB shade(const Ray &ray, const Scene &scene, int iteration) const;
+  RGB shade(const Ray &ray, const Scene &scene, int actual_iteration) const;
 
 };
 
@@ -53,7 +53,7 @@ public:
 //   }
 
   //real color function, with number of iterations
-  RGB Recursive::shade(const Ray &ray, const Scene &scene, int iteration) const {
+  RGB Recursive::shade(const Ray &ray, const Scene &scene, int actual_iteration) const {
     double max_t = std::numeric_limits<double>::max();
     double min_t = 0.0;
 
@@ -62,10 +62,10 @@ public:
 
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
-      if(iteration > 0){ //para chamadas recursivas
+      if(actual_iteration > 0){ //para chamadas recursivas
 
         //for the first iteration we do kind of an antialiasing for the color
-        if(iteration == iterations){
+        if(actual_iteration == iterations){
 
           for(int i = 0; i > 30; i++){
             //creates a unit vector for the direction of the reflected ray
@@ -74,40 +74,40 @@ public:
             // use_diffuse is 1 if this shader use the diffuse coefficient;
             Ray scattered;
             rec.material->scatter(ray, rec, scattered);
-            rgb_to_paint += rec.material->k_d * shade(scattered, scene, iteration - 1) * use_diffuse;
+            rgb_to_paint += rec.material->k_d * shade(scattered, scene, actual_iteration - 1) * use_diffuse;
           }
           //get mean of the colors from this "antialiasing"
           rgb_to_paint /= 30;
         }
 
         // now, for each pontual light, we have to get the light action on the object
-        for(auto light = scene.lights.begin(); light != scene.lights.end(); light++){
-
-          // Here we create a vector in the direction of the light, from the point hit
-          Vector3 unit_light = unit_vector(light->source - rec.p);
-
-          //calculate the cossene with the normal of that point
-          double cos_light_normal = dot(unit_light, rec.normal);
-          cos_light_normal = std::max(0.0, cos_light_normal); //cos < 0 means the light did not hit surface
-
-            // then we sum the color with the light intensity applyed to the
-            // diffuse coefficient, applyed to the conssene we found
-          rgb_to_paint += cos_light_normal * light->intensity * rec.material->k_d * use_diffuse;
-
-
-
-        }
+        // for(auto light = scene.lights.begin(); light != scene.lights.end(); light++){
+        //
+        //   // Here we create a vector in the direction of the light, from the point hit
+        //   Vector3 unit_light = unit_vector(light->source - rec.p);
+        //
+        //   //calculate the cossene with the normal of that point
+        //   double cos_light_normal = dot(unit_light, rec.normal);
+        //   cos_light_normal = std::max(0.0, cos_light_normal); //cos < 0 means the light did not hit surface
+        //
+        //     // then we sum the color with the light intensity applyed to the
+        //     // diffuse coefficient, applyed to the conssene we found
+        //   rgb_to_paint += cos_light_normal * light->intensity * rec.material->k_d * use_diffuse;
+        //
+        //
+        //
+        // }
 
         // creates new ray with origin on point that was hit (with a slight add of 0.1 for evading
         // collision inside the sphere), and the direction is the target vector;
 
         //gets the ambient light applied to the ambient coefficient of the material
-        rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
+        // rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
 
         // sums with the recursive call applied to the diffuse coeficient
         Ray scattered;
         rec.material->scatter(ray, rec, scattered);
-        rgb_to_paint += rec.material->k_d * shade(scattered, scene, iteration - 1) * use_diffuse;
+        rgb_to_paint += rec.material->k_d * shade(scattered, scene, actual_iteration - 1) * use_diffuse;
 
       }
       else{ // the number of iterations hits it's maximum

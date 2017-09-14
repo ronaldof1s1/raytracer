@@ -3,7 +3,7 @@
 #include <cmath>
 #include <ctime>
 
-void gamma_correction(RGB &rgb, double gamma = 2.2f){
+void gamma_correction(RGB &rgb, double gamma = 2f){
 	double r = std::pow(rgb[RGB::R], 1.d/gamma);
 	double g = std::pow(rgb[RGB::G], 1.d/gamma);
 	double b = std::pow(rgb[RGB::B], 1.d/gamma);

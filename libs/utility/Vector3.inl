@@ -163,9 +163,9 @@ namespace utility {
         return v / v.length() ;
     }
 
-    std::knuth_b random_generator(1);
+    std::knuth_b random_generator(3);
     inline static Vector3 random_vector_in_unit_sphere(){
-
+      // random_generator = std::knuth_b(seed);
       Vector3 v;
       do {
         //Get random x, y and z
@@ -173,7 +173,7 @@ namespace utility {
         double y = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
         double z = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
 
-        v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [0,1]
+        v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [-1,1]
       } while(dot(v,v) >= 1.0); //until len^2 < 1
 
       return v;

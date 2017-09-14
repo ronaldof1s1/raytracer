@@ -14,7 +14,8 @@ build/render.o: src/render.cpp src/../libs/hitables/Sphere.h \
  src/../libs/shaders/../Shader.h src/../libs/shaders/Depth_map.h \
  src/../libs/shaders/Recursive.h src/../libs/materials/Lambertian.h \
  src/../libs/materials/Metal.h src/../libs/materials/../Material.h \
- src/../libs/shaders/Blinn_Phong.h src/../libs/shaders/Standard_shader.h
+ src/../libs/materials/Shiny.h src/../libs/shaders/Blinn_Phong.h \
+ src/../libs/shaders/Standard_shader.h
 
 src/../libs/hitables/Sphere.h:
 
@@ -73,6 +74,8 @@ src/../libs/materials/Lambertian.h:
 src/../libs/materials/Metal.h:
 
 src/../libs/materials/../Material.h:
+
+src/../libs/materials/Shiny.h:
 
 src/../libs/shaders/Blinn_Phong.h:
 
