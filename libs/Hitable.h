@@ -4,13 +4,6 @@
 #include "utility/Ray.h"
 #include "Material.h"
 
-//struct to the point that was hit
-struct hit_record {
-	double t; //the t at the point
-  Point3  p; //the point that was hit
-  Vector3 normal; //the normal of the point in relation to the object
-	Material *material; //the material that was hit
-};
 
 class Hitable {
 protected:

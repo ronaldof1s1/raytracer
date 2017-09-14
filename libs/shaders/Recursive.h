@@ -1,5 +1,5 @@
 #ifndef RECURSIVE_H_
-#define RECURSIVE_H_  
+#define RECURSIVE_H_
 
 #include "../Shader.h"
 #include <random>
@@ -22,7 +22,7 @@ public:
   //===>Methods
 
   //Create a random vector inside a sphere of radius 1
-  Vector3 random_vector_in_unit_sphere() const;
+  // Vector3 random_vector_in_unit_sphere() const;
 
   //Calls the other shade with iterations
   RGB shade(const Ray &ray, const Scene &scene) const override;
@@ -32,25 +32,25 @@ public:
 
 };
 
-//Global random generator with seed = 1
-std::knuth_b random_generator(1);
-
-  //Create a random vector inside a sphere of radius = 1
-  //used for random direction of reflected ray
-  Vector3 Recursive::random_vector_in_unit_sphere() const{
-
-    Vector3 v;
-    do {
-      //Get random x, y and z
-      double x = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-      double y = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-      double z = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-
-      v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [0,1]
-    } while(dot(v,v) >= 1.0); //until len^2 < 1
-
-    return v;
-  }
+// //Global random generator with seed = 1
+// std::knuth_b random_generator(1);
+//
+//   //Create a random vector inside a sphere of radius = 1
+//   //used for random direction of reflected ray
+//   Vector3 Recursive::random_vector_in_unit_sphere() const{
+//
+//     Vector3 v;
+//     do {
+//       //Get random x, y and z
+//       double x = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
+//       double y = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
+//       double z = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
+//
+//       v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [0,1]
+//     } while(dot(v,v) >= 1.0); //until len^2 < 1
+//
+//     return v;
+//   }
 
   //real color function, with number of iterations
   RGB Recursive::shade(const Ray &ray, const Scene &scene, int iteration) const {
@@ -64,27 +64,20 @@ std::knuth_b random_generator(1);
 
       if(iteration > 0){ //para chamadas recursivas
 
-        //creates a unit vector for the direction of the reflected ray
-        Vector3 target = unit_vector( rec.normal + random_vector_in_unit_sphere() );
-
         //for the first iteration we do kind of an antialiasing for the color
         if(iteration == iterations){
 
-          for(int i = 0; i > 10; i++){
+          for(int i = 0; i > 30; i++){
             //creates a unit vector for the direction of the reflected ray
-            target = unit_vector( rec.normal + random_vector_in_unit_sphere() );
-
-            // creates new ray with origin on point that was hit (with a slight add of 0.1 for evading
-            // collision inside the sphere), and the direction is the target vector;
-            Vector3 origin = rec.p + (rec.normal * Vector3(0.01));
-            Ray new_ray(origin, target);
 
             // sums the painting rgb with the diffuse coefficient of the material * the recursive Call
             // use_diffuse is 1 if this shader use the diffuse coefficient;
-            rgb_to_paint += rec.material->k_d * shade(new_ray, scene, iteration - 1) * use_diffuse;
+            Ray scattered;
+            rec.material->scatter(ray, rec, scattered);
+            rgb_to_paint += rec.material->k_d * shade(scattered, scene, iteration - 1) * use_diffuse;
           }
           //get mean of the colors from this "antialiasing"
-          rgb_to_paint /= 10;
+          rgb_to_paint /= 30;
         }
 
         // now, for each pontual light, we have to get the light action on the object
@@ -107,14 +100,14 @@ std::knuth_b random_generator(1);
 
         // creates new ray with origin on point that was hit (with a slight add of 0.1 for evading
         // collision inside the sphere), and the direction is the target vector;
-        Vector3 origin = rec.p + (rec.normal * Vector3(0.01,0.01,0.01));
-        Ray new_ray(origin, target);
 
         //gets the ambient light applied to the ambient coefficient of the material
         rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
 
         // sums with the recursive call applied to the diffuse coeficient
-        rgb_to_paint +=  rec.material->k_d * shade(new_ray, scene, iteration) * use_diffuse;
+        Ray scattered;
+        rec.material->scatter(ray, rec, scattered);
+        rgb_to_paint += rec.material->k_d * shade(scattered, scene, iteration - 1) * use_diffuse;
 
       }
       else{ // the number of iterations hits it's maximum
