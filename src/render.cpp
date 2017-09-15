@@ -22,9 +22,9 @@ Image Raytrace (Camera cam, Scene scene, int width, int height)
 #endif
 
 float hit_sphere(const Ray & r, const point3 & center, const float radius) {
-    auto a = vector3.dot(r.get_direction(), r.get_direction());
-    auto b = 2 * vector3.dot((r.get_origin() - center), r.get_direction());
-    auto c = dot((r.get(origin) - center), r.get_origin() - center) - radius*radius;
+    auto a = dot(r.get_direction(), r.get_direction());
+    auto b = 2 * dot((r.get_origin() - center), r.get_direction());
+    auto c = dot((r.get_origin() - center), r.get_origin() - center) - radius*radius;
 
     auto delta = b*b - 4*a*c;
 
@@ -43,19 +43,24 @@ float hit_sphere(const Ray & r, const point3 & center, const float radius) {
         else {
             f = f2;
         }
-        return f;
     }
+    return f;
+
 }
+
 
 rgb color( const Ray & r_ )
 {
-    rgb bottom (0.5, 0.7, 0 );
+    rgb bottom (0.5, 0.7, 1.0 );
     rgb top(1,1,1);
-    rgb rgb_ = top;
     // TODO: determine the background color, which is an linear interpolation between bottom->top.
     // The interpolation is based on where the ray hits the background.
     // Imagine that the background is attached to the view-plane; in other words,
     // the virtual world we want to visualize is empty!
+
+    rgb rgb_ = unit_vector(r_.get_direction());
+    float i = 0.5*(rgb_.y() + 1);
+    rgb_ = (1-i)*top + i* bottom;
 
     point3 center(0,0,-1);
     float radius = 0.5;
@@ -68,8 +73,9 @@ rgb color( const Ray & r_ )
 
     auto t = hit_sphere(r_, center, radius);
     if(t > 0){
+      vector3 unit(1,1,1);
         auto normal = unit_vector(r_.point_at(t) - center);
-        normal += new vector3(1,1,1);
+        normal += unit;
         normal *= 0.5;
         return normal * rgb_;
     }
@@ -91,7 +97,7 @@ int main( void )
     vector3 horizontal( 4, 0, 0 ); // Horizontal dimension of the view plane.
     vector3 vertical(0, 2, 0); // Vertical dimension of the view plane.
     point3 origin(0, 0, 0); // the camera's origin.
-    
+
      // NOTICE: We loop rows from bottom to top.
     for ( auto row = n_rows-1 ; row >= 0 ; --row ) // Y
     {
