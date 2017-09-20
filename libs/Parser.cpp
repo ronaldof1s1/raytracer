@@ -21,28 +21,38 @@ bool string_to_bool(std::string word, bool &result){
 }
 
 void clean_up(std::string &str){
+  // Deletes the comments
   std::size_t pos = str.find('#');
+
   if(pos != std::string::npos){
     str = str.substr(0,pos);
   }
+
   if(str.back() == '\r'){
     str.pop_back();
   }
 }
 
 void split_string(std::string &str, std::string &delimiter, std::vector< std::string > &words){
+  // Splits a string based on a delimiter
+
   int i = 0;
   size_t pos = str.find(delimiter);
   std::string buff = "";
+
   while (pos != std::string::npos) {
     buff = str.substr(i,pos-i);
+
     if(!buff.empty()){
       words.push_back(buff);
     }
+
     i = ++pos;
     pos = str.find(delimiter, pos);
+
     if (pos == std::string::npos) {
       buff = str.substr(i,str.length());
+
       if(!buff.empty()){
         words.push_back(buff);
       }
@@ -139,11 +149,14 @@ bool parse_material(Material *material, int &line_number){
 
       std::vector< std::string > words;
 
-      std::string delim = " ";
+      std::string delimiter = " ";
 
-      split_string(line, delim, words);
+      split_string(line, delimiter, words);
+
       if(words[1] == "="){
+
         if(words[0] == "material"){
+
           if(words[2] == "lambertian"){
             is_lambertian = true;
           }
@@ -155,6 +168,7 @@ bool parse_material(Material *material, int &line_number){
           }
         }
         else if(words[0] == "ambient"){
+
           if(words.size() == 5){
             double r = std::stod(words[2]);
             double g = std::stod(words[3]);
@@ -198,7 +212,11 @@ bool parse_material(Material *material, int &line_number){
             return false;
           }
         }
-        else if(words[0] == "END"){
+        else{
+          return false;
+        }
+      }
+      else if(words[0] == "END"){
           if(is_lambertian){
             if(has_diffuse){
               if(has_ambient){
@@ -219,11 +237,7 @@ bool parse_material(Material *material, int &line_number){
             material = new Material(ambient, diffuse, specular, specular_exponent);
           }
           return (words[1] == "MATERIAL") ? true : false;
-        }
-        else{
-          return false;
-        }
-      }
+      }        
       else{
         return false;
       }
