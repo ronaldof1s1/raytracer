@@ -33,7 +33,7 @@ clock_t start;
 
 	}
 
-	void Raytrace::render(std::ofstream &output_image, Shader *shader){
+	void Raytrace::render(std::ofstream &output_image, Shader *&shader){
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();

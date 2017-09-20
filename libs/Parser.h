@@ -19,7 +19,7 @@ public:
     input_stream = input_name;
   }
 
-  bool parse(Image &image, Shader *shader);
+  bool parse(Image &image, Shader *&shader);
 
 };
 

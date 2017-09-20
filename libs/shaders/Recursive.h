@@ -59,7 +59,7 @@ std::knuth_b random_generator(1);
 
     Vector3 rgb_to_paint;
     hit_record rec;
-    std::cout << "\naqui" << '\n';
+    // std::cout << "\naqui" << '\n';
 
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
@@ -140,8 +140,7 @@ std::knuth_b random_generator(1);
 
   //calls the real shade function with iterations parameter
   RGB Recursive::shade(const Ray &ray, const Scene &scene) const {
-    std::cout << "\naqui" << '\n';
-    
+
     return shade(ray, scene, iterations);
   }
 #endif

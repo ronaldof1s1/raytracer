@@ -126,7 +126,7 @@ bool parse_antialiasing(std::vector< std::string > &words, int &antialiasing){
   return false;
 }
 
-bool parse_material(Material *material, std::ifstream &input_file, int &line_number){
+bool parse_material(Material *&material, std::ifstream &input_file, int &line_number){
   RGB ambient, diffuse, specular;
   bool has_ambient, has_diffuse, has_specular;
   bool is_lambertian, is_shiny;
@@ -245,7 +245,7 @@ bool parse_material(Material *material, std::ifstream &input_file, int &line_num
   return false;
 }
 
-bool parse_object(Hitable *hitable, std::ifstream &input_file, int &line_number){
+bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   Point3 center;
   Material *material;
   double radius = 1.0;
@@ -585,7 +585,7 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
       else if(words[0] == "END"){
 
         if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
-          camera = Camera(origin, lower_left_corner, horizontal_axis, vertical_axis);
+          camera = Camera(origin, lower_left_corner, vertical_axis, horizontal_axis);
           return (words[1] == "CAMERA") ? true : false;
         }
         return false;
@@ -601,7 +601,7 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
   return false;
 }
 
-bool parse_shader(Shader *shader, std::ifstream &input_file, int &line_number){
+bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
   bool ambient, diffuse, specular;
   ambient = diffuse = specular = false;
   bool has_ambient, has_diffuse, has_specular, has_shader;
@@ -768,7 +768,7 @@ void parse_file_name(Image &image){
 
 }
 
-bool parse_image(Image &image, Shader *shader, std::ifstream &input_file, int &line_number){
+bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &line_number){
 
   int type, max_color, width, height, antialiasing;
   type = max_color = width = height = 0;
@@ -867,7 +867,7 @@ bool parse_image(Image &image, Shader *shader, std::ifstream &input_file, int &l
   return false;
 }
 
-bool Parser::parse(Image &image, Shader *shader){
+bool Parser::parse(Image &image, Shader *&shader){
   std::ifstream input_file(input_stream, std::ios::in);
 
   if (input_file.is_open()) {

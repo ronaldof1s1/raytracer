@@ -75,7 +75,7 @@ int main(int argc, char const *argv[])
       std::cout << "error parsing" << std::endl;
       return -1;
     }
-    std::cout << "scene size: " << image.scene.size() << '\n';
+    // std::cout << "scene size: " << image.scene.size() << '\n';
     if(shader == nullptr){std::cout << "nullptr render" << '\n';}
 
     std::cout << "time to parse: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
