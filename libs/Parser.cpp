@@ -230,13 +230,15 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
           if(is_lambertian){
             if(has_diffuse){
               if(has_ambient){
-                material = new Lambertian(diffuse, ambient);
+                material = new Lambertian(ambient, diffuse);
               }
               else{
                 material = new Lambertian(diffuse);
               }
             }
-            material = new Lambertian();
+            else{
+              material = new Lambertian();
+            }
           }
           else if(is_shiny){
             if (has_ambient and has_diffuse and has_specular) {
@@ -617,9 +619,6 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
       else{
         return false;
       }
-    }
-    else{
-      return false;
     }
   }
   return false;

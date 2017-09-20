@@ -32,26 +32,6 @@ public:
 
 };
 
-// //Global random generator with seed = 1
-// std::knuth_b random_generator(1);
-//
-//   //Create a random vector inside a sphere of radius = 1
-//   //used for random direction of reflected ray
-//   Vector3 Recursive::random_vector_in_unit_sphere() const{
-//
-//     Vector3 v;
-//     do {
-//       //Get random x, y and z
-//       double x = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-//       double y = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-//       double z = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-//
-//       v = 2 * Vector3(x,y,z) - Vector3(1);//normalize between [0,1]
-//     } while(dot(v,v) >= 1.0); //until len^2 < 1
-//
-//     return v;
-//   }
-
   //real color function, with number of iterations
   RGB Recursive::shade(const Ray &ray, const Scene &scene, int actual_iteration) const {
     double max_t = std::numeric_limits<double>::max();
@@ -59,18 +39,21 @@ public:
 
     Vector3 rgb_to_paint;
     hit_record rec;
-    // std::cout << "\naqui" << '\n';
 
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
       if(actual_iteration > 0){ //para chamadas recursivas
+        // creates new ray with origin on point that was hit (with a slight add of 0.1 for evading
+        // collision inside the sphere), and the direction is the target vector;
+
+        // gets the ambient light applied to the ambient coefficient of the material
+        // rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
 
         //for the first iteration we do kind of an antialiasing for the color
         if(actual_iteration == iterations){
 
           for(int i = 0; i > 30; i++){
             //creates a unit vector for the direction of the reflected ray
-
             // sums the painting rgb with the diffuse coefficient of the material * the recursive Call
             // use_diffuse is 1 if this shader use the diffuse coefficient;
             Ray scattered;
@@ -94,16 +77,8 @@ public:
         //     // then we sum the color with the light intensity applyed to the
         //     // diffuse coefficient, applyed to the conssene we found
         //   rgb_to_paint += cos_light_normal * light->intensity * rec.material->k_d * use_diffuse;
-        //
-        //
-        //
         // }
 
-        // creates new ray with origin on point that was hit (with a slight add of 0.1 for evading
-        // collision inside the sphere), and the direction is the target vector;
-
-        //gets the ambient light applied to the ambient coefficient of the material
-        // rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
 
         // sums with the recursive call applied to the diffuse coeficient
         Ray scattered;
