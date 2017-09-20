@@ -1,6 +1,5 @@
 #include "Parser.h"
 
-std::ifstream input_file;
 bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard;
 bool shadow;
 int iterations;
@@ -127,7 +126,7 @@ bool parse_antialiasing(std::vector< std::string > &words, int &antialiasing){
   return false;
 }
 
-bool parse_material(Material *material, int &line_number){
+bool parse_material(Material *material, std::ifstream &input_file, int &line_number){
   RGB ambient, diffuse, specular;
   bool has_ambient, has_diffuse, has_specular;
   bool is_lambertian, is_shiny;
@@ -138,12 +137,12 @@ bool parse_material(Material *material, int &line_number){
 
   std::string line = "";
 
-  while (std::getline(input_file, line)) {
+  while (std::getline(input_file, line, '\n')) {
 
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -234,10 +233,10 @@ bool parse_material(Material *material, int &line_number){
             }
           }
           else{
-            material = new Material(ambient, diffuse, specular, specular_exponent);
+            return false;
           }
           return (words[1] == "MATERIAL") ? true : false;
-      }        
+      }
       else{
         return false;
       }
@@ -246,10 +245,10 @@ bool parse_material(Material *material, int &line_number){
   return false;
 }
 
-bool parse_object(Hitable *hitable, int &line_number){
+bool parse_object(Hitable *hitable, std::ifstream &input_file, int &line_number){
   Point3 center;
   Material *material;
-  double radius;
+  double radius = 1.0;
 
   bool has_center = false;
   bool has_radius = false;
@@ -259,12 +258,12 @@ bool parse_object(Hitable *hitable, int &line_number){
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
+  while (std::getline(input_file, line, '\n')) {
 
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -303,11 +302,18 @@ bool parse_object(Hitable *hitable, int &line_number){
       else if(words[0] == "BEGIN"){
         if(words.size() == 2){
           if(words[1] == "MATERIAL"){
-            if(!parse_material(material, line_number)){
+            if(!parse_material(material, input_file, line_number)){
+
+              // std::cout << "aqui" << '\n';
               return false;
             }
             has_material = true;
           }
+          else{
+            return false;
+          }
+        }
+        else{
           return false;
         }
       }
@@ -333,7 +339,7 @@ bool parse_object(Hitable *hitable, int &line_number){
   return false;
 }
 
-bool parse_background(Background &background, int &line_number){
+bool parse_background(Background &background, std::ifstream &input_file, int &line_number){
 
   bool has_upper_left, has_lower_left;
   bool has_upper_right, has_lower_right;
@@ -342,12 +348,12 @@ bool parse_background(Background &background, int &line_number){
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
+  while (std::getline(input_file, line, '\n')) {
 
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -356,6 +362,7 @@ bool parse_background(Background &background, int &line_number){
       std::string delim = " ";
 
       split_string(line, delim, words);
+
       if(words.size() == 5 && words[1] == "="){
         if(words[0] == "lower_left"){
           double r = std::stod(words[2]);
@@ -363,6 +370,7 @@ bool parse_background(Background &background, int &line_number){
           double b = std::stod(words[4]);
           background.lower_left = RGB(r,g,b);
           has_lower_left = true;
+          // std::cout << "aqui" << '\n';
         }
         else if(words[0] == "upper_left"){
           double r = std::stod(words[2]);
@@ -385,34 +393,33 @@ bool parse_background(Background &background, int &line_number){
           background.lower_right = Vector3(r,g,b);
           has_lower_right = true;
         }
-        else if(words[0] == "END"){
-          if(has_lower_left && has_lower_right && has_upper_right && has_upper_left){
-            return (words[2] == "BACKGROUND") ? true : false;
-          }
-          return false;
-        }
-        else{
-          return false;
-        }
       }
-      return false;
+      else if(words[0] == "END"){
+        if(has_lower_left && has_lower_right && has_upper_right && has_upper_left){
+          return (words[1] == "BACKGROUND") ? true : false;
+        }
+        return false;
+      }
+      else{
+        return false;
+      }
     }
   }
   return false;
 }
 
-bool parse_light(Light &light, int &line_number){
+bool parse_light(Light &light, std::ifstream &input_file, int &line_number){
   RGB intensity(1);
   Point3 source(0);
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
+  while (std::getline(input_file, line, '\n')) {
 
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -451,19 +458,21 @@ bool parse_light(Light &light, int &line_number){
   return false;
 }
 
-bool parse_scene(Scene &scene, int &line_number){
+bool parse_scene(Scene &scene, std::ifstream &input_file, int &line_number){
 
   RGB ambient_light(1);
   scene = Scene();
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
+  // for (int i = 0; i < line_number i++){std::getline(input_file,line,'\n'); clean_up(line)}
+
+  while (std::getline(input_file, line, '\n')) {
 
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -474,13 +483,13 @@ bool parse_scene(Scene &scene, int &line_number){
       split_string(line, delim, words);
       if(words[0] == "BEGIN"){
         if(words[1] == "BACKGROUND"){
-          if(!parse_background(scene.background, line_number)){
+          if(!parse_background(scene.background, input_file, line_number)){
             return false;
           }
         }
         else if(words[1] == "LIGHT"){
           Light light;
-          if(!parse_light(light, line_number)){
+          if(!parse_light(light, input_file, line_number)){
             return false;
           }
           else{
@@ -489,7 +498,7 @@ bool parse_scene(Scene &scene, int &line_number){
         }
         else if(words[1] == "OBJECT"){
           Hitable *object;
-          if(!parse_object(object, line_number)){
+          if(!parse_object(object, input_file, line_number)){
             return false;
           }
           else{
@@ -500,7 +509,7 @@ bool parse_scene(Scene &scene, int &line_number){
           return false;
         }
       }
-      else if(words.size() == 3 and words[0] == "ambient_light" and words[1] == "="){
+      else if(words.size() == 5 and words[0] == "ambient_light" and words[1] == "="){
         double r = std::stod(words[2]);
         double g = std::stod(words[3]);
         double b = std::stod(words[4]);
@@ -518,7 +527,7 @@ bool parse_scene(Scene &scene, int &line_number){
   return false;
 }
 
-bool parse_camera(Camera &camera, int &line_number){
+bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
   Point3 origin, lower_left_corner;
   Vector3 vertical_axis, horizontal_axis;
 
@@ -529,12 +538,12 @@ bool parse_camera(Camera &camera, int &line_number){
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
-
+  while (std::getline(input_file, line, '\n')) {
+    // std::cout << "CAMERA\n";
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -572,28 +581,29 @@ bool parse_camera(Camera &camera, int &line_number){
           horizontal_axis = Vector3(x,y,z);
           has_horizontal_axis = true;
         }
-        else if(words[0] == "END"){
+      }
+      else if(words[0] == "END"){
 
-          if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
-            camera = Camera(origin, lower_left_corner, horizontal_axis, vertical_axis);
-            return (words[2] == "CAMERA") ? true : false;
-          }
-          return false;
+        if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
+          camera = Camera(origin, lower_left_corner, horizontal_axis, vertical_axis);
+          return (words[1] == "CAMERA") ? true : false;
         }
-        else{
-          return false;
-        }
+        return false;
       }
       else{
         return false;
       }
     }
+    else{
+      return false;
+    }
   }
   return false;
 }
 
-bool parse_shader(Shader *shader, int &line_number){
+bool parse_shader(Shader *shader, std::ifstream &input_file, int &line_number){
   bool ambient, diffuse, specular;
+  ambient = diffuse = specular = false;
   bool has_ambient, has_diffuse, has_specular, has_shader;
   double max_depth;
   shadow = true;
@@ -605,12 +615,12 @@ bool parse_shader(Shader *shader, int &line_number){
 
   std::string line;
 
-  while (std::getline(input_file, line)) {
+  while (std::getline(input_file, line, '\n')) {
 
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -659,16 +669,16 @@ bool parse_shader(Shader *shader, int &line_number){
           if(words[2] == "recursive"){
             is_recursive = true;
           }
-          else if(words[0] == "diffuse"){
+          else if(words[2] == "normal2rgb"){
             is_normal_to_rgb = true;
           }
-          else if(words[0] == "diffuse"){
+          else if(words[2] == "depthmap"){
             is_depth_map = true;
           }
-          else if(words[0] == "diffuse"){
+          else if(words[2] == "standard"){
             is_standard = true;
           }
-          else if(words[0] == "diffuse"){
+          else if(words[2] == "blinnphong"){
             is_blinn_phong = true;
           }
           else{
@@ -677,43 +687,44 @@ bool parse_shader(Shader *shader, int &line_number){
 
           has_shader = true;
         }
-        else if(words[0] == "END"){
-          if (has_shader){
-            if(is_standard){
-              shader = new Standard_shader();
+      }
+      else if(words[0] == "END"){
+        if (has_shader){
+          if(is_standard){
+            shader = new Standard_shader();
+          }
+          if(is_normal_to_rgb){
+            shader = new Normal_to_RGB();
+          }
+          if(is_depth_map){
+            shader = new Depth_map(max_depth);
+          }
+          if(is_recursive){
+            if(has_ambient and has_diffuse){
+              std::cout << "recursive" << '\n';
+              shader = new Recursive(iterations, ambient, diffuse);
             }
-            if(is_normal_to_rgb){
-              shader = new Normal_to_RGB();
+            else{
+              shader = new Recursive(iterations);
             }
-            if(is_depth_map){
-              shader = new Depth_map();
+          }
+          if(is_blinn_phong){
+            if(has_ambient and has_diffuse and has_specular){
+              shader = new Blinn_Phong(ambient, diffuse, specular, shadow);
             }
-            if(is_recursive){
-              if(has_ambient and has_diffuse){
-                shader = new Recursive(iterations, ambient, diffuse);
-              }
-              else{
-                shader = new Recursive(iterations);
-              }
+            else{
+              shader = new Blinn_Phong();
             }
-            if(is_blinn_phong){
-              if(has_ambient and has_diffuse and has_specular){
-                shader = new Blinn_Phong(ambient, diffuse, specular, shadow);
-              }
-              else{
-                shader = new Blinn_Phong();
-              }
-            }
+          }
 
-            return (words[2] == "SHADER") ? true : false;
-          }
-          else{
-            return false;
-          }
+          return (words[1] == "SHADER") ? true : false;
         }
         else{
           return false;
         }
+      }
+      else{
+        return false;
       }
     }
   }
@@ -724,7 +735,6 @@ void parse_file_name(Image &image){
   std::string output_file_name = "";
   output_file_name += "{" + std::to_string(image.get_width()) + "x" + std::to_string(image.get_height()) + "}_";
   output_file_name += "{" + std::to_string(image.get_antialiasing()) + "x}_";
-  std::cout << output_file_name;
   std::string shader_name = "";
 
   if(is_blinn_phong){
@@ -752,12 +762,13 @@ void parse_file_name(Image &image){
   else{
     output_file_name += "{no_shadow}";
   }
+  std::cout << output_file_name << std::endl;
 
   image.set_file_name(output_file_name);
 
 }
 
-bool parse_image(Image &image, Shader *shader, int &line_number){
+bool parse_image(Image &image, Shader *shader, std::ifstream &input_file, int &line_number){
 
   int type, max_color, width, height, antialiasing;
   type = max_color = width = height = 0;
@@ -771,15 +782,12 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
 
   std::string line;
 
-  std::cout << "aqui" << std::endl;
-  std::getline(input_file, line);
-  std::getline(input_file, line);
-  std::cout << line << '\n';
   while (std::getline(input_file, line, '\n')) {
+    // std::cout << "parse_image" << std::endl;
     line_number++;
 
     clean_up(line);
-    std::cout << line <<std::endl;
+    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -788,6 +796,7 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
       std::string delim = " ";
 
       split_string(line, delim, words);
+
       if(words[0] == "type"){
         if(!parse_type(words, type)){
           return false;
@@ -825,17 +834,17 @@ bool parse_image(Image &image, Shader *shader, int &line_number){
       }
       else if(words[0] == "BEGIN"){
         if(words[1] == "SCENE"){
-          if(!parse_scene(scene, line_number)){
+          if(!parse_scene(scene, input_file, line_number)){
             return false;
           }
         }
         else if(words[1] == "SHADER"){
-          if(!parse_shader(shader, line_number)){
+          if(!parse_shader(shader, input_file, line_number)){
             return false;
           }
         }
         else if(words[1] == "CAMERA"){
-          if(!parse_camera(camera, line_number)){
+          if(!parse_camera(camera, input_file, line_number)){
             return false;
           }
         }
@@ -882,9 +891,12 @@ bool Parser::parse(Image &image, Shader *shader){
 
         //first non empty line must be BEGIN IMAGE
         if(words[0] == "BEGIN" and words[1] == "IMAGE"){
-          std::cout << line << std::endl;
-          if(parse_image(image, shader, line_number)){
+          // std::cout << line << std::endl;
+          if(parse_image(image, shader, input_file, line_number)){
             return true;
+            if (shader == nullptr) {
+              std::cout << "nullptr parse" << '\n';
+            }
           }
           else{
             std::cerr << "Error at line: " << line_number << std::endl;
@@ -898,6 +910,7 @@ bool Parser::parse(Image &image, Shader *shader){
         }
       }
     }
+    return false;
     input_file.close();
   }
   else {

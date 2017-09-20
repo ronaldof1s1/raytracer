@@ -59,10 +59,9 @@ clock_t start;
 						std::knuth_b random_generator(sample);
 						double u = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
 						double v = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-
 						// generate Ray shoot from camera to point (row + u, col + v)
 					  Ray r = image.get_camera().get_ray(row + u, col + v, n_rows, n_cols);
-
+						if(shader == nullptr){std::cout << "nullptr" << '\n';}
             // Determine the color of one of the rays, as it travels through the virtual space.
             color += shader->shade( r, scene );
 
