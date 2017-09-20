@@ -3,7 +3,7 @@
 #include <cmath>
 #include <ctime>
 
-void gamma_correction(RGB &rgb, double gamma = 2f){
+void gamma_correction(RGB &rgb, double gamma = 2.0){
 	double r = std::pow(rgb[RGB::R], 1.d/gamma);
 	double g = std::pow(rgb[RGB::G], 1.d/gamma);
 	double b = std::pow(rgb[RGB::B], 1.d/gamma);
@@ -33,7 +33,7 @@ clock_t start;
 
 	}
 
-	void Raytrace::render(std::ofstream &output_image, Shader *shader){
+	void Raytrace::render(std::ofstream &output_image, Shader *&shader){
 			int n_cols = image.get_width();
 			int n_rows = image.get_height();
 			Scene scene = image.get_scene();
@@ -59,10 +59,9 @@ clock_t start;
 						std::knuth_b random_generator(sample);
 						double u = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
 						double v = std::generate_canonical<double, std::numeric_limits<double>::digits> (random_generator);
-
 						// generate Ray shoot from camera to point (row + u, col + v)
 					  Ray r = image.get_camera().get_ray(row + u, col + v, n_rows, n_cols);
-
+						if(shader == nullptr){std::cout << "nullptr" << '\n';}
             // Determine the color of one of the rays, as it travels through the virtual space.
             color += shader->shade( r, scene );
 

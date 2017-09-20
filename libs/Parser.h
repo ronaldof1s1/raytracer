@@ -5,6 +5,7 @@
 #include "Image.h"
 #include "materials/Lambertian.h"
 #include "materials/Shiny.h"
+#include "materials/Metal.h"
 #include "hitables/Sphere.h"
 #include "shaders/Blinn_Phong.h"
 #include "shaders/Depth_map.h"
@@ -19,7 +20,7 @@ public:
     input_stream = input_name;
   }
 
-  bool parse(Image &image, Shader *shader);
+  bool parse(Image &image, Shader *&shader);
 
 };
 

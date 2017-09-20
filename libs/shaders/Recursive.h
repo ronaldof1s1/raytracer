@@ -59,6 +59,7 @@ public:
 
     Vector3 rgb_to_paint;
     hit_record rec;
+    // std::cout << "\naqui" << '\n';
 
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
@@ -132,6 +133,7 @@ public:
 
   //calls the real shade function with iterations parameter
   RGB Recursive::shade(const Ray &ray, const Scene &scene) const {
+
     return shade(ray, scene, iterations);
   }
 #endif
