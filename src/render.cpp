@@ -81,7 +81,19 @@ int main(int argc, char const *argv[])
     std::cout << "time to parse: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
 
     std::string output_file_name = "";
-    output_file_name += "test_images/" + image.get_name() + ".ppm";
+    std::string folder = "";
+    if(argc == 2){
+      folder = "assets/";
+    }
+    else if (argc == 3){
+      std::string test_images(argv[2]);
+      if(test_images == "test"){
+        folder = "test_images/";
+      }
+    }
+
+    output_file_name += folder + image.get_name() + ".ppm";
+    std::cout << output_file_name << '\n';
 
     std::ofstream output_file(output_file_name, std::ios::out);
     if (output_file.is_open()) {

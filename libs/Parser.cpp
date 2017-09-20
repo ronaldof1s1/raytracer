@@ -724,7 +724,7 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
           }
           if(is_recursive){
             if(has_ambient and has_diffuse){
-              std::cout << "recursive" << '\n';
+              // std::cout << "recursive" << '\n';
               shader = new Recursive(iterations, ambient, diffuse);
             }
             else{
@@ -785,7 +785,7 @@ void parse_file_name(Image &image){
   else{
     output_file_name += "{no_shadow}";
   }
-  std::cout << output_file_name << std::endl;
+  // std::cout << output_file_name << std::endl;
 
   image.set_file_name(output_file_name);
 
