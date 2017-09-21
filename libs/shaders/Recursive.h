@@ -47,7 +47,7 @@ public:
         // collision inside the sphere), and the direction is the target vector;
 
         // gets the ambient light applied to the ambient coefficient of the material
-        // rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
+        rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
 
         //for the first iteration we do kind of an antialiasing for the color
         if(actual_iteration == iterations){
