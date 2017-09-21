@@ -12,6 +12,7 @@
 #include "shaders/Normal_to_RGB.h"
 #include "shaders/Recursive.h"
 #include "shaders/Standard_shader.h"
+#include "shaders/Cel.h"
 
 class Parser {
   std::string input_stream;

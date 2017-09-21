@@ -756,6 +756,7 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
 
 void parse_file_name(Image &image){
   std::string output_file_name = "";
+  output_file_name += "{P" + std::to_string(image.get_type())+"}_";
   output_file_name += "{" + std::to_string(image.get_width()) + "x" + std::to_string(image.get_height()) + "}_";
   output_file_name += "{" + std::to_string(image.get_antialiasing()) + "x}_";
   std::string shader_name = "";
