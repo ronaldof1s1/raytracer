@@ -75,6 +75,11 @@ int main(int argc, char const *argv[])
       std::cout << "error parsing" << std::endl;
       return -1;
     }
+    std::vector<int> v;
+    v.push_back(30);
+    v.push_back(45);
+    v.push_back(60);
+    shader = new Cel(v);
     // std::cout << "scene size: " << image.scene.size() << '\n';
     if(shader == nullptr){std::cout << "nullptr render" << '\n';}
 
