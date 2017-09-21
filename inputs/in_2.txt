@@ -1,7 +1,7 @@
 BEGIN IMAGE
 
   type = ppm
-  codification = ascii #could be binary
+  codification = binary #could be binary
   width = 600
   height = 300
   maxcolor = 255
@@ -10,7 +10,7 @@ BEGIN IMAGE
   BEGIN SHADER
 
     shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong
-    iterations = 10
+    iterations = 50
     ambient = true
     diffuse = true
     specular = true
@@ -33,10 +33,10 @@ BEGIN IMAGE
 
     BEGIN BACKGROUND
 
-      lower_left = 0.015 0.015 0.137
-      upper_left = 0.015 0.015 0.137
-      lower_right = 0.015 0.015 0.137
-      upper_right = 0.015 0.015 0.137
+      lower_left = 0.001 0.001 0.01
+      upper_left = 0.001 0.001 0.01
+      lower_right = 0.001 0.001 0.01
+      upper_right = 0.001 0.001 0.01
 
     END BACKGROUND
 
@@ -57,7 +57,7 @@ BEGIN IMAGE
 
         material = metal
         ambient = 0.1 0.1 0.1
-        diffuse = 0.95294  0.90588  0.26667
+        diffuse = 0.8  0.8  0.8
         specular = 1.0 1.0 1.0
         fuzziness = 1.0
 
@@ -68,8 +68,8 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = -1.0 -1.5 -3.0
-      radius = 2.0
+      center = -1.0 -1.5 1.0
+      radius = 1.5
 
       BEGIN MATERIAL
 
@@ -84,14 +84,14 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 1.0 1.5 -3.0
+      center = 1.0 1.5 1.0
       radius = 1.666
 
       BEGIN MATERIAL
 
         material = lambertian
         ambient = 0.1 0.1 0.1
-        diffuse = 0.95294  0.56471  0.26667
+        diffuse = 0.9  0.5  0.2
 
       END MATERIAL
 
@@ -100,7 +100,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 1.0 2.3 3.0
+      center = 1.0 2.3 -3.0
       radius = 0.1
 
       BEGIN MATERIAL
@@ -116,7 +116,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 2.19 2.3 4.1
+      center = -2.19 2.3 -4.1
       radius = 0.1
 
       BEGIN MATERIAL
@@ -132,7 +132,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 0.123 2.3 1.88
+      center = -0.123 2.3 -1.88
       radius = 0.1
 
       BEGIN MATERIAL
@@ -148,7 +148,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 1.4 3.1 4.0
+      center = -1.4 3.1 -4.0
       radius = 0.1
 
       BEGIN MATERIAL
@@ -164,7 +164,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 1.23 23.2 10.8
+      center = 1.23 23.2 -10.8
       radius = 0.1
 
       BEGIN MATERIAL
@@ -180,7 +180,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 8.23 4.2 1.8
+      center = 8.23 -4.2 -1.8
       radius = 0.1
 
       BEGIN MATERIAL
@@ -196,7 +196,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 4.0 3.0 8.0
+      center = 4.0 3.0 -8.0
       radius = 0.1
 
       BEGIN MATERIAL
@@ -212,8 +212,8 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 3.0 3.2 22.8
-      radius = 0.1
+      center = 3.0 3.2 -22.8
+      radius = 0.3
 
       BEGIN MATERIAL
 
@@ -228,7 +228,7 @@ BEGIN IMAGE
     BEGIN OBJECT
 
       object = sphere
-      center = 5.0 3.0 4.8
+      center = 5.0 3.0 -4.8
       radius = 0.1
 
       BEGIN MATERIAL
@@ -239,7 +239,7 @@ BEGIN IMAGE
 
       END MATERIAL
 
-    END OBJECT    
+    END OBJECT
 
   END SCENE
 

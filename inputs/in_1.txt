@@ -1,15 +1,15 @@
 BEGIN IMAGE
 
   type = ppm
-  codification = ascii #could be binary
-  width = 1200
-  height = 600
+  codification = binary #could be binary
+  width = 1920
+  height = 960
   maxcolor = 255
-  antialiasing = 4
+  antialiasing = 1
 
   BEGIN SHADER
 
-    shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong
+    shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong | cel
     iterations = 40
     ambient = true
     diffuse = true
@@ -42,7 +42,7 @@ BEGIN IMAGE
 
     BEGIN LIGHT
 
-      source = 20.0 10.0 5.0
+      source = 0.0 4.0 0.6
       intensity = 1.0 1.0 1.0
 
     END LIGHT
@@ -55,7 +55,7 @@ BEGIN IMAGE
 
       BEGIN MATERIAL
 
-        material = lambertian
+        material = lambertian # lambertian | shiny | metal | normal | cartoon
         ambient = 0.1 0.1 0.1
         diffuse = 0.8 0.3 0.3
 
@@ -71,7 +71,7 @@ BEGIN IMAGE
 
       BEGIN MATERIAL
 
-        material = lambertian
+        material = lambertian # lambertian | shiny | metal | normal | cartoon
         ambient = 0.1 0.1 0.1
         diffuse = 0.8 0.8 0.0
 
@@ -87,7 +87,7 @@ BEGIN IMAGE
 
       BEGIN MATERIAL
 
-        material = metal
+        material = metal # lambertian | shiny | metal | normal | cartoon
         ambient = 0.1 0.1 0.1
         diffuse = 0.8 0.6 0.2
         specular = 1.0 1.0 1.0
@@ -106,7 +106,7 @@ BEGIN IMAGE
 
       BEGIN MATERIAL
 
-        material = metal
+        material = metal # lambertian | shiny | metal | normal | cartoon
         ambient = 0.1 0.1 0.1
         diffuse = 0.8 0.8 0.8
         specular = 1.0 1.0 1.0
