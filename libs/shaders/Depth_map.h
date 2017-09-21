@@ -3,10 +3,8 @@
 #include "../Shader.h"
 
   class Depth_map : public Shader{
-    double max_depth;
-    
-
   public:
+    double max_depth;
 
     //Constructors
     Depth_map():Shader(){
@@ -16,9 +14,6 @@
     Depth_map(double depth):Shader(){
       max_depth = depth;
     }
-
-    //Getters
-    double get_max_depth(){return max_depth;}
 
     //Methods
     virtual RGB shade(const Ray &ray, const Scene &scene) const override; //Override method from Shader.h

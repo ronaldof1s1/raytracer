@@ -52,7 +52,6 @@ void Raytrace::render(std::ofstream &output_image, Shader *&shader){
 		Scene scene = image.get_scene();
 		int n_samples = image.get_antialiasing();
 		char *buff = new char[n_cols * n_rows * 3];
-		std::cout << "n-cols: " << n_cols << " n_rows: " << n_rows << '\n';
 		int i = 0;
 		//start writing image file
     output_image << "P" << image.get_type() << "\n"

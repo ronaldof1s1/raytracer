@@ -23,7 +23,7 @@
     //if hit an object
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
-      rgb_to_paint = rec.material->k_d;
+      rgb_to_paint = rec.material->albedo;
 
     }
     else{

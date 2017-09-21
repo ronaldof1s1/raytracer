@@ -6,9 +6,11 @@
 class Lambertian : public Material{
 public:
   //Constructors
+  RGB k_a;
+
   Lambertian():Material(){}
-  Lambertian(RGB rgb_ ):Material(rgb_){}
-  Lambertian(RGB k_a, RGB k_d):Material(k_a, k_d, RGB(0.0)){}
+  Lambertian(RGB rgb):Material(rgb){k_a = RGB(0);}
+  Lambertian(RGB k_a_, RGB albedo):Material(albedo){k_a = k_a_;}
   bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const override;
 };
 

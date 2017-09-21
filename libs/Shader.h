@@ -6,22 +6,10 @@
   class Shader{
 
   public:
-    double use_ambient, use_diffuse, use_specular; //double to multiply if coefficients are used or no in the shader
-    bool shadows; //activate shadows
 
     //Constructors
-    Shader(bool sd = true){
-      use_ambient = use_diffuse = use_specular = 1.d; //use all coefficients in the shaders
-      shadows = sd;
+    Shader(){
     }
-
-    Shader(bool amb, bool diff, bool spec, bool sd = true){
-      use_ambient  = amb  ? 1.d : 0.d;
-      use_diffuse  = diff ? 1.d : 0.d;
-      use_specular = spec ? 1.d : 0.d;
-      shadows = sd;
-    }
-
 
     //Methods
 
@@ -47,15 +35,11 @@
 
     bool Shader::is_shadow(const Ray &ray, const Scene &scene) const{
 
-      if(shadows){
-        hit_record rec;
-        if(scene.hit_first_object(ray, rec)){
-          return true;
-        }
+      hit_record rec;
+      if(scene.hit_first_object(ray, rec)){
+        return true;
       }
       return false;
     }
-
-
 
 #endif

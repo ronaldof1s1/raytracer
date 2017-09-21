@@ -1,9 +1,8 @@
 #include "Parser.h"
 
-bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard;
+bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard, is_cel;
 bool shadow;
 int iterations;
-
 
 bool string_to_bool(std::string word, bool &result){
   if(word == "true"){
@@ -127,14 +126,13 @@ bool parse_antialiasing(std::vector< std::string > &words, int &antialiasing){
 }
 
 bool parse_material(Material *&material, std::ifstream &input_file, int &line_number){
-  RGB ambient, diffuse, specular;
-  bool has_ambient, has_diffuse, has_specular;
-  bool is_lambertian, is_shiny, is_metal;
+  RGB ambient, diffuse, specular, albedo;
+  RGB shadow_color, outline;
+  bool is_lambertian, is_shiny, is_metal, is_normal, is_cartoon;
   int specular_exponent = 0;
   double fuzziness = 1.0;
-  has_ambient = has_diffuse = has_specular = false;
-  is_metal = is_lambertian = is_shiny = false;
-
+  is_cartoon = is_normal = is_metal = is_lambertian = is_shiny = false;
+  ambient = diffuse = specular = albedo = shadow_color = outline = RGB(0);
   std::string line = "";
 
   while (std::getline(input_file, line, '\n')) {
@@ -155,6 +153,9 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
       if(words[1] == "="){
 
         if(words[0] == "material"){
+          if(is_lambertian or is_shiny or is_metal or is_normal or is_cartoon){
+            return false;
+          }
 
           if(words[2] == "lambertian"){
             is_lambertian = true;
@@ -164,6 +165,12 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
           }
           else if(words[2] == "metal"){
             is_metal = true;
+          }
+          else if(words[2] == "normal"){
+            is_normal = true;
+          }
+          else if(words[2] == "cartoon"){
+            is_cartoon = true;
           }
           else{
             return false;
@@ -176,7 +183,6 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
             double g = std::stod(words[3]);
             double b = std::stod(words[4]);
             ambient = RGB(r,g,b);
-            has_ambient = true;
           }
           else{
             return false;
@@ -188,7 +194,6 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
             double g = std::stod(words[3]);
             double b = std::stod(words[4]);
             diffuse = RGB(r,g,b);
-            has_diffuse = true;
           }
           else{
             return false;
@@ -200,7 +205,39 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
             double g = std::stod(words[3]);
             double b = std::stod(words[4]);
             specular = RGB(r,g,b);
-            has_specular = true;
+          }
+          else{
+            return false;
+          }
+        }
+        else if(words[0] == "albedo"){
+          if(words.size() == 5){
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            albedo = RGB(r,g,b);
+          }
+          else{
+            return false;
+          }
+        }
+        else if(words[0] == "shadow"){
+          if(words.size() == 5){
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            shadow_color = RGB(r,g,b);
+          }
+          else{
+            return false;
+          }
+        }
+        else if(words[0] == "outline"){
+          if(words.size() == 5){
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            outline = RGB(r,g,b);
           }
           else{
             return false;
@@ -227,41 +264,25 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
         }
       }
       else if(words[0] == "END"){
-          if(is_lambertian){
-            if(has_diffuse){
-              if(has_ambient){
-                material = new Lambertian(ambient, diffuse);
-              }
-              else{
-                material = new Lambertian(diffuse);
-              }
-            }
-            else{
-              material = new Lambertian();
-            }
-          }
-          else if(is_shiny){
-            if (has_ambient and has_diffuse and has_specular) {
-              material = new Shiny(ambient, diffuse, specular, specular_exponent);
-            }
-          }
-          else if (is_metal){
-            if(has_diffuse){
-              if(has_ambient and has_specular){
-                material = new Metal(ambient, diffuse, specular, fuzziness);
-              }
-              else{
-                material = new Metal(diffuse, fuzziness);
-              }
-            }
-            else{
-              material = new Metal(fuzziness);
-            }
-          }
-          else{
-            return false;
-          }
-          return (words[1] == "MATERIAL") ? true : false;
+        if(is_lambertian){
+          material = new Lambertian(ambient, albedo);
+        }
+        else if(is_shiny){
+          material = new Shiny(ambient, diffuse, specular, specular_exponent);
+        }
+        else if (is_metal){
+          material = new Metal(albedo, fuzziness);
+        }
+        else if (is_normal){
+          material = new Normal_Material();
+        }
+        else if (is_cartoon){
+          material = new Cartoon(albedo, shadow_color, outline);
+        }
+        else{
+          return false;
+        }
+        return (words[1] == "MATERIAL") ? true : false;
       }
       else{
         return false;
@@ -627,14 +648,15 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
 bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
   bool ambient, diffuse, specular;
   ambient = diffuse = specular = false;
-  bool has_ambient, has_diffuse, has_specular, has_shader;
+  bool has_shader;
   double max_depth;
   shadow = true;
   iterations = 1;
   max_depth = 1.0;
-  has_shader = has_ambient = has_diffuse = has_specular = false;
-
-  is_blinn_phong = is_depth_map = is_normal_to_rgb = is_recursive = is_standard;
+  has_shader = false;
+  std::vector<int> thresholds;
+  int outline_threshold = 85;
+  is_blinn_phong = is_depth_map = is_normal_to_rgb = is_recursive = is_standard = is_cel = false;
 
   std::string line;
 
@@ -659,19 +681,16 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
             if(!string_to_bool(words[2], ambient)){
             return false;
           }
-          has_ambient = true;
         }
         else if(words[0] == "diffuse"){
           if(!string_to_bool(words[2], diffuse)){
             return false;
           }
-          has_diffuse = true;
         }
         else if(words[0] == "specular"){
           if(!string_to_bool(words[2], specular)){
             return false;
           }
-          has_specular = true;
         }
         else if(words[0] == "shadow"){
             if(!string_to_bool(words[2], shadow)){
@@ -684,9 +703,15 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
         else if(words[0] == "max_depth"){
           max_depth = std::stod(words[2]);
         }
+        else if(words[0] == "outline_threshold"){
+          outline_threshold = std::stoi(words[2]);
+        }
+        else if (words[0] == "threshold"){
+          thresholds.push_back(std::stoi(words[2]));
+        }
         else if(words[0] == "shader"){
 
-          if(is_recursive or is_standard or is_depth_map or is_blinn_phong or is_normal_to_rgb){
+          if(is_recursive or is_standard or is_depth_map or is_blinn_phong or is_normal_to_rgb or is_cel){
             return false;
           }
           if(words[2] == "recursive"){
@@ -703,6 +728,9 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
           }
           else if(words[2] == "blinnphong"){
             is_blinn_phong = true;
+          }
+          else if(words[2] == "cel"){
+            is_cel = true;
           }
           else{
             return false;
@@ -723,23 +751,14 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
             shader = new Depth_map(max_depth);
           }
           if(is_recursive){
-            if(has_ambient and has_diffuse){
-              // std::cout << "recursive" << '\n';
-              shader = new Recursive(iterations, ambient, diffuse);
-            }
-            else{
-              shader = new Recursive(iterations);
-            }
+            shader = new Recursive(iterations);
           }
           if(is_blinn_phong){
-            if(has_ambient and has_diffuse and has_specular){
-              shader = new Blinn_Phong(ambient, diffuse, specular, shadow);
-            }
-            else{
-              shader = new Blinn_Phong();
-            }
+            shader = new Blinn_Phong(ambient, diffuse, specular, shadow);
           }
-
+          if(is_cel){
+            shader = new Cel(thresholds, outline_threshold);
+          }
           return (words[1] == "SHADER") ? true : false;
         }
         else{
@@ -754,7 +773,7 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
   return false;
 }
 
-void parse_file_name(Image &image){
+void parse_file_name(Image &image, Shader *shader){
   std::string output_file_name = "";
   output_file_name += "{P" + std::to_string(image.get_type())+"}_";
   output_file_name += "{" + std::to_string(image.get_width()) + "x" + std::to_string(image.get_height()) + "}_";
@@ -762,31 +781,42 @@ void parse_file_name(Image &image){
   std::string shader_name = "";
 
   if(is_blinn_phong){
+    Blinn_Phong *bp = dynamic_cast<Blinn_Phong*>(shader);
+
     shader_name += "Blinn_Phong";
+
+    if(bp->use_ambient == 1.0){
+      shader_name += "_ambient";
+    }
+    if(bp->use_diffuse == 1.0){
+      shader_name += "_diffuse";
+    }
+    if(bp->use_specular == 1.0){
+      shader_name += "_specular";
+    }
+    if (shadow) {
+      output_file_name += "_shadow";
+    }
   }
   else if(is_standard){
     shader_name += "Standard_shader";
   }
   else if(is_depth_map){
-    shader_name += "Depth_map";
+    Depth_map *dm = dynamic_cast<Depth_map*>(shader);
+    shader_name += "Depth_map_depth_at_" + std::to_string(dm->max_depth);
   }
   else if(is_normal_to_rgb){
     shader_name += "Normal_to_RGB";
   }
   else if(is_recursive){
     shader_name += "Recursive_" + std::to_string(iterations) + "_iterations";
-
+  }
+  else if(is_cel){
+    Cel *cel = dynamic_cast<Cel*>(shader);
+    shader_name += "Cel_outline_at_" + std::to_string(cel->outline_threshold);
   }
 
   output_file_name += "{" + shader_name + "}_";
-
-  if (shadow) {
-    output_file_name += "{shadow}";
-  }
-  else{
-    output_file_name += "{no_shadow}";
-  }
-  // std::cout << output_file_name << std::endl;
 
   image.set_file_name(output_file_name);
 
@@ -876,7 +906,7 @@ bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &
       else if(words[0] == "END"){
         if(has_type && has_width && has_height && has_max_color){
           image = Image(type, max_color, width, height, scene, camera, antialiasing);
-          parse_file_name(image);
+          parse_file_name(image, shader);
           return (words[1] == "IMAGE") ? true : false;
         }
         else{

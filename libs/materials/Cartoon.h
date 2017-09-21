@@ -4,17 +4,17 @@
 #include "../Material.h"
 
 class Cartoon : public Material{
+public:
   RGB shadow;
   RGB outline;
-public:
 
-  Cartoon():Material(){shadow = RGB(0); outline = RGB(0);};
+  Cartoon(RGB albedo, RGB sdw, RGB otln):Material(albedo){shadow = sdw; outline = otln;};
 
   bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const override;
 };
 
 bool Cartoon::scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const {
-  scattered = rec.normal;
+
   return true;
 }
 #endif

@@ -6,13 +6,15 @@
 #include "materials/Lambertian.h"
 #include "materials/Shiny.h"
 #include "materials/Metal.h"
-#include "hitables/Sphere.h"
+#include "materials/Cartoon.h"
+#include "materials/Normal_Material.h"
 #include "shaders/Blinn_Phong.h"
 #include "shaders/Depth_map.h"
 #include "shaders/Normal_to_RGB.h"
 #include "shaders/Recursive.h"
 #include "shaders/Standard_shader.h"
 #include "shaders/Cel.h"
+#include "hitables/Sphere.h"
 
 class Parser {
   std::string input_stream;

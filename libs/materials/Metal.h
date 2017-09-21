@@ -11,8 +11,7 @@ public:
   //Constructors
   Metal(double fuzz = 0):Material(){fuzziness = std::min(1.0,fuzz);}
   Metal(RGB rgb_, double fuzz = 0 ):Material(rgb_){fuzziness = std::min(1.0,fuzz);}
-  Metal(RGB k_a, RGB k_d, RGB k_s, double fuzz = 0):Material(k_a, k_d, k_s){fuzziness = std::min(1.0,fuzz);}
-
+  
   //Methods
   bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const override;
 };

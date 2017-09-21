@@ -11,18 +11,8 @@ class Recursive : public Shader{
 
 public:
 
-
   //===>Constructors
-  Recursive():Shader(){ iterations = 1; };
-  Recursive(int iter):Shader(){ iterations = iter;}
-  Recursive(int iter, bool amb, bool diff, bool spec = false):Shader(amb, diff, spec){ iterations = iter;}
-
-  //setter
-
-  //===>Methods
-
-  //Create a random vector inside a sphere of radius 1
-  // Vector3 random_vector_in_unit_sphere() const;
+  Recursive(int iter = 1):Shader(){ iterations = iter;}
 
   //Calls the other shade with iterations
   RGB shade(const Ray &ray, const Scene &scene) const override;
@@ -47,8 +37,6 @@ public:
         // collision inside the sphere), and the direction is the target vector;
 
         // gets the ambient light applied to the ambient coefficient of the material
-        rgb_to_paint += rec.material->k_a * scene.get_ambient_light() * use_ambient;
-
         //for the first iteration we do kind of an antialiasing for the color
         if(actual_iteration == iterations){
 
@@ -58,7 +46,7 @@ public:
             // use_diffuse is 1 if this shader use the diffuse coefficient;
             Ray scattered;
             rec.material->scatter(ray, rec, scattered);
-            rgb_to_paint += rec.material->k_d * shade(scattered, scene, actual_iteration - 1) * use_diffuse;
+            rgb_to_paint += rec.material->albedo * shade(scattered, scene, actual_iteration - 1);
           }
           //get mean of the colors from this "antialiasing"
           rgb_to_paint /= 30;
@@ -83,7 +71,7 @@ public:
         // sums with the recursive call applied to the diffuse coeficient
         Ray scattered;
         rec.material->scatter(ray, rec, scattered);
-        rgb_to_paint += rec.material->k_d * shade(scattered, scene, actual_iteration - 1) * use_diffuse;
+        rgb_to_paint += rec.material->albedo * shade(scattered, scene, actual_iteration - 1);
 
       }
       else{ // the number of iterations hits it's maximum
