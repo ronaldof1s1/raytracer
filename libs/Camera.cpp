@@ -11,9 +11,11 @@ void set_frame(Point3 look_from, Point3 look_at, Vector3 up){
   // vector3 u, v, w;
   vecto3 gaze = look_from - look_at;
 
-  w = unit_vector(gaze);
-  u = unit_vector(cross(up, w));
-  v = unit_vector(cross(w,u));
+  Vector3 w = unit_vector(gaze);
+  Vector3 u = unit_vector(cross(up, w));
+  Vector3 v = unit_vector(cross(w,u));
+
+  frame = std::make_tuple(u,v,w);
 
   origin = look_from;
 };

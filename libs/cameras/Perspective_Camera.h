@@ -9,11 +9,14 @@ public:
   double aspect_ratio;
   double focal_distance;
 
-  Perspective_Camera(double vfov, double aspec, double dist_to_focus, Vector3 vp_normal = Vector3(0)):Camera(){
+  Perspective_Camera( double vfov, double aspec, double dist_to_focus, Vector3 vp_normal = Vector3(0)):Camera(){
     double theta = vfov * M_PI / 180;
     double half_height = tan(theta/2);
     double half_width = aspect * half_height;
-    // if (vp_normal == )
+
+    if (vp_normal.X() == 0 && vp_normal.Y() == 0 && vp_normal.Z() == 0){
+      vp_normal = std::get<2>(frame);
+    }
 
   }
 
