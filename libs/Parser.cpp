@@ -574,7 +574,7 @@ bool parse_scene(Scene &scene, std::ifstream &input_file, int &line_number){
   return false;
 }
 
-bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
+bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
   Point3 origin, lower_left_corner;
   Vector3 vertical_axis, horizontal_axis;
 
@@ -632,7 +632,7 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
       else if(words[0] == "END"){
 
         if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
-          camera = Camera(origin, lower_left_corner, vertical_axis, horizontal_axis);
+          camera = new Camera(origin, lower_left_corner, vertical_axis, horizontal_axis);
           return (words[1] == "CAMERA") ? true : false;
         }
         return false;
@@ -832,7 +832,7 @@ bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &
   has_type = has_max_color = has_width = has_height = has_codification = false;
 
   Scene scene;
-  Camera camera;
+  Camera *camera;
 
   std::string line;
 
