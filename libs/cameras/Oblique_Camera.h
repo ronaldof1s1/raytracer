@@ -1,11 +1,11 @@
-#ifndef _ORTHOGRAPHIC_CAMERA_H_
-#define _ORTHOGRAPHIC_CAMERA_H_
+#ifndef _OBLIQUE_CAMERA_H_
+#define _OBLIQUE_CAMERA_H_
 
 #include "../Camera.h"
 
-class Orthographic_Camera : public Camera{
+class Oblique_Camera : public Camera{
 public:
-  Orthographic_Camera(Point3 left, Point3 right, Point3 bottom, Point3 top, Vector3 vp_normal = Vector3(0)):Camera(){
+  Oblique_Camera(Point3 left, Point3 right, Point3 bottom, Point3 top, Vector3 vp_normal = Vector3(0)):Camera(){
 
     if (vp_normal.X() == 0 && vp_normal.Y() == 0 && vp_normal.Z() == 0){
       vp_normal = -std::get<2>(frame);
@@ -18,10 +18,14 @@ public:
     view_plane = View_Plane(llc, ha, va, vp_normal);
   }
 
+  Oblique_Camera(Point3 left, Point3 bottom, Vector3 vp_normal = Vector3(0)):Camera(){
+    Oblique_Camera(left, -left, bottom, -bottom, vp_normal);
+  }
+
   virtual Ray get_ray(double u, double v);
 };
 
-Ray Orthographic_Camera::get_ray(double u, double v){
+Ray Oblique_Camera::get_ray(double u, double v){
   Point3 ray_origin = view_plane.lower_left_corner + u*view_plane.horizontal_axis + v*view_plane.vertical_axis;
   Vector3 ray_target = view_plane.normal;
   return Ray(ray_origin, ray_target);
