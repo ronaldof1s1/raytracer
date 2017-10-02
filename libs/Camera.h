@@ -16,7 +16,13 @@ public:
 
 	// Constructors & getters
 	Camera(){
+	};
 
+	Camera(Point3 origin_, Point3 llc, Vector3 ha, Vector3 va){
+		origin = origin_;
+		view_plane.lower_left_corner = llc;
+		view_plane.horizontal_axis = ha;
+		view_plane.vertical_axis = va;
 	};
 
 	//Getters
@@ -47,11 +53,12 @@ inline Ray Camera::get_ray(double row, double col, int n_rows, int n_cols){
 inline void Camera::set_frame(Point3 look_from, Point3 look_at, Vector3 up){
   // vector3 u, v, w;
   Vector3 gaze = look_from - look_at;
+	Vector3 u,v,w;
 
   w = unit_vector(gaze);
   u = unit_vector(cross(up, w));
   v = unit_vector(cross(w,u));
-
+	frame = std::make_tuple(u,v,w);
   origin = look_from;
 }
 
