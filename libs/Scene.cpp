@@ -9,13 +9,13 @@ void Scene::add_light(Light *&light){
 }
 
 void Scene::add_pontual_light(Point3 source, RGB intensity){
-	Light *light = new Pontual(source, intensity);
+	Light *light = new Pointlight(source, intensity);
 
 	lights.push_back(light);
 }
 
 void Scene::add_directional_light(Point3 direction, RGB intensity){
-	Light *light = new Directional(direction, intensity);
+	Light *light = new Directional_light(direction, intensity);
 
 	lights.push_back(light);
 }

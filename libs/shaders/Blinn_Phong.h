@@ -51,16 +51,38 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     auto lights = scene.get_lights();
     for (auto light = lights.begin(); light != lights.end(); light++)
     {
-      Pontual pontual_light = dynamic_cast<Pontual>
       Point3 new_origin = rec.p + (rec.normal * Vector3(0.01));
-      auto pair = light->Illuminate();
+      std::pair<Vector3, RGB> pair;
+      Pointlight *pointlight = dynamic_cast<Pointlight*>(*light);
+      if(pointlight != nullptr){
+        pair = pointlight->Illuminate(new_origin);
+      }
+      else{
+        Directional_light *directional_light = dynamic_cast<Directional_light*>(*light);
+        if (directional_light != nullptr) {
+          pair = directional_light->Illuminate(new_origin);
+        }
+        else{
+          Spotlight *spotlight = dynamic_cast<Spotlight*>(*light);
+          if(spotlight != nullptr){
+            pair = spotlight->Illuminate(new_origin);
+          }
+          else{
+            std::cerr << "cannot decide light type" << '\n';
+            return RGB(0);
+          }
+        }
+      }
+      Vector3 light_direction = std::get<0>(pair);
+      RGB light_intensity = std::get<1>(pair);
       Ray new_ray(new_origin, light_direction);
+
       if(!shadows or !is_shadow(new_ray, scene)){
 
         double cos_light_normal = dot(light_direction, rec.normal);
         cos_light_normal = std::max(0.0, cos_light_normal);
 
-        RGB diffuse_intensity = light->intensity * cos_light_normal;
+        RGB diffuse_intensity = light_intensity * cos_light_normal;
 
         rgb_to_paint += rec.material->albedo * diffuse_intensity * use_diffuse;
 
@@ -70,7 +92,7 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
           double cos_normal_halfway = dot(rec.normal, halfway_vector);
           cos_normal_halfway = std::max(0.0, cos_normal_halfway);
 
-          RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, shiny->specular_exponent);
+          RGB shininess_intensity = light_intensity * std::pow(cos_normal_halfway, shiny->specular_exponent);
 
           rgb_to_paint += shiny->k_s * shininess_intensity * use_specular;
         }
