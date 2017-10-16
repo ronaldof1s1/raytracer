@@ -4,17 +4,22 @@ void Scene::add_object(Hitable * object){
 	objects.push_back(object);
 }
 
-void Scene::add_light(Light &light){
+void Scene::add_light(Light *&light){
 	lights.push_back(light);
 }
 
-void Scene::add_light(Point3 source_, RGB intensity_){
-	Light light;
-	light.source = source_;
-	light.intensity = intensity_;
+void Scene::add_pontual_light(Point3 source, RGB intensity){
+	Light *light = new Pontual(source, intensity);
 
 	lights.push_back(light);
 }
+
+void Scene::add_directional_light(Point3 direction, RGB intensity){
+	Light *light = new Directional(direction, intensity);
+
+	lights.push_back(light);
+}
+
 
 //Check in the list of objects if it hits an object
 bool Scene::hit_anything(const Ray & r, double t_min, double t_max, hit_record & rec) const{

@@ -51,9 +51,9 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     auto lights = scene.get_lights();
     for (auto light = lights.begin(); light != lights.end(); light++)
     {
-
+      Pontual pontual_light = dynamic_cast<Pontual>
       Point3 new_origin = rec.p + (rec.normal * Vector3(0.01));
-      Vector3 light_direction = unit_vector(light->source - new_origin);
+      auto pair = light->Illuminate();
       Ray new_ray(new_origin, light_direction);
       if(!shadows or !is_shadow(new_ray, scene)){
 
