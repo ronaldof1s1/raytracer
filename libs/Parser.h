@@ -14,6 +14,8 @@
 #include "shaders/Recursive.h"
 #include "shaders/Standard_shader.h"
 #include "shaders/Cel.h"
+#include "lights/Directional.h"
+#include "lights/Pontual.h" 
 #include "hitables/Sphere.h"
 
 class Parser {
