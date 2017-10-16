@@ -49,23 +49,23 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
 
 
     auto lights = scene.get_lights();
-    for (auto light = lights.begin(); light != lights.end(); light++)
+    Point3 origin = rec.p + (rec.normal * Vector3(0.01));
+    for (auto light : lights)
     {
-      Point3 new_origin = rec.p + (rec.normal * Vector3(0.01));
       std::pair<Vector3, RGB> pair;
-      Pointlight *pointlight = dynamic_cast<Pointlight*>(*light);
+      Pointlight *pointlight = dynamic_cast<Pointlight*>(light);
       if(pointlight != nullptr){
-        pair = pointlight->Illuminate(new_origin);
+        pair = pointlight->Illuminate(origin);
       }
       else{
-        Directional_light *directional_light = dynamic_cast<Directional_light*>(*light);
+        Directional_light *directional_light = dynamic_cast<Directional_light*>(light);
         if (directional_light != nullptr) {
-          pair = directional_light->Illuminate(new_origin);
+          pair = directional_light->Illuminate(origin);
         }
         else{
-          Spotlight *spotlight = dynamic_cast<Spotlight*>(*light);
+          Spotlight *spotlight = dynamic_cast<Spotlight*>(light);
           if(spotlight != nullptr){
-            pair = spotlight->Illuminate(new_origin);
+            pair = spotlight->Illuminate(origin);
           }
           else{
             std::cerr << "cannot decide light type" << '\n';
@@ -75,7 +75,7 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
       }
       Vector3 light_direction = std::get<0>(pair);
       RGB light_intensity = std::get<1>(pair);
-      Ray new_ray(new_origin, light_direction);
+      Ray new_ray(origin, light_direction);
 
       if(!shadows or !is_shadow(new_ray, scene)){
 
