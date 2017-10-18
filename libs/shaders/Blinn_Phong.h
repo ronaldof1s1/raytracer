@@ -15,8 +15,8 @@ public:
   Blinn_Phong():Shader(){};
   Blinn_Phong(bool amb, bool diff, bool spec, bool shadow = true):Shader(){
     use_ambient = amb ? 1.0 : 0.0;
-    use_ambient = diff ? 1.0 : 0.0;
-    use_ambient = spec ? 1.0 : 0.0;
+    use_diffuse = diff ? 1.0 : 0.0;
+    use_specular = spec ? 1.0 : 0.0;
     shadows = shadow;
   };
 
@@ -86,14 +86,13 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
 
         rgb_to_paint += rec.material->albedo * diffuse_intensity * use_diffuse;
 
-        // Vector3 vdir = unit_vector(ray.get_origin() - rec.p); // = -ray.get_direction
+
         if(shiny != nullptr){
           Vector3 halfway_vector = unit_vector(light_direction - ray.get_direction());
           double cos_normal_halfway = dot(rec.normal, halfway_vector);
           cos_normal_halfway = std::max(0.0, cos_normal_halfway);
 
           RGB shininess_intensity = light_intensity * std::pow(cos_normal_halfway, shiny->specular_exponent);
-
           rgb_to_paint += shiny->k_s * shininess_intensity * use_specular;
         }
       }
@@ -106,7 +105,6 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     rgb_to_paint.e[0] = std::min(1.d, rgb_to_paint.r());
     rgb_to_paint.e[1] = std::min(1.d, rgb_to_paint.g());
     rgb_to_paint.e[2] = std::min(1.d, rgb_to_paint.b());
-
     return rgb_to_paint;
   }
 #endif

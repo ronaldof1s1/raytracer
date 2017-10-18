@@ -5,7 +5,7 @@ BEGIN IMAGE
   width = 1000
   height = 500
   maxcolor = 255
-  antialiasing = 16
+  antialiasing = 4
 
   BEGIN SHADER
 
@@ -23,10 +23,10 @@ BEGIN IMAGE
 
   BEGIN CAMERA
 
-    origin = 0.0 0.0 105.0
-    lower_left_corner = -200.0 -100.0 -100.0
-    vertical_axis = 0.0 200.0 0.0
-    horizontal_axis = 400.0 0.0 0.0
+    origin = 0.0 0.0 1.0
+    lower_left_corner = -2.0 -1.0 -1.0
+    vertical_axis = 0.0 2.0 0.0
+    horizontal_axis = 4.0 0.0 0.0
 
   END CAMERA
 
@@ -44,15 +44,15 @@ BEGIN IMAGE
     END BACKGROUND
 
     BEGIN LIGHT
-    
-      type = pontual
-      source = 20.0 10.0 15.0
+
+      type = pointlight
+      source = 0.0 0.0 15.0
       intensity = 1.0 1.0 1.0
 
     END LIGHT
 
     BEGIN LIGHT
-
+      type = pointlight
       source = -20.0 10.0 15.0
       intensity = 1.0 1.0 1.0
 

@@ -509,7 +509,7 @@ bool parse_light(Light *&light, std::ifstream &input_file, int &line_number){
         if(is_pointlight or is_directional or is_spotlight){
           return false;
         }
-        if(words[2] == "pontual"){
+        if(words[2] == "pointlight"){
           is_pointlight = true;
         }
         else if(words[2] == "directional"){
@@ -687,7 +687,7 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
 
 bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
   bool ambient, diffuse, specular;
-  ambient = diffuse = specular = false;
+  ambient = diffuse = specular = true;
   bool has_shader;
   double max_depth;
   shadow = true;
