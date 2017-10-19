@@ -103,7 +103,7 @@ public:
 
 	bool hit_anything(const Ray & r, double t_min, double t_max, hit_record & rec) const;
 
-	bool hit_first_object(const Ray &r, hit_record & rec) const;
+	bool hit_first_object(const Ray &r, hit_record & rec, double max_t) const;
  };
 
 

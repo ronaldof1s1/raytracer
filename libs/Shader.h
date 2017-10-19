@@ -18,7 +18,7 @@
 
     RGB interpolate_background(const Ray &ray, const Background &background) const; //Method to interpolate and generate the background
 
-    bool is_shadow(const Ray &ray, const Scene &scene) const;
+    bool is_shadow(const Ray &ray, const Scene &scene, const double camera_t) const;
 
   };
 
@@ -33,10 +33,10 @@
       return (1-y) * bottom + y * top;
     }
 
-    bool Shader::is_shadow(const Ray &ray, const Scene &scene) const{
+    bool Shader::is_shadow(const Ray &ray, const Scene &scene, const double camera_t) const{
 
       hit_record rec;
-      if(scene.hit_first_object(ray, rec)){
+      if(scene.hit_first_object(ray, rec, camera_t)){
         return true;
       }
       return false;

@@ -53,17 +53,21 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     for (auto light : lights)
     {
       std::pair<Vector3, RGB> pair;
+
       Pointlight *pointlight = dynamic_cast<Pointlight*>(light);
+      Directional_light *directional_light = dynamic_cast<Directional_light*>(light);
+      Spotlight *spotlight = dynamic_cast<Spotlight*>(light);
+
+      double camera_t = std::numeric_limits<double>::max();
+
       if(pointlight != nullptr){
         pair = pointlight->Illuminate(origin);
       }
       else{
-        Directional_light *directional_light = dynamic_cast<Directional_light*>(light);
         if (directional_light != nullptr) {
           pair = directional_light->Illuminate(origin);
         }
         else{
-          Spotlight *spotlight = dynamic_cast<Spotlight*>(light);
           if(spotlight != nullptr){
             pair = spotlight->Illuminate(origin);
           }
@@ -73,11 +77,20 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
           }
         }
       }
+
       Vector3 light_direction = std::get<0>(pair);
       RGB light_intensity = std::get<1>(pair);
+
       Ray new_ray(origin, light_direction);
 
-      if(!shadows or !is_shadow(new_ray, scene)){
+      if(pointlight != nullptr){
+        camera_t = new_ray.get_t(pointlight->source);
+      }
+      else if(spotlight != nullptr){
+        camera_t = new_ray.get_t(spotlight->source);
+      }
+
+      if(!shadows or !is_shadow(new_ray, scene, camera_t)){
 
         double cos_light_normal = dot(light_direction, rec.normal);
         cos_light_normal = std::max(0.0, cos_light_normal);
