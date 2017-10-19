@@ -455,10 +455,14 @@ bool parse_background(Background &background, std::ifstream &input_file, int &li
   return false;
 }
 
-bool parse_light(Light &light, std::ifstream &input_file, int &line_number){
+bool parse_light(Light *&light, std::ifstream &input_file, int &line_number){
+  bool is_directional, is_pointlight, is_spotlight;
   RGB intensity(1);
-  Point3 source(0);
-
+  Vector3 direction, source;
+  double angular_opening = 90;
+  is_directional = is_pointlight = is_spotlight = false;
+  direction = source = RGB(0);
+  double atenuation = 1;
   std::string line;
 
   while (std::getline(input_file, line, '\n')) {
@@ -481,20 +485,59 @@ bool parse_light(Light &light, std::ifstream &input_file, int &line_number){
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
           source = Point3(x,y,z);
-          light.source = source;
+        }
+        else if(words[0] == "direction"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          direction = Point3(x,y,z);
         }
         else if(words[0] == "intensity"){
           double r = std::stod(words[2]);
           double g = std::stod(words[3]);
           double b = std::stod(words[4]);
           intensity = RGB(r,g,b);
-          light.intensity = intensity;
         }
         else {
           return false;
         }
       }
+      else if(words[0] == "opening" and words[1] == "="){
+        angular_opening = std::stod(words[2]);
+      }
+      else if(words[0] == "atenuation" and words[1] == "="){
+        atenuation = std::stod(words[2]);
+      }
+      else if(words[0] == "type" and words[1] == "="){
+        if(is_pointlight or is_directional or is_spotlight){
+          return false;
+        }
+        if(words[2] == "pointlight"){
+          is_pointlight = true;
+        }
+        else if(words[2] == "directional"){
+          is_directional = true;
+        }
+        else if(words[2] == "spotlight"){
+          is_spotlight = true;
+        }
+        else{
+          return false;
+        }
+      }
       else if(words[0] == "END"){
+        if(is_pointlight){
+          light = new Pointlight(source, intensity);
+        }
+        else if(is_directional){
+          light = new Directional_light(direction, intensity);
+        }
+        else if (is_spotlight){
+          light = new Spotlight(source, direction, intensity, angular_opening, atenuation);
+        }
+        else{
+          return false;
+        }
         return (words[1] == "LIGHT") ? true : false;
       }
       else{
@@ -535,7 +578,7 @@ bool parse_scene(Scene &scene, std::ifstream &input_file, int &line_number){
           }
         }
         else if(words[1] == "LIGHT"){
-          Light light;
+          Light *light;
           if(!parse_light(light, input_file, line_number)){
             return false;
           }
@@ -574,7 +617,7 @@ bool parse_scene(Scene &scene, std::ifstream &input_file, int &line_number){
   return false;
 }
 
-bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
+bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
   Point3 origin, lower_left_corner;
   Vector3 vertical_axis, horizontal_axis;
 
@@ -632,7 +675,7 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
       else if(words[0] == "END"){
 
         if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
-          camera = Camera(origin, lower_left_corner, vertical_axis, horizontal_axis);
+          camera = new Camera(origin, lower_left_corner, vertical_axis, horizontal_axis);
           return (words[1] == "CAMERA") ? true : false;
         }
         return false;
@@ -647,7 +690,7 @@ bool parse_camera(Camera &camera, std::ifstream &input_file, int &line_number){
 
 bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
   bool ambient, diffuse, specular;
-  ambient = diffuse = specular = false;
+  ambient = diffuse = specular = true;
   bool has_shader;
   double max_depth;
   shadow = true;
@@ -832,7 +875,7 @@ bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &
   has_type = has_max_color = has_width = has_height = has_codification = false;
 
   Scene scene;
-  Camera camera;
+  Camera *camera;
 
   std::string line;
 

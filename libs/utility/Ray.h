@@ -29,5 +29,15 @@ class Ray {
         {
             return O + t_ * D; // parametric equation of the ray.
         }
+
+        double get_t(Point3 point) {
+      		double a = (point - O).x()/D.x();
+      		double b = (point - O).y()/D.y();
+      		double c = (point - O).z()/D.z();
+      		if (std::abs(a - b) < 0.1 && std::abs(a - c) < 0.1) {
+      			return a;
+      		}
+      		return std::numeric_limits<float>::max();
+	      }
 };
 #endif

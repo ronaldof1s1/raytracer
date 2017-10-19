@@ -15,8 +15,8 @@ public:
   Blinn_Phong():Shader(){};
   Blinn_Phong(bool amb, bool diff, bool spec, bool shadow = true):Shader(){
     use_ambient = amb ? 1.0 : 0.0;
-    use_ambient = diff ? 1.0 : 0.0;
-    use_ambient = spec ? 1.0 : 0.0;
+    use_diffuse = diff ? 1.0 : 0.0;
+    use_specular = spec ? 1.0 : 0.0;
     shadows = shadow;
   };
 
@@ -49,29 +49,63 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
 
 
     auto lights = scene.get_lights();
-    for (auto light = lights.begin(); light != lights.end(); light++)
+    Point3 origin = rec.p + (rec.normal * Vector3(0.01));
+    for (auto light : lights)
     {
+      std::pair<Vector3, RGB> pair;
 
-      Point3 new_origin = rec.p + (rec.normal * Vector3(0.01));
-      Vector3 light_direction = unit_vector(light->source - new_origin);
-      Ray new_ray(new_origin, light_direction);
-      if(!shadows or !is_shadow(new_ray, scene)){
+      Pointlight *pointlight = dynamic_cast<Pointlight*>(light);
+      Directional_light *directional_light = dynamic_cast<Directional_light*>(light);
+      Spotlight *spotlight = dynamic_cast<Spotlight*>(light);
+
+      double camera_t = std::numeric_limits<double>::max();
+
+      if(pointlight != nullptr){
+        pair = pointlight->Illuminate(origin);
+      }
+      else{
+        if (directional_light != nullptr) {
+          pair = directional_light->Illuminate(origin);
+        }
+        else{
+          if(spotlight != nullptr){
+            pair = spotlight->Illuminate(origin);
+          }
+          else{
+            std::cerr << "cannot decide light type" << '\n';
+            return RGB(0);
+          }
+        }
+      }
+
+      Vector3 light_direction = std::get<0>(pair);
+      RGB light_intensity = std::get<1>(pair);
+
+      Ray new_ray(origin, light_direction);
+
+      if(pointlight != nullptr){
+        camera_t = new_ray.get_t(pointlight->source);
+      }
+      else if(spotlight != nullptr){
+        camera_t = new_ray.get_t(spotlight->source);
+      }
+
+      if(!shadows or !is_shadow(new_ray, scene, camera_t)){
 
         double cos_light_normal = dot(light_direction, rec.normal);
         cos_light_normal = std::max(0.0, cos_light_normal);
 
-        RGB diffuse_intensity = light->intensity * cos_light_normal;
+        RGB diffuse_intensity = light_intensity * cos_light_normal;
 
         rgb_to_paint += rec.material->albedo * diffuse_intensity * use_diffuse;
 
-        // Vector3 vdir = unit_vector(ray.get_origin() - rec.p); // = -ray.get_direction
+
         if(shiny != nullptr){
           Vector3 halfway_vector = unit_vector(light_direction - ray.get_direction());
           double cos_normal_halfway = dot(rec.normal, halfway_vector);
           cos_normal_halfway = std::max(0.0, cos_normal_halfway);
 
-          RGB shininess_intensity = light->intensity * std::pow(cos_normal_halfway, shiny->specular_exponent);
-
+          RGB shininess_intensity = light_intensity * std::pow(cos_normal_halfway, shiny->specular_exponent);
           rgb_to_paint += shiny->k_s * shininess_intensity * use_specular;
         }
       }
@@ -84,7 +118,6 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
     rgb_to_paint.e[0] = std::min(1.d, rgb_to_paint.r());
     rgb_to_paint.e[1] = std::min(1.d, rgb_to_paint.g());
     rgb_to_paint.e[2] = std::min(1.d, rgb_to_paint.b());
-
     return rgb_to_paint;
   }
 #endif

@@ -2,8 +2,8 @@ BEGIN IMAGE
 
   type = ppm
   codification = binary # ascii | binary
-  width = 1000
-  height = 500
+  width = 1200
+  height = 600
   maxcolor = 255
   antialiasing = 4
 
@@ -23,7 +23,7 @@ BEGIN IMAGE
 
   BEGIN CAMERA
 
-    origin = 0.0 0.0 1.0
+    origin = 0.0 0.0 0.0
     lower_left_corner = -2.0 -1.0 -1.0
     vertical_axis = 0.0 2.0 0.0
     horizontal_axis = 4.0 0.0 0.0
@@ -43,17 +43,10 @@ BEGIN IMAGE
 
     END BACKGROUND
 
-    BEGIN LIGHT
-
-      type = pointlight
-      source = 0.0 0.0 15.0
-      intensity = 1.0 1.0 1.0
-
-    END LIGHT
 
     BEGIN LIGHT
-      type = pointlight
-      source = -20.0 10.0 15.0
+
+      source = 15.0 10.0 10.0
       intensity = 1.0 1.0 1.0
 
     END LIGHT
@@ -62,12 +55,12 @@ BEGIN IMAGE
 
       object = sphere
       center = 0.0 0.0 -1.0
-      radius = 0.5
+      radius = 0.4
 
       BEGIN MATERIAL
 
         material = cartoon # lambertian | shiny | metal | normal | cartoon
-        albedo = 1.0 0.0 0.0
+        albedo = 0.0 0.3 0.8
         shadow = 0.0 0.0 0.0
         outline = 0.0 0.0 0.0
 
@@ -84,7 +77,7 @@ BEGIN IMAGE
       BEGIN MATERIAL
 
         material = cartoon # lambertian | shiny | metal | normal | cartoon
-        albedo = 0.0 1.0 0.0
+        albedo = 0.4 0.4 0.4
         shadow = 0.0 0.0 0.0
         outline = 0.0 0.0 0.0
 
@@ -92,39 +85,6 @@ BEGIN IMAGE
 
       END OBJECT
 
-      BEGIN OBJECT
-
-        object = sphere
-        center = 1.0 0.0 -1.0
-        radius = 0.5
-
-      BEGIN MATERIAL
-
-        material = cartoon # lambertian | shiny | metal | normal | cartoon
-        albedo = 0.0 0.0 1.0
-        shadow = 0.0 0.0 0.0
-        outline = 0.0 0.0 0.0
-
-      END MATERIAL
-
-      END OBJECT
-
-      BEGIN OBJECT
-
-        object = sphere
-        center = -1.0 0.0 -1.0
-        radius = 0.5
-
-        BEGIN MATERIAL
-
-          material = cartoon
-          albedo = 0.0 1.0 1.0
-          shadow = 0.0 0.0 0.0
-          outline = 0.0 0.0 0.0
-
-        END MATERIAL
-
-      END OBJECT
 
   END SCENE
 

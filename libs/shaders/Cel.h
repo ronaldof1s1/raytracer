@@ -54,8 +54,45 @@ RGB Cel::shade(const Ray &ray, const Scene &scene) const{
 
       double max_cos = -1;
       for(auto light : lights){
-        Vector3 light_direction = unit_vector(light.source - origin);
-        if(is_shadow(Ray(origin, light_direction), scene)){
+        std::pair<Vector3, RGB> pair;
+
+        Pointlight *pointlight = dynamic_cast<Pointlight*>(light);
+        Directional_light *directional_light = dynamic_cast<Directional_light*>(light);
+        Spotlight *spotlight = dynamic_cast<Spotlight*>(light);
+
+        double camera_t = std::numeric_limits<double>::max();
+
+        if(pointlight != nullptr){
+          pair = pointlight->Illuminate(origin);
+        }
+        else{
+          if (directional_light != nullptr) {
+            pair = directional_light->Illuminate(origin);
+          }
+          else{
+            if(spotlight != nullptr){
+              pair = spotlight->Illuminate(origin);
+            }
+            else{
+              std::cerr << "cannot decide light type" << '\n';
+              return RGB(0);
+            }
+          }
+        }
+
+        Vector3 light_direction = std::get<0>(pair);
+        RGB light_intensity = std::get<1>(pair);
+
+        Ray new_ray = Ray(origin, light_direction);
+
+        if(pointlight != nullptr){
+          camera_t = new_ray.get_t(pointlight->source);
+        }
+        else if(spotlight != nullptr){
+          camera_t = new_ray.get_t(spotlight->source);
+        }
+
+        if(is_shadow(new_ray, scene, camera_t)){
           rgb_to_paint += cartoon->shadow;
           // rgb_to_paint += RGB(0,1,0);
           continue;
@@ -68,14 +105,14 @@ RGB Cel::shade(const Ray &ray, const Scene &scene) const{
           if(cos_light_normal >= cos_interval){
             if(cos_interval > max_cos){
               max_cos = cos_interval;
-              rgb_to_paint = cartoon->albedo * max_cos * light.intensity;
+              rgb_to_paint = cartoon->albedo * max_cos * light_intensity;
               break;
             }
           }
           else if(interval == shading_intervals[shading_intervals.size()-1]){
             if(cos_interval > max_cos){
               max_cos = cos_interval;
-              rgb_to_paint = cartoon->albedo * max_cos * light.intensity;
+              rgb_to_paint = cartoon->albedo * max_cos * light_intensity;
             }
           }
         }

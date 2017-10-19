@@ -23,6 +23,9 @@ public:
   bool scatter(const Ray &ray_in,  const hit_record &rec, Ray &scattered) const override;
 };
 bool Shiny::scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const {
+  Vector3 target = rec.p + rec.normal + random_vector_in_unit_sphere();
+  Point3 origin = rec.p + 0.01 * rec.normal;
+  scattered = Ray(origin, target - origin);
   return true;
 }
 #endif
