@@ -11,7 +11,7 @@ class Directional_light : public Light {
     //Constructors
     Directional_light():Light(){ direction = Vector3(0.0,0.0,0.0); }
     Directional_light(RGB intensity):Light(intensity){ direction = Point3(0.0,0.0,0.0); }
-    Directional_light(Point3 dir, RGB intensity):Light(intensity){ direction = dir; }
+    Directional_light(Point3 dir, RGB intensity):Light(intensity){ direction = unit_vector(dir); }
 
     std::pair<Vector3, RGB> Illuminate(Point3 point) const override{
         return std::make_pair(-direction, intensity);

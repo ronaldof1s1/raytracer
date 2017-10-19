@@ -7,7 +7,8 @@ class Pointlight : public Light {
 
   public:
     Point3 source;
-
+    // double attenuation;
+    // double light_radius;
     //Constructors
     Pointlight():Light(){ source = Point3(0.0,0.0,0.0); }
     Pointlight(RGB intensity):Light(intensity){ source = Point3(0.0,0.0,0.0); }

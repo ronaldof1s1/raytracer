@@ -38,8 +38,11 @@ BEGIN IMAGE
 
     BEGIN LIGHT
 
-      type = directional
-      direction = 1.0 0.0 1.0
+      type = spotlight
+      source = 0.0 0.0 1.0
+      direction = 0.0 0.0 -1.0
+      opening = 70
+      atenuation = 1
       intensity = 1.0 1.0 1.0
 
     END LIGHT

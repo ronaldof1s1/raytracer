@@ -459,10 +459,10 @@ bool parse_light(Light *&light, std::ifstream &input_file, int &line_number){
   bool is_directional, is_pointlight, is_spotlight;
   RGB intensity(1);
   Vector3 direction, source;
-  double angular_opening = 0;
+  double angular_opening = 90;
   is_directional = is_pointlight = is_spotlight = false;
   direction = source = RGB(0);
-
+  double atenuation = 1;
   std::string line;
 
   while (std::getline(input_file, line, '\n')) {
@@ -505,6 +505,9 @@ bool parse_light(Light *&light, std::ifstream &input_file, int &line_number){
       else if(words[0] == "opening" and words[1] == "="){
         angular_opening = std::stod(words[2]);
       }
+      else if(words[0] == "atenuation" and words[1] == "="){
+        atenuation = std::stod(words[2]);
+      }
       else if(words[0] == "type" and words[1] == "="){
         if(is_pointlight or is_directional or is_spotlight){
           return false;
@@ -529,9 +532,9 @@ bool parse_light(Light *&light, std::ifstream &input_file, int &line_number){
         else if(is_directional){
           light = new Directional_light(direction, intensity);
         }
-        // else if (is_spotlight){
-        //   light = new Spotlight(source, direction, intensity, angular_opening);
-        // }
+        else if (is_spotlight){
+          light = new Spotlight(source, direction, intensity, angular_opening, atenuation);
+        }
         else{
           return false;
         }
