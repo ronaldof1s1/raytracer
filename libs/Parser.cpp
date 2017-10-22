@@ -853,6 +853,16 @@ void parse_file_name(Image &image, Shader *shader){
   output_file_name += "{" + std::to_string(image.get_antialiasing()) + "x}_";
   std::string shader_name = "";
 
+  Perspective_Camera *p_camera = dynamic_cast<Perspective_Camera*> (image.get_camera());
+  Oblique_Camera *o_camera = dynamic_cast<Oblique_Camera*> (image.get_camera());
+
+  if(p_camera != nullptr){
+    output_file_name += "{perspective}_";
+  }
+  if(o_camera != nullptr){
+    output_file_name += "{oblique}_";
+  }
+
   if(is_blinn_phong){
     Blinn_Phong *bp = dynamic_cast<Blinn_Phong*>(shader);
 
@@ -868,7 +878,7 @@ void parse_file_name(Image &image, Shader *shader){
       shader_name += "_specular";
     }
     if (shadow) {
-      output_file_name += "_shadow";
+      shader_name += "_shadow";
     }
   }
   else if(is_standard){
