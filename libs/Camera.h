@@ -15,14 +15,15 @@ public:
 	std::tuple<Vector3, Vector3, Vector3> frame; //x,y,z ortogonal
 
 	// Constructors & getters
-	Camera(){
-	};
+	Camera(Point3 look_from, Point3 look_at, Vector3 up){
+		Vector3 gaze = look_from - look_at;
+		Vector3 u,v,w;
 
-	Camera(Point3 origin_, Point3 llc, Vector3 ha, Vector3 va){
-		origin = origin_;
-		view_plane.lower_left_corner = llc;
-		view_plane.horizontal_axis = ha;
-		view_plane.vertical_axis = va;
+	  w = unit_vector(gaze);
+	  u = unit_vector(cross(up, w));
+	  v = unit_vector(cross(w,u));
+		frame = std::make_tuple(u,v,w);
+	  origin = look_from;
 	};
 
 	//Getters
@@ -34,38 +35,20 @@ public:
 
 	//Getting ray shoot from the camera
 	// virtual Ray get_ray(double u, double v); 		TEMPORARY
-	inline Ray get_ray(double u, double v);
 
-	inline Ray get_ray(double row, double col, int n_rows, int n_cols);
+	Ray get_ray(double row, double col, int n_rows, int n_cols);
 
-
-	inline void set_frame(Point3 look_from, Point3 look_at, Vector3 up);
+	virtual Ray get_ray(double u, double v) const = 0;
 
 };
 
-inline Ray Camera::get_ray(double row, double col, int n_rows, int n_cols){
+Ray Camera::get_ray(double row, double col, int n_rows, int n_cols){
   double u = double(col) / double( n_cols ); // walked u% of the horizontal dimension of the view plane.
   double v = double(row) / double( n_rows ); // walked v% of the vertical dimension of the view plane.
 
   return get_ray(u, v);
 }
 
-inline void Camera::set_frame(Point3 look_from, Point3 look_at, Vector3 up){
-  // vector3 u, v, w;
-  Vector3 gaze = look_from - look_at;
-	Vector3 u,v,w;
-
-  w = unit_vector(gaze);
-  u = unit_vector(cross(up, w));
-  v = unit_vector(cross(w,u));
-	frame = std::make_tuple(u,v,w);
-  origin = look_from;
-}
-
-inline Ray Camera::get_ray(double u, double v){
-  Vector3 target = view_plane.lower_left_corner + u* view_plane.horizontal_axis + v*view_plane.vertical_axis;
-  return Ray(origin, target);
-}
 
 
 #endif
