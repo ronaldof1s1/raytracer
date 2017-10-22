@@ -10,7 +10,7 @@ public:
                 Vector3 direction;
                 // std::cout << "vp_normal" << vp_normal << '\n';
                 if (vp_normal == Vector3(0) ){//and vp_normal.Y == 0.00 ){and vp_normal.Z == 0.00 ){
-                  direction = std::get<2>(frame);
+                  direction = -std::get<2>(frame);
                 }
                 else{
                   direction = vp_normal;

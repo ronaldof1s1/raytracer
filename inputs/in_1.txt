@@ -1,35 +1,45 @@
 BEGIN IMAGE
 
   type = ppm
-  codification = binary #could be binary
-  width = 1920
-  height = 960
+  codification = binary # ascii | binary
+  width = 1000
+  height = 500
   maxcolor = 255
-  antialiasing = 1
+  antialiasing = 4
 
   BEGIN SHADER
 
-    shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong | cel
-    iterations = 40
-    ambient = true
-    diffuse = true
-    specular = true
-    shadow = true
+    shader = blinnphong #recursive | normal2rgb | standard | depthmap | blinnphong | cel
+
 
   END SHADER
 
   BEGIN CAMERA
 
-    origin = 0.0 0.0 0.0
-    lower_left_corner = -2.0 -1.0 -1.0
-    vertical_axis = 0.0 2.0 0.0
-    horizontal_axis = 4.0 0.0 0.0
+  type = perspective
+
+  look_from = 0 0 0
+  look_at = 0 0 1
+  up = 0 1 0
+  vp_normal = 0.00 0.00 0.00
+
+  #oblique arguments
+  #top = 0 1 0
+  #bottom = 0 -1 0
+  #left = -2 0 0
+  #right = 2 0 0
+
+  #perspective arguments
+  vfov = 90
+  aspect_ratio = 2
+  dist_to_focus = 1
+  focal_opening = 90
 
   END CAMERA
 
   BEGIN SCENE
 
-    ambient_light = 1.0 1.0 1.0
+    ambient_light = 0.4 0.4 0.4
 
     BEGIN BACKGROUND
 
@@ -42,8 +52,8 @@ BEGIN IMAGE
 
     BEGIN LIGHT
 
-      source = 0.0 4.0 0.6
-      intensity = 1.0 1.0 1.0
+          source = 0.0 4.0 0.6
+          intensity = 1.0 1.0 1.0
 
     END LIGHT
 
@@ -55,9 +65,11 @@ BEGIN IMAGE
 
       BEGIN MATERIAL
 
-        material = lambertian # lambertian | shiny | metal | normal | cartoon
+        material = shiny # lambertian | shiny | metal | normal | cartoon
         ambient = 0.1 0.1 0.1
-        diffuse = 0.8 0.3 0.3
+        diffuse = 0.0 0.3 0.8
+        specular = 0.9 0.9 0.9
+        specular_exponent = 64
 
       END MATERIAL
 
@@ -71,50 +83,16 @@ BEGIN IMAGE
 
       BEGIN MATERIAL
 
-        material = lambertian # lambertian | shiny | metal | normal | cartoon
+        material = shiny # lambertian | shiny | metal | normal | cartoon
         ambient = 0.1 0.1 0.1
-        diffuse = 0.8 0.8 0.0
-
-      END MATERIAL
-
-      END OBJECT
-
-      BEGIN OBJECT
-
-        object = sphere
-        center = 1.0 0.0 -1.0
-        radius = 0.5
-
-      BEGIN MATERIAL
-
-        material = metal # lambertian | shiny | metal | normal | cartoon
-        ambient = 0.1 0.1 0.1
-        diffuse = 0.8 0.6 0.2
+        diffuse = 0.4 0.4 0.4
         specular = 1.0 1.0 1.0
-        fuzziness = 1.0
+        specular_exponent = 4
 
       END MATERIAL
 
-      END OBJECT
+    END OBJECT
 
-
-      BEGIN OBJECT
-
-        object = sphere
-        center = -1.0 0.0 -1.0
-        radius = 0.5
-
-      BEGIN MATERIAL
-
-        material = metal # lambertian | shiny | metal | normal | cartoon
-        ambient = 0.1 0.1 0.1
-        diffuse = 0.8 0.8 0.8
-        specular = 1.0 1.0 1.0
-        fuzziness = 0.3
-
-      END MATERIAL
-
-      END OBJECT
 
   END SCENE
 

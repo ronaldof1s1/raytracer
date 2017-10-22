@@ -9,28 +9,37 @@ public:
   double aspect_ratio;
   double focal_distance;
 
-  Perspective_Camera( double vfov, double aspec, double dist_to_focus, Vector3 vp_normal = Vector3(0)):Camera(){
-    double theta = vfov * M_PI / 180;
-    double half_height = tan(theta/2);
-    double half_width = aspect * half_height;
+  Perspective_Camera( Point3 look_from, Vector3 look_at, Vector3 up,
+                      double vfov, double aspec, double dist_to_focus, Vector3 vp_normal = Vector3(0)):Camera(look_from,look_at,up){
 
-    if (vp_normal.X() == 0 && vp_normal.Y() == 0 && vp_normal.Z() == 0){
-      vp_normal = -std::get<2>(frame);
+    aspect_ratio = aspec;
+    vertical_fov = vfov;
+    focal_distance = dist_to_focus;
+
+    double theta = vfov * M_PI / 180;
+    double half_height = std::tan(theta/2);
+    double half_width = aspect_ratio * half_height;
+    Vector3 direction = vp_normal;
+    if (vp_normal == Vector3(0)){
+      direction = -std::get<2>(frame);
     }
 
-    vp_v = cross(std::get<0>(frame), vp_normal);
-    vp_u = cross(vp_normal, vp_u);
+    Vector3 u = std::get<0>(frame);
+    Vector3 v = std::get<1>(frame);
 
-    llc = origin + dist_to_focus - half_width*vp_u - half_height*vp_v - vp_normal;
-    ha = 2*half_width*vp_u;
-    va = 2*half_height*vp_v;
-    view_plane = View_Plane(llc,ha,va, vp_normal);
+    Vector3 llc = origin + direction*focal_distance - half_width*u - half_height*v;
+    Vector3 ha = 2*half_width*u;
+    Vector3 va = 2*half_height*v;
+    view_plane = View_Plane(llc,ha,va, direction);
   }
 
-  virtual Ray get_ray(double u, double v);
+    Ray get_ray(double row, double col, int n_rows, int n_cols){
+      Camera::get_ray(row, col, n_rows, n_cols);
+    }
+  Ray get_ray(double u, double v) const override;
 };
 
-Ray Perspective_Camera::get_ray(double u, double v){
+Ray Perspective_Camera::get_ray(double u, double v) const {
   Vector3 target = view_plane.lower_left_corner + u*view_plane.horizontal_axis + v*view_plane.vertical_axis;
   return Ray(origin, unit_vector(target));
 }
