@@ -33,7 +33,7 @@ BEGIN IMAGE
   vfov = 90
   aspect_ratio = 2
   dist_to_focus = 1
-  focal_opening = 90
+  focal_opening = 0.5
 
   END CAMERA
 

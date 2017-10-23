@@ -701,8 +701,7 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
           camera = new Oblique_Camera(look_from, look_at, up, left, right, bottom, top, vp_normal);
         }
         else if(is_perspective){
-          // camera = new Perspective_Camera(look_from, look_at, up, vfov, aspect_ratio, dist_to_focus, focal_opening, vp_normal);
-          camera = new Perspective_Camera(look_from, look_at, up, vfov, aspect_ratio, dist_to_focus, vp_normal);
+          camera = new Perspective_Camera(look_from, look_at, up, vfov, aspect_ratio, dist_to_focus, focal_opening, vp_normal);
         }
         else{
           return false;
