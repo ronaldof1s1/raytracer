@@ -319,6 +319,7 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
 
       if(words[0] == "object"){
         if(words.size() == 3 and words[1] == "="){
@@ -409,6 +410,7 @@ bool parse_background(Background &background, std::ifstream &input_file, int &li
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
 
       if(words.size() == 5 && words[1] == "="){
         if(words[0] == "lower_left"){
@@ -479,6 +481,7 @@ bool parse_light(Light *&light, std::ifstream &input_file, int &line_number){
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
       if(words.size() == 5){
         if(words[0] == "source"){
           double x = std::stod(words[2]);
@@ -571,6 +574,7 @@ bool parse_scene(Scene &scene, std::ifstream &input_file, int &line_number){
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
       if(words[0] == "BEGIN"){
         if(words[1] == "BACKGROUND"){
           if(!parse_background(scene.background, input_file, line_number)){
@@ -618,13 +622,27 @@ bool parse_scene(Scene &scene, std::ifstream &input_file, int &line_number){
 }
 
 bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
-  Point3 origin, lower_left_corner;
-  Vector3 vertical_axis, horizontal_axis;
+  Point3 look_from = Point3(0);
+  Vector3 look_at, vp_normal, up;
+  look_at = vp_normal = Vector3(0);
+  up = Vector3(0, 1, 0);
 
-  bool has_origin, has_lower_left_corner;
-  bool has_vertical_axis, has_horizontal_axis;
+  bool is_perspective = false;
+  bool is_parallel = false;
 
-  has_origin = has_vertical_axis = has_horizontal_axis = has_lower_left_corner = false;
+  //parallel arguments
+  Point3 left, right, top, bottom;
+  left = Point3(-1,0,0);
+  right = Point3(1,0,0);
+  top = Point3(0,1,0);
+  bottom = Point3(0,-1,0);
+
+  //perspective arguments
+  double vfov = 90;
+  double aspect_ratio = 2;
+  double dist_to_focus = 1;
+  double focal_opening = 90;
+
 
   std::string line;
 
@@ -633,7 +651,6 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
     line_number++;
 
     clean_up(line);
-    // std::cout << line <<std::endl;
 
     if(!line.empty()){
 
@@ -642,43 +659,97 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
       if(words.size() == 5 && words[1] == "="){
-        if(words[0] == "origin"){
+        if(words[0] == "look_from"){
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          origin = Point3(x,y,z);
-          has_origin = true;
+          look_from = Point3(x,y,z);
         }
-        else if(words[0] == "lower_left_corner"){
+        else if(words[0] == "look_at"){
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          lower_left_corner = Point3(x,y,z);
-          has_lower_left_corner = true;
+          look_at = Point3(x,y,z);
         }
-        else if(words[0] == "vertical_axis"){
+        else if(words[0] == "up"){
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          vertical_axis = Vector3(x,y,z);
-          has_vertical_axis = true;
+          up = Vector3(x,y,z);
         }
-        else if(words[0] == "horizontal_axis"){
+        else if(words[0] == "vp_normal"){
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          horizontal_axis = Vector3(x,y,z);
-          has_horizontal_axis = true;
+          vp_normal = Vector3(x,y,z);
+        }
+        else if(words[0] == "left"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          left = Vector3(x,y,z);
+        }
+        else if(words[0] == "right"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          right = Vector3(x,y,z);
+        }
+        else if(words[0] == "top"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          top = Vector3(x,y,z);
+        }
+        else if(words[0] == "bottom"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          bottom = Vector3(x,y,z);
+        }
+      }
+      else if (words.size() == 3 && words[1] == "="){
+        if(words[0] == "type"){
+          if(is_perspective or is_parallel){
+            std::cerr << "redefinition of camera type" << '\n';
+            return false;
+          }
+          if(words[2] == "perspective"){
+            is_perspective = true;
+          }
+          else if (words[2] == "parallel"){
+            is_parallel = true;
+          }
+          else{
+            return false;
+          }
+        }
+        else if (words[0] == "vfov"){
+          vfov = std::stod(words[2]);
+        }
+        else if (words[0] == "dist_to_focus"){
+          dist_to_focus = std::stod(words[2]);
+        }
+        else if (words[0] == "aspect_ratio"){
+          aspect_ratio = std::stod(words[2]);
+        }
+        else if (words[0] == "focal_opening"){
+          focal_opening = std::stod(words[2]);
         }
       }
       else if(words[0] == "END"){
-
-        if(has_origin && has_lower_left_corner && has_horizontal_axis && has_vertical_axis){
-          camera = new Camera(origin, lower_left_corner, vertical_axis, horizontal_axis);
-          return (words[1] == "CAMERA") ? true : false;
+        if(is_parallel){
+          camera = new Parallel_Camera(look_from, look_at, up, left, right, bottom, top, vp_normal);
         }
-        return false;
+        else if(is_perspective){
+          camera = new Perspective_Camera(look_from, look_at, up, vfov, aspect_ratio, dist_to_focus, focal_opening, vp_normal);
+        }
+        else{
+          return false;
+        }
+        return (words[1] == "CAMERA") ? true : false;
       }
       else{
         return false;
@@ -717,6 +788,7 @@ bool parse_shader(Shader *&shader, std::ifstream &input_file, int &line_number){
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
 
       if(words.size() == 3 && words[1] == "="){
 
@@ -823,6 +895,16 @@ void parse_file_name(Image &image, Shader *shader){
   output_file_name += "{" + std::to_string(image.get_antialiasing()) + "x}_";
   std::string shader_name = "";
 
+  Perspective_Camera *p_camera = dynamic_cast<Perspective_Camera*> (image.get_camera());
+  Parallel_Camera *o_camera = dynamic_cast<Parallel_Camera*> (image.get_camera());
+
+  if(p_camera != nullptr){
+    output_file_name += "{perspective}_";
+  }
+  if(o_camera != nullptr){
+    output_file_name += "{parallel}_";
+  }
+
   if(is_blinn_phong){
     Blinn_Phong *bp = dynamic_cast<Blinn_Phong*>(shader);
 
@@ -838,7 +920,7 @@ void parse_file_name(Image &image, Shader *shader){
       shader_name += "_specular";
     }
     if (shadow) {
-      output_file_name += "_shadow";
+      shader_name += "_shadow";
     }
   }
   else if(is_standard){
@@ -893,6 +975,7 @@ bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &
       std::string delim = " ";
 
       split_string(line, delim, words);
+      if(words.empty()){continue;}
 
       if(words[0] == "type"){
         if(!parse_type(words, type)){
@@ -985,6 +1068,7 @@ bool Parser::parse(Image &image, Shader *&shader){
         std::string delim = " ";
 
         split_string(line, delim, words);
+        if(words.empty()){continue;}
 
         //first non empty line must be BEGIN IMAGE
         if(words[0] == "BEGIN" and words[1] == "IMAGE"){

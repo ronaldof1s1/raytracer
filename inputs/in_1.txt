@@ -16,10 +16,24 @@ BEGIN IMAGE
 
   BEGIN CAMERA
 
-    origin = 0.0 0.0 1.0
-    lower_left_corner = -2.0 -1.0 -1.0
-    vertical_axis = 0.0 2.0 0.0
-    horizontal_axis = 4.0 0.0 0.0
+  type = perspective
+
+  look_from = 0 0 0
+  look_at = 0 0 1
+  up = 0 1 0
+  vp_normal = 0.00 0.00 0.00
+
+  #parallel arguments
+  #top = 0 1 0
+  #bottom = 0 -1 0
+  #left = -2 0 0
+  #right = 2 0 0
+
+  #perspective arguments
+  vfov = 90
+  aspect_ratio = 2
+  dist_to_focus = 1
+  focal_opening = 0.5
 
   END CAMERA
 

@@ -15,10 +15,10 @@ public:
     normal = norm;
   }
 
-  View_Plane(Point3 llc, Vector3 va, Vector3 ha, Vector3 norm = Vector3(0)){
+  View_Plane(Point3 llc, Vector3 ha, Vector3 va, Vector3 norm = Vector3(0)){
     lower_left_corner = llc;
-    vertical_axis = va;
     horizontal_axis = ha;
+    vertical_axis = va;
     normal = norm;
   }
 
