@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 #include "Image.h"
-#include "cameras/Oblique_Camera.h"
+#include "cameras/Parallel_Camera.h"
 #include "cameras/Perspective_Camera.h"
 #include "materials/Lambertian.h"
 #include "materials/Shiny.h"

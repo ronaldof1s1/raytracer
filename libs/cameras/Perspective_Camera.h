@@ -48,18 +48,20 @@ public:
 
 Ray Perspective_Camera::get_ray(double u, double v) const {
   Vector3 target = view_plane.lower_left_corner + u*view_plane.horizontal_axis + v*view_plane.vertical_axis;
-  target = unit_vector(target);
+  // target = unit_vector(target);
   Ray r(origin, target);
   if(focal_opening > 0){
     double x = (std::generate_canonical<double, std::numeric_limits<double>::digits>(random_generator)-0.5) * focal_opening;
     double y = (std::generate_canonical<double, std::numeric_limits<double>::digits>(random_generator)-0.5) * focal_opening;
 
-    double focal_target = (-focal_distance -origin.Z)/target.Z;
+    double focal_target = (focal_distance + origin.Z) / target.Z;
+    // std::cout << "focal_target: " << focal_target << '\n';
     Point3 focus_point = r.point_at(focal_target);
+    // std::cout << "focal_point: " << focus_point << '\n';
 
     Point3 new_origin = origin + Vector3(x, y, 0);
     // std::cout << "new_origin" << new_origin << '\n';
-    target = unit_vector(origin - focus_point);
+    target = unit_vector(focus_point - new_origin);
     // std::cout << "new_target" << target << '\n';
     r = Ray(new_origin, target);
   }

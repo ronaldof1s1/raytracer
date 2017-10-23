@@ -23,7 +23,7 @@ BEGIN IMAGE
   up = 0 1 0
   vp_normal = 0.00 0.00 0.00
 
-  #oblique arguments
+  #parallel arguments
   #top = 0 1 0
   #bottom = 0 -1 0
   #left = -2 0 0

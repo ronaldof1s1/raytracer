@@ -585,9 +585,9 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
   up = Vector3(0, 1, 0);
 
   bool is_perspective = false;
-  bool is_oblique = false;
+  bool is_parallel = false;
 
-  //oblique arguments
+  //parallel arguments
   Point3 left, right, top, bottom;
   left = Point3(-1,0,0);
   right = Point3(1,0,0);
@@ -669,15 +669,15 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
       }
       else if (words.size() == 3 && words[1] == "="){
         if(words[0] == "type"){
-          if(is_perspective or is_oblique){
+          if(is_perspective or is_parallel){
             std::cerr << "redefinition of camera type" << '\n';
             return false;
           }
           if(words[2] == "perspective"){
             is_perspective = true;
           }
-          else if (words[2] == "oblique"){
-            is_oblique = true;
+          else if (words[2] == "parallel"){
+            is_parallel = true;
           }
           else{
             return false;
@@ -697,8 +697,8 @@ bool parse_camera(Camera *&camera, std::ifstream &input_file, int &line_number){
         }
       }
       else if(words[0] == "END"){
-        if(is_oblique){
-          camera = new Oblique_Camera(look_from, look_at, up, left, right, bottom, top, vp_normal);
+        if(is_parallel){
+          camera = new Parallel_Camera(look_from, look_at, up, left, right, bottom, top, vp_normal);
         }
         else if(is_perspective){
           camera = new Perspective_Camera(look_from, look_at, up, vfov, aspect_ratio, dist_to_focus, focal_opening, vp_normal);
@@ -853,13 +853,13 @@ void parse_file_name(Image &image, Shader *shader){
   std::string shader_name = "";
 
   Perspective_Camera *p_camera = dynamic_cast<Perspective_Camera*> (image.get_camera());
-  Oblique_Camera *o_camera = dynamic_cast<Oblique_Camera*> (image.get_camera());
+  Parallel_Camera *o_camera = dynamic_cast<Parallel_Camera*> (image.get_camera());
 
   if(p_camera != nullptr){
     output_file_name += "{perspective}_";
   }
   if(o_camera != nullptr){
-    output_file_name += "{oblique}_";
+    output_file_name += "{parallel}_";
   }
 
   if(is_blinn_phong){
