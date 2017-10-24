@@ -18,8 +18,8 @@ BEGIN IMAGE
 
   type = perspective
 
-  look_from = 0 0 0
-  look_at = 0 0 1
+  look_from = 0 0 1
+  look_at = 0 0 0
   up = 0 1 0
   vp_normal = 0.00 0.00 0.00
 
@@ -30,10 +30,10 @@ BEGIN IMAGE
   #right = 2 0 0
 
   #perspective arguments
-  vfov = 90
+  vfov = 45
   aspect_ratio = 2
   dist_to_focus = 1
-  focal_opening = 0.5
+  focal_opening = 0.1
 
   END CAMERA
 
@@ -44,15 +44,15 @@ BEGIN IMAGE
     BEGIN BACKGROUND
 
       lower_left = 1.0 1.0 1.0
-      upper_left = 0.5 0.7 1.0
+      upper_left = 1 0 0
       lower_right = 1.0 1.0 1.0
-      upper_right = 0.5 0.7 1.0
+      upper_right = 1 0 0
 
     END BACKGROUND
 
     BEGIN LIGHT
 
-      type = spotlight
+      type = pointlight
       source = 0.0 0.0 1.0
       direction = 0.0 0.0 -1.0
       opening = 70
@@ -79,6 +79,24 @@ BEGIN IMAGE
 
     END OBJECT
 
+
+    BEGIN OBJECT
+
+      object = sphere
+      center = 1.0 0.0 -1.0
+      radius = 0.5
+
+      BEGIN MATERIAL
+
+        material = shiny # lambertian | shiny | metal | normal | cartoon
+        ambient = 0.1 0.1 0.1
+        diffuse = 0.0 0.5 0.0
+        specular = 0.9 0.9 0.9
+        specular_exponent = 64
+
+      END MATERIAL
+
+    END OBJECT
     BEGIN OBJECT
 
       object = sphere

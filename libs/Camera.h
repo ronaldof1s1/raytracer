@@ -16,7 +16,7 @@ public:
 
 	// Constructors & getters
 	Camera(Point3 look_from, Point3 look_at, Vector3 up){
-		Vector3 gaze = look_at - look_from;
+		Vector3 gaze = look_from - look_at;
 		Vector3 u,v,w;
 
 	  w = unit_vector(gaze);

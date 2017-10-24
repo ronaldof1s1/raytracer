@@ -10,6 +10,7 @@ class Perspective_Camera : public Camera{
 public:
   double vertical_fov;
   double aspect_ratio;
+  double distance_to_vp;
   double focal_distance;
   double focal_opening;
 
@@ -20,20 +21,24 @@ public:
     vertical_fov = vfov;
     focal_distance = dist_to_focus;
     focal_opening = ap;
+    Point3 vp_center = look_at - look_from;
+    distance_to_vp = vp_center.length();
+
 
     double theta = vfov * M_PI / 180;
-    double half_height = std::tan(theta/2);
+    double half_height = distance_to_vp/std::tan(theta/2);
     double half_width = aspect_ratio * half_height;
-
-    Vector3 direction = vp_normal;
-    if (vp_normal == Vector3(0)){
-      direction = -std::get<2>(frame);
-    }
 
     Vector3 u = std::get<0>(frame);
     Vector3 v = std::get<1>(frame);
+    Vector3 w = std::get<2>(frame);
 
-    Vector3 llc = origin + direction*focal_distance - half_width*u - half_height*v;
+    Vector3 direction = vp_normal;
+    if (vp_normal == Vector3(0)){
+      direction = unit_vector(-w);
+    }
+
+    Vector3 llc = origin  + direction*distance_to_vp - half_width*u - half_height*v;
     Vector3 ha = 2*half_width*u;
     Vector3 va = 2*half_height*v;
 
@@ -48,22 +53,23 @@ public:
 
 Ray Perspective_Camera::get_ray(double u, double v) const {
   Vector3 target = view_plane.lower_left_corner + u*view_plane.horizontal_axis + v*view_plane.vertical_axis;
-  // target = unit_vector(target);
-  Ray r(origin, target);
+  target = target - origin;
+
+  Vector3 frame_u = std::get<0>(frame);
+  Vector3 frame_v = std::get<1>(frame);
+
+  Ray r(origin, unit_vector(target));
   if(focal_opening > 0){
-    double x = (std::generate_canonical<double, std::numeric_limits<double>::digits>(random_generator)-0.5) * focal_opening;
-    double y = (std::generate_canonical<double, std::numeric_limits<double>::digits>(random_generator)-0.5) * focal_opening;
+    Vector3 sample = (random_vector_in_unit_disk()) * focal_opening;
 
-    double focal_target = (focal_distance + origin.Z) / target.Z;
-    // std::cout << "focal_target: " << focal_target << '\n';
-    Point3 focus_point = r.point_at(focal_target);
-    // std::cout << "focal_point: " << focus_point << '\n';
+    double focal_target = -(focal_distance + origin.z()) / target.z();
 
-    Point3 new_origin = origin + Vector3(x, y, 0);
-    // std::cout << "new_origin" << new_origin << '\n';
-    target = unit_vector(focus_point - new_origin);
-    // std::cout << "new_target" << target << '\n';
-    r = Ray(new_origin, target);
+    Point3 focus_point = r.point_at(focal_distance);
+
+    Point3 new_origin = origin + (sample.x() * frame_u) + (sample.y() * frame_v);
+    target = focus_point - new_origin;
+
+    r = Ray(new_origin, unit_vector(target));
   }
   return r;
 }
