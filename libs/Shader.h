@@ -33,10 +33,10 @@
       return (1-y) * bottom + y * top;
     }
 
-    bool Shader::is_shadow(const Ray &ray, const Scene &scene, const double camera_t) const{
+    bool Shader::is_shadow(const Ray &ray, const Scene &scene, const double light_t) const{
 
       hit_record rec;
-      if(scene.hit_first_object(ray, rec, camera_t)){
+      if(scene.hit_first_object(ray, rec, light_t)){
         return true;
       }
       return false;
