@@ -302,7 +302,7 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
   bool has_material = false;
 
   bool is_sphere = false;
-
+  
   std::string line;
 
   while (std::getline(input_file, line, '\n')) {

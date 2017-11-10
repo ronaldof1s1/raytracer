@@ -20,6 +20,7 @@
 #include "lights/Pointlight.h"
 #include "lights/Spotlight.h"
 #include "hitables/Sphere.h"
+#include "hitables/Triangle.h"
 
 class Parser {
   std::string input_stream;
