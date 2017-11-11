@@ -3,6 +3,7 @@
 bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard, is_cel;
 bool shadow;
 int iterations;
+std::map<std::string, Material*> materials;
 
 bool string_to_bool(std::string word, bool &result){
   if(word == "true"){
@@ -125,14 +126,17 @@ bool parse_antialiasing(std::vector< std::string > &words, int &antialiasing){
   return false;
 }
 
-bool parse_material(Material *&material, std::ifstream &input_file, int &line_number){
+bool parse_material(std::ifstream &input_file, int &line_number){
+  Material* material;
   RGB ambient, diffuse, specular, albedo;
   RGB shadow_color, outline;
-  bool is_lambertian, is_shiny, is_metal, is_normal, is_cartoon;
+  bool is_lambertian, is_shiny, is_metal, is_normal, is_cartoon, has_id;
   int specular_exponent = 0;
   double fuzziness = 1.0;
-  is_cartoon = is_normal = is_metal = is_lambertian = is_shiny = false;
+  is_cartoon = is_normal = is_metal = is_lambertian = is_shiny = has_id = false;
   ambient = diffuse = specular = albedo = shadow_color = outline = RGB(0);
+  std::string id = "";
+
   std::string line = "";
 
   while (std::getline(input_file, line, '\n')) {
@@ -175,6 +179,10 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
           else{
             return false;
           }
+        }
+        else if (words[0] == "ID"){
+          id = words[2];
+          has_id = true;
         }
         else if(words[0] == "ambient"){
 
@@ -264,6 +272,10 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
         }
       }
       else if(words[0] == "END"){
+        if(!has_id){
+          std::cerr << "material without id" << '\n';
+          return false;
+        }
         if(is_lambertian){
           material = new Lambertian(ambient, albedo);
         }
@@ -282,6 +294,7 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
         else{
           return false;
         }
+        materials.emplace(id, material);
         return (words[1] == "MATERIAL") ? true : false;
       }
       else{
@@ -293,6 +306,9 @@ bool parse_material(Material *&material, std::ifstream &input_file, int &line_nu
 }
 
 bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+  if(materials.empty()){
+    return false;
+  }
   Point3 center;
   Material *material;
   double radius = 1.0;
@@ -302,7 +318,7 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
   bool has_material = false;
 
   bool is_sphere = false;
-  
+
   std::string line;
 
   while (std::getline(input_file, line, '\n')) {
@@ -347,23 +363,10 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
           has_radius = true;
         }
       }
-      else if(words[0] == "BEGIN"){
-        if(words.size() == 2){
-          if(words[1] == "MATERIAL"){
-            if(!parse_material(material, input_file, line_number)){
-
-              // std::cout << "aqui" << '\n';
-              return false;
-            }
-            has_material = true;
-          }
-          else{
-            return false;
-          }
-        }
-        else{
-          return false;
-        }
+      else if(words[0] == "material"){
+        std::string id = words[2];
+        material = materials[id];
+        has_material = true;
       }
       else if(words[0] == "END"){
         if(words.size() == 2){
@@ -1027,6 +1030,14 @@ bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &
           if(!parse_camera(camera, input_file, line_number)){
             return false;
           }
+        }
+        else if(words[1] == "MATERIAL"){
+          if(!parse_material(input_file, line_number)){
+            return false;
+          }
+        }
+        else{
+          return false;
         }
       }
       else if(words[0] == "END"){

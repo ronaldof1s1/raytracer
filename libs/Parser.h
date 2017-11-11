@@ -2,6 +2,7 @@
 #define PARSER_H_
 #include <string>
 #include <fstream>
+#include <map>
 #include "Image.h"
 #include "cameras/Parallel_Camera.h"
 #include "cameras/Perspective_Camera.h"

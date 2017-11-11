@@ -48,7 +48,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
   //if bacward culling is active
   if(culling){
 
-    if(det < epsilon){
+    if(det < EPSILON){
       return false;
     }
 
@@ -90,7 +90,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
       return false;
     }
 
-    Vector3 Q = (T, edge_1);
+    Vector3 Q = cross(T, edge_1);
 
     v = dot(r.get_direction(), Q) * inv_det;
 
