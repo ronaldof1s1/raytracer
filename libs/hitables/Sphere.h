@@ -6,7 +6,8 @@
 class Sphere : public Hitable{
 
   double radius;
-
+  Point3 center;
+  
 public:
     Sphere(){
       center = Point3(0); //create sphere on the center

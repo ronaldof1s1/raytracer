@@ -18,9 +18,10 @@ build/render.o: src/render.cpp src/../libs/Parser.h src/../libs/Image.h \
  src/../libs/hitables/Sphere.h src/../libs/hitables/../Hitable.h \
  src/../libs/hitables/../materials/Lambertian.h \
  src/../libs/hitables/Sphere.cpp src/../libs/hitables/Sphere.h \
- src/../libs/Parser.cpp src/../libs/Parser.h src/../libs/Raytrace.h \
- src/../libs/Shader.h src/../libs/Raytrace.cpp src/../libs/Raytrace.h \
- src/../libs/Image.h src/../libs/Shader.h
+ src/../libs/hitables/Triangle.h src/../libs/Parser.cpp \
+ src/../libs/Parser.h src/../libs/Raytrace.h src/../libs/Shader.h \
+ src/../libs/Raytrace.cpp src/../libs/Raytrace.h src/../libs/Image.h \
+ src/../libs/Shader.h
 
 src/../libs/Parser.h:
 
@@ -101,6 +102,8 @@ src/../libs/hitables/../materials/Lambertian.h:
 src/../libs/hitables/Sphere.cpp:
 
 src/../libs/hitables/Sphere.h:
+
+src/../libs/hitables/Triangle.h:
 
 src/../libs/Parser.cpp:
 

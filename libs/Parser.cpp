@@ -307,8 +307,10 @@ bool parse_material(std::ifstream &input_file, int &line_number){
 
 bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   if(materials.empty()){
+    std::cerr << "must declare materials before objects" << '\n';
     return false;
   }
+  
   Point3 center;
   Material *material;
   double radius = 1.0;

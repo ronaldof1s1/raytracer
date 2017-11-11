@@ -7,8 +7,7 @@
 
 class Hitable {
 protected:
-	  Point3 center; //all objects have a center
-		Material *material; //all objects have a material
+	  Material *material; //all objects have a material
 
 public:
 

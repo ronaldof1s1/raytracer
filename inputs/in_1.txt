@@ -37,6 +37,39 @@ BEGIN IMAGE
 
   END CAMERA
 
+  BEGIN MATERIAL
+
+    ID = blueish_shiny
+    material = shiny # lambertian | shiny | metal | normal | cartoon
+    ambient = 0.1 0.1 0.1
+    diffuse = 0.0 0.3 0.8
+    specular = 0.9 0.9 0.9
+    specular_exponent = 64
+
+  END MATERIAL
+
+  BEGIN MATERIAL
+
+    ID = green_shiny
+    material = shiny # lambertian | shiny | metal | normal | cartoon
+    ambient = 0.1 0.1 0.1
+    diffuse = 0.0 0.5 0.0
+    specular = 0.9 0.9 0.9
+    specular_exponent = 64
+
+  END MATERIAL
+
+  BEGIN MATERIAL
+
+    ID = gray_shiny
+    material = shiny # lambertian | shiny | metal | normal | cartoon
+    ambient = 0.1 0.1 0.1
+    diffuse = 0.4 0.4 0.4
+    specular = 1.0 1.0 1.0
+    specular_exponent = 4
+
+  END MATERIAL
+
   BEGIN SCENE
 
     ambient_light = 0.4 0.4 0.4
@@ -66,16 +99,7 @@ BEGIN IMAGE
       object = sphere
       center = 0.0 0.0 -1.0
       radius = 0.5
-
-      BEGIN MATERIAL
-
-        material = shiny # lambertian | shiny | metal | normal | cartoon
-        ambient = 0.1 0.1 0.1
-        diffuse = 0.0 0.3 0.8
-        specular = 0.9 0.9 0.9
-        specular_exponent = 64
-
-      END MATERIAL
+      material = blueish_shiny
 
     END OBJECT
 
@@ -85,16 +109,8 @@ BEGIN IMAGE
       object = sphere
       center = 1.0 0.0 -1.0
       radius = 0.5
+      material = green_shiny
 
-      BEGIN MATERIAL
-
-        material = shiny # lambertian | shiny | metal | normal | cartoon
-        ambient = 0.1 0.1 0.1
-        diffuse = 0.0 0.5 0.0
-        specular = 0.9 0.9 0.9
-        specular_exponent = 64
-
-      END MATERIAL
 
     END OBJECT
     BEGIN OBJECT
@@ -102,16 +118,7 @@ BEGIN IMAGE
       object = sphere
       center = 0.0 -100.5 -1.0
       radius = 100.0
-
-      BEGIN MATERIAL
-
-        material = shiny # lambertian | shiny | metal | normal | cartoon
-        ambient = 0.1 0.1 0.1
-        diffuse = 0.4 0.4 0.4
-        specular = 1.0 1.0 1.0
-        specular_exponent = 4
-
-      END MATERIAL
+      material = gray_shiny
 
     END OBJECT
 
