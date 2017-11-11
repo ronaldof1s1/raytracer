@@ -46,7 +46,7 @@ public:
   }
 
   Ray get_ray(double row, double col, int n_rows, int n_cols){
-    Camera::get_ray(row, col, n_rows, n_cols);
+    return Camera::get_ray(row, col, n_rows, n_cols);
   }
   Ray get_ray(double u, double v) const override;
 };
@@ -62,7 +62,7 @@ Ray Perspective_Camera::get_ray(double u, double v) const {
   if(focal_opening > 0){
     Vector3 sample = (random_vector_in_unit_disk()) * focal_opening;
 
-    double focal_target = -(focal_distance + origin.z()) / target.z();
+    // double focal_target = -(focal_distance + origin.z()) / target.z();
 
     Point3 focus_point = r.point_at(focal_distance);
 

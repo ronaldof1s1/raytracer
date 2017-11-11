@@ -23,7 +23,7 @@ public:
   }
 
   Ray get_ray(double row, double col, int n_rows, int n_cols){
-    Camera::get_ray(row, col, n_rows, n_cols);
+      return Camera::get_ray(row, col, n_rows, n_cols);
   }
   Ray get_ray(double u, double v) const override;
 };
