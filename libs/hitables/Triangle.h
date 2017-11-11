@@ -56,7 +56,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
     //T = O - v0
     Vector3 T = r.get_origin() - v0;
 
-    u = dot(P, T);
+    u = dot(T, P);
 
     if(u < 0.0 or u > det){
       return false;
@@ -95,7 +95,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
 
     v = dot(r.get_direction(), Q) * inv_det;
 
-    if(v < 0.0 or v > 1.0){
+    if(v < 0.0 or u + v > 1.0){
       return false;
     }
 
