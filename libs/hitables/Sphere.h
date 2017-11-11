@@ -7,7 +7,7 @@ class Sphere : public Hitable{
 
   double radius;
   Point3 center;
-  
+
 public:
     Sphere(){
       center = Point3(0); //create sphere on the center
@@ -23,7 +23,8 @@ public:
       radius = radius_;
       material = mat_;
     }
-
+    
+    Point3 get_center(){return center;}
     double get_radius(){return radius;}
 
     virtual bool hit( const Ray & r, double t_min, double t_max, hit_record & rec) const;

@@ -305,21 +305,14 @@ bool parse_material(std::ifstream &input_file, int &line_number){
   return false;
 }
 
-bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number){
-  if(materials.empty()){
-    std::cerr << "must declare materials before objects" << '\n';
-    return false;
-  }
-  
-  Point3 center;
+bool parse_sphere(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+  Point3 center = Point3(0);
+
   Material *material;
+
   double radius = 1.0;
 
-  bool has_center = false;
-  bool has_radius = false;
   bool has_material = false;
-
-  bool is_sphere = false;
 
   std::string line;
 
@@ -339,30 +332,17 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
       split_string(line, delim, words);
       if(words.empty()){continue;}
 
-      if(words[0] == "object"){
-        if(words.size() == 3 and words[1] == "="){
-          if(words[2] == "sphere"){
-            is_sphere = true;
-          }
-          else{
-            return false;
+      if(words[0] == "center"){
+          if(words.size() == 5 and words[1] == "="){
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            center = Point3(x,y,z);
           }
         }
-      }
-
-      else if(words[0] == "center"){
-        if(words.size() == 5 and words[1] == "="){
-          double x = std::stod(words[2]);
-          double y = std::stod(words[3]);
-          double z = std::stod(words[4]);
-          center = Point3(x,y,z);
-          has_center = true;
-        }
-      }
       else if(words[0] == "radius"){
         if(words.size() == 3 and words[1] == "="){
           radius = std::stod(words[2]);
-          has_radius = true;
         }
       }
       else if(words[0] == "material"){
@@ -372,19 +352,70 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
       }
       else if(words[0] == "END"){
         if(words.size() == 2){
-          if(!has_center or !has_material){
+          if(!has_material){
             return false;
           }
-          if(is_sphere){
-            if(!has_radius){
-              return false;
-            }
-            hitable = new Sphere(center, radius, material);
-            return (words[1] == "OBJECT") ? true : false;
-          }
+          hitable = new Sphere(center, radius, material);
+          return (words[1] == "SPHERE") ? true : false;
         }
+        return false;
       }
       else{
+        return false;
+      }
+    }
+  }
+  return false;
+
+}
+
+bool parse_triangle(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+
+}
+
+bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+  if(materials.empty()){
+    std::cerr << "must declare materials before objects" << '\n';
+    return false;
+  }
+
+  std::string line;
+
+  while (std::getline(input_file, line, '\n')) {
+
+    line_number++;
+
+    clean_up(line);
+    // std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words.empty()){continue;}
+
+      if(words[0] == "BEGIN"){
+        if(words[1] == "SPHERE"){
+          if(!parse_sphere(hitable, input_file, line_number)){
+            return false;
+          }
+        }
+        else if(words[1] == "TRIANGLE"){
+          if(!parse_triangle(hitable, input_file, line_number)){
+            return false;
+          }
+        }
+        else{
+          return false;
+        }
+      }
+      else if(words[0] == "END"){
+        return (words[1] == "OBJECT") ? true : false;
+      }
+      else {
         return false;
       }
     }

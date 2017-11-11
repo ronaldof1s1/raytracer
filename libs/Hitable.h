@@ -11,7 +11,6 @@ protected:
 
 public:
 
-  Point3 get_center(){return center;}
 	Material* get_material(){return material;}
 
   virtual bool hit(const Ray & r, double t_min, double t_max, hit_record & rec) const = 0;

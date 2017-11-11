@@ -33,7 +33,7 @@ BEGIN IMAGE
   vfov = 45
   aspect_ratio = 2
   dist_to_focus = 1
-  focal_opening = 0.1
+  focal_opening = 0
 
   END CAMERA
 
@@ -96,29 +96,31 @@ BEGIN IMAGE
 
     BEGIN OBJECT
 
-      object = sphere
-      center = 0.0 0.0 -1.0
-      radius = 0.5
-      material = blueish_shiny
+      BEGIN SPHERE
+        center = 0.0 0.0 -1.0
+        radius = 0.5
+        material = blueish_shiny
+      END SPHERE
 
     END OBJECT
 
 
     BEGIN OBJECT
 
-      object = sphere
-      center = 1.0 0.0 -1.0
-      radius = 0.5
-      material = green_shiny
-
+      BEGIN SPHERE
+        center = 1.0 0.0 -1.0
+        radius = 0.5
+        material = green_shiny
+      END SPHERE
 
     END OBJECT
     BEGIN OBJECT
 
-      object = sphere
-      center = 0.0 -100.5 -1.0
-      radius = 100.0
-      material = gray_shiny
+      BEGIN SPHERE
+        center = 0.0 -100.5 -1.0
+        radius = 100.0
+        material = gray_shiny
+      END SPHERE
 
     END OBJECT
 
