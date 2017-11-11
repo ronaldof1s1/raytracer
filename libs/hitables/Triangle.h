@@ -25,6 +25,7 @@ public:
     v2 = v2_;
     material = mat;
     culling = cull;
+    // std::cout << v0 << " " << v1 << " " << v2 << '\n';
   }
 
   virtual bool hit(const Ray & r, double t_min, double t_max, hit_record & rec) const;
@@ -108,6 +109,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
     Vector3 normal = cross(edge_1, edge_2);
     rec.normal = unit_vector(normal);
   }
+  // std::cout << "aqui" << '\n';
   return true;
 }
 

@@ -370,6 +370,74 @@ bool parse_sphere(Hitable *&hitable, std::ifstream &input_file, int &line_number
 }
 
 bool parse_triangle(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+  Point3 v1, v2, v3;
+  v1 = v2 = v3 = Point3(0);
+  bool culling = true;
+  Material *material;
+  bool has_material = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line, '\n')) {
+
+    line_number++;
+
+    clean_up(line);
+    // std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words.empty()){continue;}
+
+      if (words[1] == "=") {
+        if(words[0] == "v1"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          v1 = Point3(x,y,z);
+        }
+        else if(words[0] == "v2"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          v2 = Point3(x,y,z);
+        }
+        else if(words[0] == "v3"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          v3 = Point3(x,y,z);
+        }
+        else if(words[0] == "culling"){
+          if (!string_to_bool(words[2], culling)){
+            return false;
+          }
+        }
+        else if(words[0] == "material"){
+          std::string id = words[2];
+          material = materials[id];
+          has_material = true;
+        }
+        else{
+          return false;
+        }
+      }
+      else if(words[0] == "END"){
+        if(!has_material){
+          return false;
+        }
+        hitable = new Triangle(v1,v2,v3,material,culling);
+        return (words[1] == "TRIANGLE") ? true : false;
+      }
+
+    }
+  }
+  return false;
 
 }
 
