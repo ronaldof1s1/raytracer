@@ -33,6 +33,8 @@ public:
 };
 
 bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) const{
+  Vector3 origin = r.get_origin();
+  Vector3 direction = r.get_direction();
   Vector3 edge_1, edge_2;
   edge_1 = v1 - v0;
   edge_2 = v2 - v0;
@@ -40,7 +42,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
   double u, v, t;
 
   // P = D X E_2
-  Vector3 P = cross(r.get_direction(), edge_2);
+  Vector3 P = cross(direction, edge_2);
 
   double det = dot(edge_1, P);
   double inv_det = 1/det;
@@ -54,7 +56,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
     }
 
     //T = O - v0
-    Vector3 T = r.get_origin() - v0;
+    Vector3 T = origin - v0;
 
     u = dot(T, P);
 
@@ -64,7 +66,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
     //Q = T x E_1
     Vector3 Q = cross(T, edge_1);
 
-    v = dot(r.get_direction(), Q);
+    v = dot(direction, Q);
 
     if(v < 0.0 or u + v > det){
       return false;
@@ -83,7 +85,7 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
       return false;
     }
 
-    Vector3 T = r.get_origin() - v0;
+    Vector3 T = origin - v0;
 
     u = dot(T,P) * inv_det;
 
@@ -93,13 +95,18 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
 
     Vector3 Q = cross(T, edge_1);
 
-    v = dot(r.get_direction(), Q) * inv_det;
+    v = dot(direction, Q) * inv_det;
 
     if(v < 0.0 or u + v > 1.0){
       return false;
     }
 
     t = dot(edge_2, Q) * inv_det;
+
+    if (t< EPSILON){
+      return false;
+    }
+    
   }
 
   if(t < t_max and t > t_min){
@@ -109,7 +116,6 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
     Vector3 normal = cross(edge_1, edge_2);
     rec.normal = unit_vector(normal);
   }
-  // std::cout << "aqui" << '\n';
   return true;
 }
 

@@ -30,7 +30,7 @@ BEGIN IMAGE
   #right = 2 0 0
 
   #perspective arguments
-  vfov = 45
+  vfov = 70
   aspect_ratio = 2
   dist_to_focus = 1
   focal_opening = 0
@@ -86,7 +86,7 @@ BEGIN IMAGE
     BEGIN LIGHT
 
       type = pointlight
-      source = 0.0 0.0 1.0
+      source = 1.0 5.0 3.0
       direction = 0.0 0.0 -1.0
       opening = 70
       atenuation = 1
@@ -128,10 +128,10 @@ BEGIN IMAGE
 
       BEGIN TRIANGLE
 
-        v1 = 2.0 2.0 -1.0
-        v2 = 3.0 3.0 -1.0
-        v3 = 2.0 3.0 -1.0
-        culling = true
+        v1 = 0.0 0.5 0.1
+        v2 = 1.0 1.5 -1.5
+        v3  = 0.0 1.5 -1.5
+        culling = false
         material = green_shiny
 
       END TRIANGLE
