@@ -157,7 +157,119 @@ namespace utility{
     }
     return m;
   }
-  
-  static Matrix inverse_matrix(Matrix m1);
+
+  inline double Matrix::determinant(){
+
+    double det_0 = matrix[1][1] * matrix[2][2] * matrix[3][3] +
+                   matrix[1][2] * matrix[2][3] * matrix[3][1] +
+                   matrix[1][3] * matrix[2][1] * matrix[3][2];
+
+  	det_0 -= matrix[3][1] * matrix[2][2] * matrix[1][3] +
+             matrix[3][2] * matrix[2][3] * matrix[1][1] +
+             matrix[3][3] * matrix[2][1] * matrix[1][2];
+
+  	double det_1 = matrix[1][0] * matrix[2][2] * matrix[3][3] +
+                   matrix[1][2] * matrix[2][3] * matrix[3][0] +
+                   matrix[1][3] * matrix[2][0] * matrix[3][2];
+
+  	det_1 -= matrix[3][0] * matrix[2][2] * matrix[1][3] +
+             matrix[3][2] * matrix[2][3] * matrix[1][0] +
+             matrix[3][3] * matrix[2][0] * matrix[1][2];
+
+  	double det_2 = matrix[1][0] * matrix[2][1] * matrix[3][3] +
+                   matrix[1][1] * matrix[2][3] * matrix[3][0] +
+                   matrix[1][3] * matrix[2][0] * matrix[3][1];
+
+  	det_2 -= matrix[3][0] * matrix[2][1] * matrix[1][3] +
+             matrix[3][1] * matrix[2][3] * matrix[1][0] +
+             matrix[3][3] * matrix[2][0] * matrix[1][1];
+
+  	double det_3 = matrix[1][0] * matrix[2][1] * matrix[3][2] +
+                   matrix[1][1] * matrix[2][2] * matrix[3][0] +
+                   matrix[1][2] * matrix[2][0] * matrix[3][1];
+
+  	det_3 -= matrix[3][0] * matrix[2][1] * matrix[1][2] +
+             matrix[3][1] * matrix[2][2] * matrix[1][0] +
+             matrix[3][2] * matrix[2][0] * matrix[1][1];
+
+  	double det = matrix[0][0]*det_0 - matrix[0][1]*det_1 + matrix[0][2]*det_2 - matrix[0][3]*det_3;
+
+  	return det;
+  }
+
+  static Matrix inverse_matrix(Matrix m){
+    double d = m.determinant();
+    assert(abs(d) > 0.00001);
+
+  	double cof[4][4];
+
+  	cof[0][0] = m.matrix[1][1] * m.matrix[2][2] * m.matrix[3][3] + m.matrix[1][2] * m.matrix[2][3] * m.matrix[3][1] + m.matrix[1][3] * m.matrix[2][1] * m.matrix[3][2]
+  		        - (m.matrix[3][1]*m.matrix[2][2]*m.matrix[1][3] + m.matrix[3][2]*m.matrix[2][3]*m.matrix[1][1] + m.matrix[3][3]*m.matrix[2][1]*m.matrix[1][2]);
+
+    cof[0][1] = m.matrix[1][0] * m.matrix[2][2]*m.matrix[3][3] + m.matrix[1][2] * m.matrix[2][3] * m.matrix[3][0] + m.matrix[1][3]*m.matrix[2][0]*m.matrix[3][2]
+  	          - (m.matrix[3][0]*m.matrix[2][2]*m.matrix[1][3] + m.matrix[3][2]*m.matrix[2][3]*m.matrix[1][0] + m.matrix[3][3]*m.matrix[2][0]*m.matrix[1][2]);
+
+    cof[0][1] *= -1;
+
+    cof[0][2] = m.matrix[1][0]*m.matrix[2][1]*m.matrix[3][3] + m.matrix[1][1]*m.matrix[2][3]*m.matrix[3][0] + m.matrix[1][3]*m.matrix[2][0]*m.matrix[3][1]
+  	  - (m.matrix[3][0]*m.matrix[2][1]*m.matrix[1][3] + m.matrix[3][1]*m.matrix[2][3]*m.matrix[1][0] + m.matrix[3][3]*m.matrix[2][0]*m.matrix[1][1]);
+
+    cof[0][3] = m.matrix[1][0]*m.matrix[2][1]*m.matrix[3][2] + m.matrix[1][1]*m.matrix[2][2]*m.matrix[3][0] + m.matrix[1][2]*m.matrix[2][0]*m.matrix[3][1]
+  	  - (m.matrix[3][0]*m.matrix[2][1]*m.matrix[1][2] + m.matrix[3][1]*m.matrix[2][2]*m.matrix[1][0] + m.matrix[3][2]*m.matrix[2][0]*m.matrix[1][1]);
+
+    cof[0][3] *= -1;
+
+    cof[1][0] = m.matrix[0][1]*m.matrix[2][2]*m.matrix[3][3] + m.matrix[0][2]*m.matrix[2][3]*m.matrix[3][1] + m.matrix[0][3]*m.matrix[2][1]*m.matrix[3][2]
+    	- m.matrix[3][1]*m.matrix[2][2]*m.matrix[0][3] - m.matrix[3][2]*m.matrix[2][3]*m.matrix[0][1] - m.matrix[3][3]*m.matrix[2][1]*m.matrix[0][2];
+
+    cof[1][0] *= -1;
+
+    cof[1][1] = m.matrix[0][0]*m.matrix[2][2]*m.matrix[3][3] + m.matrix[0][2]*m.matrix[2][3]*m.matrix[3][0] + m.matrix[0][3]*m.matrix[2][0]*m.matrix[3][2]
+    	- m.matrix[3][0]*m.matrix[2][2]*m.matrix[0][3] - m.matrix[3][2]*m.matrix[2][3]*m.matrix[0][0] - m.matrix[3][3]*m.matrix[2][0]*m.matrix[0][2];
+
+    cof[1][2] = m.matrix[0][0]*m.matrix[2][1]*m.matrix[3][3] + m.matrix[0][1]*m.matrix[2][3]*m.matrix[3][0] + m.matrix[0][3]*m.matrix[2][0]*m.matrix[3][1]
+    	- m.matrix[3][0]*m.matrix[2][1]*m.matrix[0][3] - m.matrix[3][1]*m.matrix[2][3]*m.matrix[0][0] - m.matrix[3][3]*m.matrix[2][0]*m.matrix[0][1];
+
+    cof[1][2] *= -1;
+
+    cof[1][3] = m.matrix[0][0]*m.matrix[2][1]*m.matrix[3][2] + m.matrix[0][1]*m.matrix[2][2]*m.matrix[3][0] + m.matrix[0][2]*m.matrix[2][0]*m.matrix[3][1]
+    	- m.matrix[3][0]*m.matrix[2][1]*m.matrix[0][2] - m.matrix[3][1]*m.matrix[2][2]*m.matrix[0][0] - m.matrix[3][2]*m.matrix[2][0]*m.matrix[0][1];
+
+    cof[2][0] = m.matrix[0][1]*m.matrix[1][2]*m.matrix[3][3] + m.matrix[0][2]*m.matrix[1][3]*m.matrix[3][1] + m.matrix[0][3]*m.matrix[1][1]*m.matrix[3][2]
+    	- m.matrix[3][1]*m.matrix[1][2]*m.matrix[0][3] - m.matrix[3][2]*m.matrix[1][3]*m.matrix[0][1] - m.matrix[3][3]*m.matrix[1][1]*m.matrix[0][2];
+
+    cof[2][1] = m.matrix[0][0]*m.matrix[1][2]*m.matrix[3][3] + m.matrix[0][2]*m.matrix[1][3]*m.matrix[3][0] + m.matrix[0][3]*m.matrix[1][0]*m.matrix[3][2]
+    	- m.matrix[3][0]*m.matrix[1][2]*m.matrix[0][3] - m.matrix[3][2]*m.matrix[1][3]*m.matrix[0][0] - m.matrix[3][3]*m.matrix[1][0]*m.matrix[0][2];
+
+    cof[2][1] *= -1;
+
+    cof[2][2] = m.matrix[0][0]*m.matrix[1][1]*m.matrix[3][3] + m.matrix[0][1]*m.matrix[1][3]*m.matrix[3][0] + m.matrix[0][3]*m.matrix[1][0]*m.matrix[3][1]
+    	- m.matrix[3][0]*m.matrix[1][1]*m.matrix[0][3] - m.matrix[3][1]*m.matrix[1][3]*m.matrix[0][0] - m.matrix[3][3]*m.matrix[1][0]*m.matrix[0][1];
+
+    cof[2][3] = m.matrix[0][0]*m.matrix[1][1]*m.matrix[3][2] + m.matrix[0][1]*m.matrix[1][2]*m.matrix[3][0] + m.matrix[0][2]*m.matrix[1][0]*m.matrix[3][1]
+    	- m.matrix[3][0]*m.matrix[1][1]*m.matrix[0][2] - m.matrix[3][1]*m.matrix[1][2]*m.matrix[0][0] - m.matrix[3][2]*m.matrix[1][0]*m.matrix[0][1];
+
+    cof[2][3] *= -1;
+
+    cof[3][0] = m.matrix[0][1]*m.matrix[1][2]*m.matrix[2][3] + m.matrix[0][2]*m.matrix[1][3]*m.matrix[2][1] + m.matrix[0][3]*m.matrix[1][1]*m.matrix[2][2]
+    	- m.matrix[2][1]*m.matrix[1][2]*m.matrix[0][3] - m.matrix[2][2]*m.matrix[1][3]*m.matrix[0][1] - m.matrix[2][3]*m.matrix[1][1]*m.matrix[0][2];
+
+    cof[3][0] *= -1;
+
+    cof[3][1] = m.matrix[0][0]*m.matrix[1][2]*m.matrix[2][3] + m.matrix[0][2]*m.matrix[1][3]*m.matrix[2][0] + m.matrix[0][3]*m.matrix[1][0]*m.matrix[2][2]
+    	- m.matrix[2][0]*m.matrix[1][2]*m.matrix[0][3] - m.matrix[2][2]*m.matrix[1][3]*m.matrix[0][0] - m.matrix[2][3]*m.matrix[1][0]*m.matrix[0][2];
+
+    cof[3][2] = m.matrix[0][0]*m.matrix[1][1]*m.matrix[2][3] + m.matrix[0][1]*m.matrix[1][3]*m.matrix[2][0] + m.matrix[0][3]*m.matrix[1][0]*m.matrix[2][1]
+    	- m.matrix[2][0]*m.matrix[1][1]*m.matrix[0][3] - m.matrix[2][1]*m.matrix[1][3]*m.matrix[0][0] - m.matrix[2][3]*m.matrix[1][0]*m.matrix[0][1];
+
+  	cof[3][2] *= -1;
+
+  	cof[3][3] = m.matrix[0][0]*m.matrix[1][1]*m.matrix[2][2] + m.matrix[0][1]*m.matrix[1][2]*m.matrix[2][0] + m.matrix[0][2]*m.matrix[1][0]*m.matrix[2][1]
+  		- m.matrix[2][0]*m.matrix[1][1]*m.matrix[0][2] - m.matrix[2][1]*m.matrix[1][2]*m.matrix[0][0] - m.matrix[2][2]*m.matrix[1][0]*m.matrix[0][1];
+
+  	Matrix inv(cof);
+  	inv *= (1/d);
+  	return transpose_matrix(inv);
+  }
 
 }

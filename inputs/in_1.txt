@@ -131,7 +131,7 @@ BEGIN IMAGE
         v1 = 2.0 2.0 -1.0
         v2 = 3.0 3.0 -1.0
         v3 = 2.0 3.0 -1.0
-        culling = false
+        culling = true
         material = green_shiny
 
       END TRIANGLE
