@@ -339,7 +339,13 @@ namespace utility{
   }
 
   static Matrix translation_matrix(Vector3 v){
+    Matrix m = identity_matrix();
 
+    m.matrix[0][3] = v[0];
+    m.matrix[1][3] = v[1];
+    m.matrix[2][3] = v[2];
+
+    return m;
   }
 
 

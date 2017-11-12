@@ -1,7 +1,7 @@
 #ifndef _TRIANGLE_H_
 #define _TRIANGLE_H_
 
-#define EPSILON 0.000001
+#define EPSILON 0.0001
 
 #include "../Hitable.h"
 
