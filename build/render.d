@@ -1,10 +1,11 @@
-build/render.o: src/render.cpp src/../libs/Parser.h src/../libs/Image.h \
- src/../libs/Scene.h src/../libs/Hitable.h src/../libs/utility/Ray.h \
- src/../libs/utility/Vector3.h src/../libs/utility/Vector3.inl \
- src/../libs/Material.h src/../libs/lights/Directional_light.h \
- src/../libs/lights/../Light.h src/../libs/lights/Pointlight.h \
- src/../libs/lights/Spotlight.h src/../libs/Scene.cpp \
- src/../libs/Camera.h src/../libs/utility/Vector3.h \
+build/render.o: src/render.cpp src/../libs/Parser.h \
+ src/../libs/utility/Matrix.h src/../libs/utility/Vector3.h \
+ src/../libs/utility/Vector3.inl src/../libs/utility/Matrix.inl \
+ src/../libs/utility/Matrix.h src/../libs/Image.h src/../libs/Scene.h \
+ src/../libs/Hitable.h src/../libs/utility/Ray.h src/../libs/Material.h \
+ src/../libs/lights/Directional_light.h src/../libs/lights/../Light.h \
+ src/../libs/lights/Pointlight.h src/../libs/lights/Spotlight.h \
+ src/../libs/Scene.cpp src/../libs/Camera.h src/../libs/utility/Vector3.h \
  src/../libs/View_Plane.h src/../libs/cameras/Parallel_Camera.h \
  src/../libs/cameras/../Camera.h src/../libs/cameras/Perspective_Camera.h \
  src/../libs/materials/Lambertian.h src/../libs/materials/../Material.h \
@@ -25,6 +26,16 @@ build/render.o: src/render.cpp src/../libs/Parser.h src/../libs/Image.h \
 
 src/../libs/Parser.h:
 
+src/../libs/utility/Matrix.h:
+
+src/../libs/utility/Vector3.h:
+
+src/../libs/utility/Vector3.inl:
+
+src/../libs/utility/Matrix.inl:
+
+src/../libs/utility/Matrix.h:
+
 src/../libs/Image.h:
 
 src/../libs/Scene.h:
@@ -32,10 +43,6 @@ src/../libs/Scene.h:
 src/../libs/Hitable.h:
 
 src/../libs/utility/Ray.h:
-
-src/../libs/utility/Vector3.h:
-
-src/../libs/utility/Vector3.inl:
 
 src/../libs/Material.h:
 

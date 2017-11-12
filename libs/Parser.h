@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <map>
+#include "utility/Matrix.h"
 #include "Image.h"
 #include "cameras/Parallel_Camera.h"
 #include "cameras/Perspective_Camera.h"
