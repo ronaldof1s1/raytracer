@@ -272,4 +272,76 @@ namespace utility{
   	return transpose_matrix(inv);
   }
 
+  static Matrix scale_matrix(double x_scale, double y_scale, double z_scale){
+    Matrix m = identity_matrix();
+    m.matrix[0][0] = x_scale;
+    m.matrix[1][1] = y_scale;
+    m.matrix[2][2] = z_scale;
+  }
+
+  static Matrix scale_matrix(Vector3 scale_vector){
+    return scale_matrix(scale_vector[0], scale_vector[1], scale_vector[2]);
+  }
+
+  Matrix rotation_matrix_x(double angle){
+    Matrix m = identity_matrix();
+
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+
+    m.matrix[1][1] = cos;
+    m.matrix[2][2] = cos;
+    m.matrix[1][2] = -sin;
+    m.matrix[2][1] = sin;
+
+    return m;
+  }
+
+  Matrix rotation_matrix_y(double angle){
+    Matrix m = identity_matrix();
+
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+
+    m.matrix[0][0] = cos;
+    m.matrix[0][2] = sin;
+    m.matrix[2][2] = cos;
+    m.matrix[2][0] = -sin;
+
+    return m;
+  }
+
+  Matrix rotation_matrix_z(double angle){
+    Matrix m = identity_matrix();
+
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+
+    m.matrix[0][0] = cos;
+    m.matrix[0][1] = -sin;
+    m.matrix[1][0] = sin;
+    m.matrix[1][1] = cos;
+
+    return m;
+  }
+
+  static Matrix rotation_matrix(double x_angle, double y_angle, double z_angle){
+    Matrix m1 = rotation_matrix_x(x_angle);
+    Matrix m2 = rotation_matrix_y(y_angle);
+    Matrix m3 = rotation_matrix_z(z_angle);
+
+    Matrix m = m1 * m2 * m3;
+    return m;
+  }
+
+  static Matrix rotation_matrix(Vector3 rotation_vector){
+    return rotation_matrix(rotation_vector[0], rotation_vector[1], rotation_vector[2]);
+  }
+
+  static Matrix translation_matrix(Vector3 v){
+
+  }
+
+
+
 }
