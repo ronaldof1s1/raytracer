@@ -55,7 +55,7 @@ namespace utility{
       return *this;
     }
 
-    
+
 
     inline Matrix& operator+=( const Matrix& );
     inline Matrix& operator-=( const Matrix& );
@@ -64,7 +64,8 @@ namespace utility{
 
 
     double determinant();
-
+    Point3 transform_point(Point3 p);
+    Vector3 transform_vector(Vector3 v);
   };
 
 }

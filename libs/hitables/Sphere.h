@@ -23,9 +23,13 @@ public:
       radius = radius_;
       material = mat_;
     }
-    
+
     Point3 get_center(){return center;}
     double get_radius(){return radius;}
+
+    virtual void set_transformation_matrix(Matrix t){
+      transform = t;
+    }
 
     virtual bool hit( const Ray & r, double t_min, double t_max, hit_record & rec) const;
 };
