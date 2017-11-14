@@ -441,11 +441,79 @@ bool parse_triangle(Hitable *&hitable, std::ifstream &input_file, int &line_numb
 
 }
 
+bool parse_transformations(Matrix &matrix, std::ifstream &input_file, int &line_number){
+  std::string line;
+
+  while (std::getline(input_file, line, '\n')) {
+
+    line_number++;
+
+    clean_up(line);
+    // std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words.empty()){continue;}
+      if(words[1] == "="){
+
+        if(words[0] == "translate"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          Vector3 translate_vector(x,y,z);
+          Matrix translate = translation_matrix(translate_vector);
+          matrix = translate * matrix;
+          // std::cout << "translate matrix\n" << translate << '\n';
+        }
+        else if(words[0] == "rotate"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          Vector3 rotate_vector(x,y,z);
+          Matrix rotate = rotation_matrix(rotate_vector);
+          matrix = rotate * matrix;
+          // std::cout << "rotate matrix\n" << rotate << '\n';
+
+        }
+        else if(words[0] == "scale"){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          Vector3 scale_vector(x,y,z);
+          Matrix scale = scale_matrix(scale_vector);
+          matrix = scale * matrix;
+          // std::cout << "scale matrix\n" << scale << '\n';
+
+        }
+        else{
+          return false;
+        }
+
+      }
+      else if(words[0] == "END"){
+        return (words[1] == "TRANSFORMATIONS") ? true : false;
+      }
+      else {
+        return false;
+      }
+    }
+  }
+  return false;
+
+}
+
 bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   if(materials.empty()){
     std::cerr << "must declare materials before objects" << '\n';
     return false;
   }
+
+  Matrix transform = identity_matrix();
 
   std::string line;
 
@@ -475,6 +543,12 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
           if(!parse_triangle(hitable, input_file, line_number)){
             return false;
           }
+        }
+        else if(words[1] == "TRANSFORMATIONS"){
+          if(!parse_transformations(transform, input_file, line_number)){
+            return false;
+          }
+          hitable->set_transformation_matrix(transform);
         }
         else{
           return false;

@@ -12,8 +12,7 @@ namespace utility{
   }
   inline std::ostream& operator<<( std::ostream& os, const Matrix & m )
   {
-      os << std::fixed << std::setprecision( 2 )
-          << "{ ";
+      os << std::fixed << std::setprecision( 2 ) << "\n";
           for (size_t i = 0; i < 4; i++) {
             os << "[";
             for (size_t j = 0; j < 4; j++) {
@@ -21,7 +20,6 @@ namespace utility{
             }
             os << "]\n";
           }
-          os << " }";
       return os;
   }
 
@@ -271,5 +269,107 @@ namespace utility{
   	inv *= (1/d);
   	return transpose_matrix(inv);
   }
+
+  static Matrix scale_matrix(double x_scale, double y_scale, double z_scale){
+    Matrix m = identity_matrix();
+    m.matrix[0][0] = x_scale;
+    m.matrix[1][1] = y_scale;
+    m.matrix[2][2] = z_scale;
+    return m;
+  }
+
+  static Matrix scale_matrix(Vector3 scale_vector){
+    return scale_matrix(scale_vector[0], scale_vector[1], scale_vector[2]);
+  }
+
+  Matrix rotation_matrix_x(double angle){
+    Matrix m = identity_matrix();
+
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+
+    m.matrix[1][1] = cos;
+    m.matrix[2][2] = cos;
+    m.matrix[1][2] = -sin;
+    m.matrix[2][1] = sin;
+
+    return m;
+  }
+
+  Matrix rotation_matrix_y(double angle){
+    Matrix m = identity_matrix();
+
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+
+    m.matrix[0][0] = cos;
+    m.matrix[0][2] = sin;
+    m.matrix[2][2] = cos;
+    m.matrix[2][0] = -sin;
+
+    return m;
+  }
+
+  Matrix rotation_matrix_z(double angle){
+    Matrix m = identity_matrix();
+
+    double cos = std::cos(angle);
+    double sin = std::sin(angle);
+
+    m.matrix[0][0] = cos;
+    m.matrix[0][1] = -sin;
+    m.matrix[1][0] = sin;
+    m.matrix[1][1] = cos;
+
+    return m;
+  }
+
+  static Matrix rotation_matrix(double x_angle, double y_angle, double z_angle){
+    Matrix m1 = rotation_matrix_x(x_angle);
+    Matrix m2 = rotation_matrix_y(y_angle);
+    Matrix m3 = rotation_matrix_z(z_angle);
+
+    Matrix m = m1 * m2 * m3;
+    return m;
+  }
+
+  static Matrix rotation_matrix(Vector3 rotation_vector){
+    return rotation_matrix(rotation_vector[0], rotation_vector[1], rotation_vector[2]);
+  }
+
+  static Matrix translation_matrix(Vector3 v){
+    Matrix m = identity_matrix();
+
+    m.matrix[0][3] = v[0];
+    m.matrix[1][3] = v[1];
+    m.matrix[2][3] = v[2];
+
+    return m;
+  }
+
+  Point3 Matrix::transform_point(Point3 p){
+    Point3 res(0);
+    // double w = p.x() * matrix[0][3] + p.y() * matrix[1][3] + p.z() * matrix[2][3] + matrix[3][3];
+    //
+    // if(w != 0){
+    //   double inv_w = 1.0/w;
+    // std::cout << "matrix[3][0]" << matrix[3][0] << '\n';
+      res[0] = matrix[0][0] * p[0] + matrix[0][1] * p[1] + matrix[0][2] * p[2] + matrix[0][3];
+      res[1] = matrix[1][0] * p[0] + matrix[1][1] * p[1] + matrix[1][2] * p[2] + matrix[1][3];
+      res[2] = matrix[2][0] * p[0] + matrix[2][1] * p[1] + matrix[2][2] * p[2] + matrix[2][3];
+      // res *= w;
+    // }
+
+    return res;
+  }
+
+  Vector3 Matrix::transform_vector(Vector3 v){
+    Vector3 res(0);
+    res[0] = matrix[0][0] * v[0] + matrix[0][1] * v[1] + matrix[0][2] * v[2];
+    res[1] = matrix[1][0] * v[0] + matrix[1][1] * v[1] + matrix[1][2] * v[2];
+    res[2] = matrix[2][0] * v[0] + matrix[2][1] * v[1] + matrix[2][2] * v[2];
+    return res;
+  }
+
 
 }
