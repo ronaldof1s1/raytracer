@@ -97,10 +97,15 @@
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = 0.0 0.0 -1.0
+        center = -1.0 0.0 -1.0
         radius = 0.5
         material = blueish_shiny
       END SPHERE
+      BEGIN TRANSFORMATIONS
+        translate = 0 0 0
+        rotate = 0 0 0
+        scale = 1 1 1
+      END TRANSFORMATIONS
 
     END OBJECT
 
@@ -108,7 +113,7 @@
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = 1.0 0.0 -1.0
+        center = 0.0 0.0 -1.0
         radius = 0.5
         material = green_shiny
       END SPHERE
@@ -116,7 +121,7 @@
       BEGIN TRANSFORMATIONS
         translate = 0 0 0
         rotate = 0 0 0
-        scale = 1 1 1
+        scale = 3 3 3
       END TRANSFORMATIONS
 
     END OBJECT
@@ -146,8 +151,8 @@
 
       END TRIANGLE
       BEGIN TRANSFORMATIONS
-        translate = 1 1 0
-        rotate = 0 0 45
+        translate = 0 0 0
+        rotate = 0 0 0
         scale = 1 1 1
       END TRANSFORMATIONS
     END OBJECT

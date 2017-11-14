@@ -59,16 +59,16 @@ public:
     v2 = transform.transform_point(v2);
     edge_1 = v1 - v0;
     edge_2 = v2 - v0;
-    std::cout << "v0" << v0 << '\n';
-    std::cout << "v1" << v1 << '\n';
-    std::cout << "v2" << v2 << '\n';
+    // std::cout << "v0" << v0 << '\n';
+    // std::cout << "v1" << v1 << '\n';
+    // std::cout << "v2" << v2 << '\n';
   }
 
-  virtual bool hit(const Ray & r, double t_min, double t_max, hit_record & rec) const;
+  virtual bool hit(const Ray & r, double t_min, double t_max, hit_record & rec) override ;
 
 };
 
-bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) const{
+bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) {
 
 
   double u, v, t;

@@ -7,6 +7,7 @@ class Sphere : public Hitable{
 
   double radius;
   Point3 center;
+  Matrix transform_inverse;
 
 public:
     Sphere(){
@@ -29,9 +30,10 @@ public:
 
     virtual void set_transformation_matrix(Matrix t){
       transform = t;
+      transform_inverse = inverse_matrix(t);
     }
 
-    virtual bool hit( const Ray & r, double t_min, double t_max, hit_record & rec) const;
+    virtual bool hit( const Ray & r, double t_min, double t_max, hit_record & rec) override ;
 };
 
 #include "Sphere.cpp"

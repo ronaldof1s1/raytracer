@@ -353,7 +353,7 @@ namespace utility{
     //
     // if(w != 0){
     //   double inv_w = 1.0/w;
-    std::cout << "matrix[3][0]" << matrix[3][0] << '\n';
+    // std::cout << "matrix[3][0]" << matrix[3][0] << '\n';
       res[0] = matrix[0][0] * p[0] + matrix[0][1] * p[1] + matrix[0][2] * p[2] + matrix[0][3];
       res[1] = matrix[1][0] * p[0] + matrix[1][1] * p[1] + matrix[1][2] * p[2] + matrix[1][3];
       res[2] = matrix[2][0] * p[0] + matrix[2][1] * p[1] + matrix[2][2] * p[2] + matrix[2][3];
