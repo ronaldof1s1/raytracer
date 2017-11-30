@@ -14,19 +14,20 @@ public:
   bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const override;
 };
 
-float schlick(float cosine, float ref_index){
-  float r0 = (1-ref_index) / (1+ref_index);
+double schlick(double cosine, double ref_index){
+  double r0 = (1 - ref_index) / ( 1 + ref_index );
   r0 *= r0;
-  return r0 + (1-r0)*pow((1-cosine),5);
+  return r0 + ( 1 - r0 ) * pow( (1 - cosine) , 5 );
 };
 
 
 bool Dieletric::scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const {
 
-  Vector3 ray_dir = ray_in.get_direction();
-
+  Vector3 ray_dir = unit_vector(ray_in.get_direction());
+  Vector3 u_normal = unit_vector(rec.normal);
+  double cos_dir_normal = dot(ray_dir, u_normal);
   Vector3 outward_normal;
-
+  Vector3 reflected = reflect(ray_in.get_direction(), rec.normal);
 
   double n1_over_n2;
   // RGB atenuation = RGB(1);
@@ -36,30 +37,34 @@ bool Dieletric::scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered
   double reflect_prob;
   double cosine;
 
-  if(dot(ray_dir, rec.normal) > 0) {
+  if(cos_dir_normal > 0) {
     outward_normal = -rec.normal;
     n1_over_n2 = refraction_index;
-    cosine = refraction_index * dot(ray_dir, rec.normal) / ray_dir.length();
+    cosine = refraction_index * cos_dir_normal;
   }
   else{
     outward_normal = rec.normal;
     n1_over_n2 = 1/refraction_index;
-    cosine = -dot(ray_dir, rec.normal) / ray_dir.length();
+    cosine = - cos_dir_normal;
   }
+  Vector3 origin = rec.p - 0.001*outward_normal;
 
-  if(refract(ray_dir, outward_normal, n1_over_n2, refracted)){
+  if(refract(ray_in.get_direction(), outward_normal, n1_over_n2, refracted)){
     reflect_prob = schlick(cosine, refraction_index);
   }
   else{
+    scattered = Ray(origin, reflected);
     reflect_prob = 1;
   }
-
-  if(std::generate_canonical<double, std::numeric_limits<double>::digits>(random_generator) > reflect_prob){
-    scattered = Ray(rec.p, refracted);
+  // random_generator = std::knuth_b(3);
+  double random_number = std::generate_canonical<double, std::numeric_limits<double>::digits>(random_generator) ;
+  // std::cout << "reflect_prob" << reflect_prob << '\n';
+  // std::cout << "random_number" << random_number << '\n';
+  if(random_number > reflect_prob){
+    scattered = Ray(origin, refracted);
   }
   else{
-    Vector3 reflected = reflect(ray_dir, rec.normal);
-    scattered = Ray(rec.p, reflected);
+    scattered = Ray(origin, reflected);
   }
 
   return true;

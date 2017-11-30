@@ -41,8 +41,8 @@ BEGIN MATERIAL
 
   ID = blueish_metal
   material = metal # lambertian | shiny | metal | normal | cartoon | dieletric
-  albedo = 0.0 0.3 0.8
-  fuzziness = 0.5;
+  albedo = 0.8 0.6 0.2
+  fuzziness = 0.4;
 
 END MATERIAL
 
@@ -51,7 +51,16 @@ BEGIN MATERIAL
   ID = green_lambertian
   material = lambertian # lambertian | shiny | metal | normal | cartoon
   ambient = 0.1 0.1 0.1
-  albedo = 0.0 0.5 0.0
+  albedo = 0.8 0.8 0.0
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = blue_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  albedo = 0.2 0.2 0.5
 
 END MATERIAL
 
@@ -69,7 +78,7 @@ BEGIN MATERIAL
   ID = gray_dieletric
   material = dieletric # lambertian | shiny | metal | normal | cartoon
   albedo = 1 1 1
-  refraction_index = 1.2
+  refraction_index = 1.5
 
 END MATERIAL
 
@@ -80,9 +89,9 @@ BEGIN SCENE
   BEGIN BACKGROUND
 
     lower_left = 1.0 1.0 1.0
-    upper_left = 1 0 0
+    upper_left = 0.5 0.7 1
     lower_right = 1.0 1.0 1.0
-    upper_right = 1 0 0
+    upper_right = 0.5 0.7 1
 
   END BACKGROUND
 
@@ -100,7 +109,7 @@ BEGIN SCENE
   BEGIN OBJECT
 
     BEGIN SPHERE
-      center = -1.0 0.0 -1.0
+      center = 1.0 0.0 -1.0
       radius = 0.5
       material = blueish_metal
     END SPHERE
@@ -113,10 +122,25 @@ BEGIN SCENE
   END OBJECT
 
 
-  BEGIN OBJECT
+    BEGIN OBJECT
 
+      BEGIN SPHERE
+        center = 0.0 0.0 -1.0
+        radius = 0.5
+        material = blue_lambertian
+      END SPHERE
+      BEGIN TRANSFORMATIONS
+        translate = 0 0 0
+        rotate = 0 0 0
+        scale = 1 1 1
+      END TRANSFORMATIONS
+
+    END OBJECT
+
+
+    BEGIN OBJECT
     BEGIN SPHERE
-      center = 0.0 0.0 -1.0
+      center = -1.0 0.0 -1.0
       radius = 0.5
       material = gray_dieletric
     END SPHERE
@@ -128,6 +152,24 @@ BEGIN SCENE
     END TRANSFORMATIONS
 
   END OBJECT
+
+  BEGIN OBJECT
+
+    BEGIN SPHERE
+      center = -1.0 0.0 -1.0
+      radius = -0.45
+      material = gray_dieletric
+    END SPHERE
+
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+
+  END OBJECT
+
+
   BEGIN OBJECT
 
     BEGIN SPHERE
@@ -135,24 +177,6 @@ BEGIN SCENE
       radius = 100.0
       material = green_lambertian
     END SPHERE
-    BEGIN TRANSFORMATIONS
-      translate = 0 0 0
-      rotate = 0 0 0
-      scale = 1 1 1
-    END TRANSFORMATIONS
-  END OBJECT
-
-  BEGIN OBJECT
-
-    BEGIN TRIANGLE
-
-      v1 = 0.0 0.5 0.1
-      v2 = 1.0 1.5 -1.5
-      v3  = 0.0 1.5 -1.5
-      culling = false
-      material = red_lambertian
-
-    END TRIANGLE
     BEGIN TRANSFORMATIONS
       translate = 0 0 0
       rotate = 0 0 0

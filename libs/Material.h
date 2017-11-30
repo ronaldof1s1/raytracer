@@ -28,29 +28,39 @@ struct hit_record {
     }
 
 		//using snell law = n1 * sin1 = n2 * sin2
-		bool refract(const Vector3 &v_in, const Vector3 &normal, double n, Vector3 &refracted) const{
-			double cos_incident_normal = dot(unit_vector(v_in), normal);
-			double sin_T2 = n*n *(1 - cos_incident_normal * cos_incident_normal);
-			if(sin_T2 > 1){
-				return false;
-			}
-			double cos_T = sqrt(1- sin_T2);
-			refracted = n*(v_in- n*cos_incident_normal) - n*cos_T;
-			return true;
-		}
+		bool refract(const Vector3 &v, const Vector3 &n, double ni_over_nt, Vector3 &refracted) const{
 
-		double reflectance(const Vector3 &v_in, const Vector3 &normal, double n1, double n2) const {
-			double n = n1/n2;
-			double cos_incident_normal = dot(v_in, normal);
-			double sin_T2 = n*n *(1 - cos_incident_normal * cos_incident_normal);
-			if(sin_T2 > 1){
-				return 1;
+			Vector3 uv = unit_vector(v);
+			double dt = dot(uv, n);
+			double discriminant = 1.0 - ni_over_nt * ni_over_nt * (1-dt*dt);
+
+			if(discriminant > 0){
+				refracted = ni_over_nt *(v - n*dt) - n*sqrt(discriminant);
+				// std::cout << "vect " << (unit_vector(v) - unit_vector(refracted)).length() << '\n';
+				// std::cout << "ni_over_nt" << ni_over_nt << '\n';
+				// std::cout << "v" << v << '\n';
+				// std::cout << "n" << n << '\n';
+				// refracted = Vector3(0,1,0);
+
+				return true;
 			}
-			double cos_T = sqrt(1- sin_T2);
-			double r_0rth = (n1 * cos_incident_normal - n2 * cos_T)/(n1 * cos_incident_normal + n2 * cos_T);
-			double r_par = (n2 * cos_incident_normal - n1 * cos_T) / (n2 * cos_incident_normal + n1 * cos_T);
-			return (r_0rth * r_0rth + r_par * r_par) / 2;
+			else
+				return false;
 		}
+		// bool refract(const Vector3 &v_in, const Vector3 &normal, double n, Vector3 &refracted) const{
+		// 	Vector3 uv = unit_vector(v_in);
+		// 	double cos_incident_normal = dot(uv, unit_vector(normal));
+		// 	double sine = 1 - cos_incident_normal * cos_incident_normal;
+		// 	double discriminant = 1 - n*n *(sine);
+		// 	if(discriminant <= 0){
+		// 		return false;
+		// 	}
+		// 	double cos_T = sqrt(discriminant);
+		// 	refracted = n*(uv- normal*cos_incident_normal) - normal*cos_T;
+		// 	return true;
+		// }
+
+
 
     virtual bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const = 0;
   };
