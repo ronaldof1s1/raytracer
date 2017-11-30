@@ -9,16 +9,14 @@ public:
                 Point3 right, Point3 bottom, Point3 top, Vector3 vp_normal = Vector3(0)):Camera(look_from, look_at, up){
                 Vector3 direction;
                 // std::cout << "vp_normal" << vp_normal << '\n';
+                direction = vp_normal;
                 if (vp_normal == Vector3(0) ){//and vp_normal.Y == 0.00 ){and vp_normal.Z == 0.00 ){
                   direction = -std::get<2>(frame);
                 }
-                else{
-                  direction = vp_normal;
-                }
                 // std::cout << "direction" << direction << '\n';
                 Vector3 llc = origin + left + bottom;
-                Vector3 ha = origin + right - left;
-                Vector3 va = origin + top - bottom;
+                Vector3 ha = right - left;
+                Vector3 va = top - bottom;
                 view_plane = View_Plane(llc, ha, va, direction);
   }
 

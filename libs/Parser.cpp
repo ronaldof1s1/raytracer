@@ -130,10 +130,11 @@ bool parse_material(std::ifstream &input_file, int &line_number){
   Material* material;
   RGB ambient, diffuse, specular, albedo;
   RGB shadow_color, outline;
-  bool is_lambertian, is_shiny, is_metal, is_normal, is_cartoon, has_id;
+  bool is_lambertian, is_shiny, is_metal, is_normal, is_cartoon, is_dieletric, has_id;
   int specular_exponent = 0;
   double fuzziness = 1.0;
-  is_cartoon = is_normal = is_metal = is_lambertian = is_shiny = has_id = false;
+  double refraction_index = 1.0;
+  is_dieletric = is_cartoon = is_normal = is_metal = is_lambertian = is_shiny = has_id = false;
   ambient = diffuse = specular = albedo = shadow_color = outline = RGB(0);
   std::string id = "";
 
@@ -157,7 +158,7 @@ bool parse_material(std::ifstream &input_file, int &line_number){
       if(words[1] == "="){
 
         if(words[0] == "material"){
-          if(is_lambertian or is_shiny or is_metal or is_normal or is_cartoon){
+          if(is_lambertian or is_shiny or is_metal or is_normal or is_cartoon or is_dieletric){
             return false;
           }
 
@@ -175,6 +176,9 @@ bool parse_material(std::ifstream &input_file, int &line_number){
           }
           else if(words[2] == "cartoon"){
             is_cartoon = true;
+          }
+          else if(words[2] == "dieletric"){
+            is_dieletric = true;
           }
           else{
             return false;
@@ -267,6 +271,14 @@ bool parse_material(std::ifstream &input_file, int &line_number){
             return false;
           }
         }
+        else if (words[0] == "refraction_index"){
+          if (words.size() == 3) {
+            refraction_index = std::stod(words[2]);
+          }
+          else{
+            return false;
+          }
+        }
         else{
           return false;
         }
@@ -290,6 +302,9 @@ bool parse_material(std::ifstream &input_file, int &line_number){
         }
         else if (is_cartoon){
           material = new Cartoon(albedo, shadow_color, outline);
+        }
+        else if (is_dieletric){
+          material = new Dieletric(refraction_index, albedo);
         }
         else{
           return false;

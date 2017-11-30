@@ -26,7 +26,7 @@ public:
 
 
     double theta = vfov * M_PI / 180;
-    double half_height = distance_to_vp/std::tan(theta/2);
+    double half_height = distance_to_vp*std::tan(theta/2);
     double half_width = aspect_ratio * half_height;
 
     Vector3 u = std::get<0>(frame);

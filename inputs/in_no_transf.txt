@@ -1,0 +1,163 @@
+BEGIN IMAGE
+
+type = ppm
+codification = binary # ascii | binary
+width = 1000
+height = 500
+maxcolor = 255
+antialiasing = 4
+
+BEGIN SHADER
+
+  shader = blinnphong #recursive | normal2rgb | standard | depthmap | blinnphong | cel
+
+
+END SHADER
+
+BEGIN CAMERA
+
+type = perspective
+
+look_from = 0 0 1
+look_at = 0 0 0
+up = 0 1 0
+vp_normal = 0.00 0.00 0.00
+
+#parallel arguments
+#top = 0 1 0
+#bottom = 0 -1 0
+#left = -2 0 0
+#right = 2 0 0
+
+#perspective arguments
+vfov = 70
+aspect_ratio = 2
+dist_to_focus = 1
+focal_opening = 0
+
+END CAMERA
+
+BEGIN MATERIAL
+
+  ID = blueish_shiny
+  material = shiny # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  diffuse = 0.0 0.3 0.8
+  specular = 0.9 0.9 0.9
+  specular_exponent = 64
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = green_shiny
+  material = shiny # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  diffuse = 0.0 0.5 0.0
+  specular = 0.9 0.9 0.9
+  specular_exponent = 64
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = gray_shiny
+  material = shiny # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  diffuse = 0.4 0.4 0.4
+  specular = 1.0 1.0 1.0
+  specular_exponent = 4
+
+END MATERIAL
+
+BEGIN SCENE
+
+  ambient_light = 0.4 0.4 0.4
+
+  BEGIN BACKGROUND
+
+    lower_left = 1.0 1.0 1.0
+    upper_left = 1 0 0
+    lower_right = 1.0 1.0 1.0
+    upper_right = 1 0 0
+
+  END BACKGROUND
+
+  BEGIN LIGHT
+
+    type = pointlight
+    source = 1.0 5.0 3.0
+    direction = 0.0 0.0 -1.0
+    opening = 70
+    atenuation = 1
+    intensity = 1.0 1.0 1.0
+
+  END LIGHT
+
+  BEGIN OBJECT
+
+    BEGIN SPHERE
+      center = -1.0 0.0 -1.0
+      radius = 0.5
+      material = blueish_shiny
+    END SPHERE
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+
+  END OBJECT
+
+
+  BEGIN OBJECT
+
+    BEGIN SPHERE
+      center = 0.0 0.0 -1.0
+      radius = 0.5
+      material = green_shiny
+    END SPHERE
+
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+
+  END OBJECT
+  BEGIN OBJECT
+
+    BEGIN SPHERE
+      center = 0.0 -100.5 -1.0
+      radius = 100.0
+      material = gray_shiny
+    END SPHERE
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+  END OBJECT
+
+  BEGIN OBJECT
+
+    BEGIN TRIANGLE
+
+      v1 = 0.0 0.0 -1.0
+      v2 = 1.0 1.0 -1.0
+      v3  = 0.0 1.0 -1.0
+      culling = false
+      material = green_shiny
+
+    END TRIANGLE
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+  END OBJECT
+
+
+END SCENE
+
+END IMAGE
