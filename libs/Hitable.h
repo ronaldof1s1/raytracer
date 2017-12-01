@@ -14,7 +14,7 @@ public:
 	Matrix get_transformation_matrix(){return transform;}
 	Material* get_material(){return material;}
 
-	virtual void set_transformation_matrix(Matrix t){}
+	virtual void set_transformation_matrix(Matrix t) = 0;
   virtual bool hit(const Ray & r, double t_min, double t_max, hit_record & rec) = 0;
 };
 

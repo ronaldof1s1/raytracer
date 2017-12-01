@@ -24,6 +24,7 @@
 #include "lights/Spotlight.h"
 #include "hitables/Sphere.h"
 #include "hitables/Triangle.h"
+#include "hitables/Plane.h"
 
 class Parser {
   std::string input_stream;
