@@ -46,18 +46,11 @@ int main(int argc, char const *argv[])
     if (output_file.is_open()) {
       Raytrace my_raytrace(image);
 
-
-        // Shader *shader = new Standard_shader();
-        // Shader *shader = new Depth_map();
-        // Shader *shader = new Normal_to_RGB();
-        // Shader *shader = new Recursive(40);
-        // Shader *shader = new Blinn_Phong(true, true, true, true);//amb, diff, spec, shadow
-
-        start = clock();
-        my_raytrace.render(output_file, shader);
-        std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
-        output_file.close();
-      }
+      start = clock();
+      my_raytrace.render(output_file, shader);
+      std::cout << "time to render/Raytrace: " << (double)(clock() - start)/CLOCKS_PER_SEC << " seconds" << std::endl;
+      output_file.close();
+    }
     else{
       std::cout << "could not open output image file" << std::endl;
     }
