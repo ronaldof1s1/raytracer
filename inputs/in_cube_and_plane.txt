@@ -75,7 +75,7 @@ END MATERIAL
 
 BEGIN MATERIAL
 
-  ID = gray_dieletric
+  ID = dieletric
   material = dieletric # lambertian | shiny | metal | normal | cartoon
   albedo = 1 1 1
   refraction_index = 1.5
@@ -95,75 +95,15 @@ BEGIN SCENE
 
   END BACKGROUND
 
-  BEGIN LIGHT
-
-    type = pointlight
-    source = 1.0 5.0 3.0
-    direction = 0.0 0.0 -1.0
-    opening = 70
-    atenuation = 1
-    intensity = 1.0 1.0 1.0
-
-  END LIGHT
-
-
 
   BEGIN OBJECT
-    BEGIN CUBE
-       v1 = -1.0 0.0 -1.0
-       size = 0.5x
-       material = blue_lambertian
-     END CUBE
-
-     BEGIN TRANSFORMATIONS
-       translate = 0 0 0
-       rotate = 0 0 0
-       scale = 1 1 1
-     END TRANSFORMATIONS
-  END OBJECT
-
-
-
-
-    BEGIN OBJECT
-    BEGIN SPHERE
-      center = -1.0 0.0 -1.0
-      radius = 0.5
-      material = gray_dieletric
-    END SPHERE
-
-    BEGIN TRANSFORMATIONS
-      translate = 0 0 0
-      rotate = 0 0 0
-      scale = 1 1 1
-    END TRANSFORMATIONS
-
-  END OBJECT
-
-  BEGIN OBJECT
-
-    BEGIN SPHERE
-      center = -1.0 0.0 -1.0
-      radius = -0.45
-      material = gray_dieletric
-    END SPHERE
-
-    BEGIN TRANSFORMATIONS
-      translate = 0 0 0
-      rotate = 0 0 0
-      scale = 1 1 1
-    END TRANSFORMATIONS
-
-  END OBJECT
-
-
-  BEGIN OBJECT
-
-    BEGIN SPHERE
-      center = 0.0 -100.5 -1.0
-      radius = 100.0
-      material = green_lambertian
-    END SPHERE
+    BEGIN PLANE
+      origin = 0 0 -1
+      height = 1
+      width = 2
+      material = blue_lambertian
+      culling = true
+    END PLANE
     BEGIN TRANSFORMATIONS
       translate = 0 0 0
       rotate = 0 0 0

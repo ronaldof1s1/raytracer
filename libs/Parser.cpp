@@ -383,7 +383,9 @@ bool parse_cube(Hitable *&hitable, std::ifstream &input_file, int &line_number){
 
 bool parse_plane(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   Point3 origin = Point3(0);
-  Vector3 normal = Vector3(0);
+  double width, height;
+  width = height = 1;
+  bool culling = false;
 
   Material *material = new Lambertian(RGB(0));
 
@@ -408,32 +410,39 @@ bool parse_plane(Hitable *&hitable, std::ifstream &input_file, int &line_number)
       if(words.empty()){continue;}
 
       if(words[0] == "origin"){
-          if(words.size() == 5 and words[1] == "="){
-            double x = std::stod(words[2]);
-            double y = std::stod(words[3]);
-            double z = std::stod(words[4]);
-            origin = Point3(x,y,z);
-          }
-        }
-      else if(words[0] == "normal"){
-          if(words.size() == 5 and words[1] == "="){
-            double x = std::stod(words[2]);
-            double y = std::stod(words[3]);
-            double z = std::stod(words[4]);
-            normal = Vector3(x,y,z);
+        if(words.size() == 5 and words[1] == "="){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          origin = Point3(x,y,z);
         }
       }
-      else if(words[0] == "material"){
+      else if(words[0] == "width"){
+          if(words.size() == 3 and words[1] == "="){
+            width = std::stod(words[2]);
+        }
+      }
+      else if(words[0] == "height"){
+          if(words.size() == 3 and words[1] == "="){
+            height = std::stod(words[2]);
+        }
+      }
+      else if(words[0] == "material" and words[1] == "="){
         std::string id = words[2];
         material = materials[id];
         has_material = true;
+      }
+      else if(words[0] == "culling" and words[1] == "="){
+        if(!string_to_bool(words[2], culling)){
+          return false;
+        }
       }
       else if(words[0] == "END"){
         if(words.size() == 2){
           if(!has_material){
             return false;
           }
-          hitable = new Plane(origin, normal, material);
+          hitable = new Plane(origin, height, width, material, culling);
           return (words[1] == "PLANE") ? true : false;
         }
         return false;

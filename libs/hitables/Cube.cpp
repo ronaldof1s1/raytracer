@@ -16,7 +16,5 @@ bool Cube::hit(const Ray & r, double t_min, double t_max, hit_record & rec) {
       hit_any_triangle = true;
     }
   }
-  if(hit_any_triangle)
-    std::cout << "triangle mat" << triangle->get_material()->albedo << '\n';
   return hit_any_triangle;
 }
