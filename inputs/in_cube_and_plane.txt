@@ -1,0 +1,177 @@
+BEGIN IMAGE
+
+type = ppm
+codification = binary # ascii | binary
+width = 1000
+height = 500
+maxcolor = 255
+antialiasing = 4
+
+BEGIN SHADER
+
+  shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong | cel
+  iterations = 40
+
+END SHADER
+
+BEGIN CAMERA
+
+type = perspective
+
+look_from = 0 0 1
+look_at = 0 0 0
+up = 0 1 0
+vp_normal = 0.00 0.00 0.00
+
+#parallel arguments
+#top = 0 1 0
+#bottom = 0 -1 0
+#left = -2 0 0
+#right = 2 0 0
+
+#perspective arguments
+vfov = 70
+aspect_ratio = 2
+dist_to_focus = 1
+focal_opening = 0
+
+END CAMERA
+
+BEGIN MATERIAL
+
+  ID = yellowish_metal
+  material = metal # lambertian | shiny | metal | normal | cartoon | dieletric
+  albedo = 0.8 0.6 0.2
+  fuzziness = 0.4;
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = green_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  albedo = 0.8 0.8 0.0
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = blue_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  albedo = 0.2 0.2 0.5
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = red_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  albedo = 0.5 0.0 0.0
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = gray_dieletric
+  material = dieletric # lambertian | shiny | metal | normal | cartoon
+  albedo = 1 1 1
+  refraction_index = 1.5
+
+END MATERIAL
+
+BEGIN SCENE
+
+  ambient_light = 0.4 0.4 0.4
+
+  BEGIN BACKGROUND
+
+    lower_left = 1.0 1.0 1.0
+    upper_left = 0.5 0.7 1
+    lower_right = 1.0 1.0 1.0
+    upper_right = 0.5 0.7 1
+
+  END BACKGROUND
+
+  BEGIN LIGHT
+
+    type = pointlight
+    source = 1.0 5.0 3.0
+    direction = 0.0 0.0 -1.0
+    opening = 70
+    atenuation = 1
+    intensity = 1.0 1.0 1.0
+
+  END LIGHT
+
+
+
+  BEGIN OBJECT
+    BEGIN CUBE
+       v1 = -1.0 0.0 -1.0
+       size = 0.5x
+       material = blue_lambertian
+     END CUBE
+
+     BEGIN TRANSFORMATIONS
+       translate = 0 0 0
+       rotate = 0 0 0
+       scale = 1 1 1
+     END TRANSFORMATIONS
+  END OBJECT
+
+
+
+
+    BEGIN OBJECT
+    BEGIN SPHERE
+      center = -1.0 0.0 -1.0
+      radius = 0.5
+      material = gray_dieletric
+    END SPHERE
+
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+
+  END OBJECT
+
+  BEGIN OBJECT
+
+    BEGIN SPHERE
+      center = -1.0 0.0 -1.0
+      radius = -0.45
+      material = gray_dieletric
+    END SPHERE
+
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+
+  END OBJECT
+
+
+  BEGIN OBJECT
+
+    BEGIN SPHERE
+      center = 0.0 -100.5 -1.0
+      radius = 100.0
+      material = green_lambertian
+    END SPHERE
+    BEGIN TRANSFORMATIONS
+      translate = 0 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+    END TRANSFORMATIONS
+  END OBJECT
+
+
+END SCENE
+
+END IMAGE

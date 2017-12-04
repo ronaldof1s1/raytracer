@@ -320,10 +320,136 @@ bool parse_material(std::ifstream &input_file, int &line_number){
   return false;
 }
 
+bool parse_cube(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+  Point3 v1= Point3(0);
+  double size = 0;
+  Material *material = new Lambertian(RGB(0));;
+  bool has_material = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line, '\n')) {
+
+    line_number++;
+
+    clean_up(line);
+    // std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words.empty()){continue;}
+
+      if(words[0] == "v1"){
+        if(words.size() == 5 and words[1] == "="){
+          double x = std::stod(words[2]);
+          double y = std::stod(words[3]);
+          double z = std::stod(words[4]);
+          v1 = Point3(x,y,z);
+        }
+      }
+      else if(words[0] == "size"){
+        if(words.size() == 3 and words[1] == "="){
+          size = std::stod(words[2]);
+        }
+      }
+      else if(words[0] == "material"){
+        std::string id = words[2];
+        material = materials[id];
+        has_material = true;
+      }
+      else if(words[0] == "END"){
+        if(words.size() == 2){
+          if(!has_material){
+            return false;
+          }
+          hitable = new Cube(v1, size, material);
+          return (words[1] == "CUBE") ? true : false;
+        }
+        return false;
+      }
+      else{
+        return false;
+      }
+    }
+  }
+  return false;
+
+}
+
+bool parse_plane(Hitable *&hitable, std::ifstream &input_file, int &line_number){
+  Point3 origin = Point3(0);
+  Vector3 normal = Vector3(0);
+
+  Material *material = new Lambertian(RGB(0));
+
+  bool has_material = false;
+
+  std::string line;
+
+  while (std::getline(input_file, line, '\n')) {
+
+    line_number++;
+
+    clean_up(line);
+    // std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delim = " ";
+
+      split_string(line, delim, words);
+      if(words.empty()){continue;}
+
+      if(words[0] == "origin"){
+          if(words.size() == 5 and words[1] == "="){
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            origin = Point3(x,y,z);
+          }
+        }
+      else if(words[0] == "normal"){
+          if(words.size() == 5 and words[1] == "="){
+            double x = std::stod(words[2]);
+            double y = std::stod(words[3]);
+            double z = std::stod(words[4]);
+            normal = Vector3(x,y,z);
+        }
+      }
+      else if(words[0] == "material"){
+        std::string id = words[2];
+        material = materials[id];
+        has_material = true;
+      }
+      else if(words[0] == "END"){
+        if(words.size() == 2){
+          if(!has_material){
+            return false;
+          }
+          hitable = new Plane(origin, normal, material);
+          return (words[1] == "PLANE") ? true : false;
+        }
+        return false;
+      }
+      else{
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
 bool parse_sphere(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   Point3 center = Point3(0);
 
-  Material *material;
+  Material *material  = new Lambertian(RGB(0));;
 
   double radius = 1.0;
 
@@ -556,6 +682,16 @@ bool parse_object(Hitable *&hitable, std::ifstream &input_file, int &line_number
         }
         else if(words[1] == "TRIANGLE"){
           if(!parse_triangle(hitable, input_file, line_number)){
+            return false;
+          }
+        }
+        else if(words[1] == "CUBE"){
+          if(!parse_cube(hitable, input_file, line_number)){
+            return false;
+          }
+        }
+        else if(words[1] == "PLANE"){
+          if(!parse_plane(hitable, input_file, line_number)){
             return false;
           }
         }

@@ -27,12 +27,12 @@ bool Scene::hit_anything(const Ray & r, double t_min, double t_max, hit_record &
 	bool hit_anything = false;
 
 	//for each object in the list
-	for (auto i = objects.begin(); i != objects.end(); i++ ) {
-		Hitable *obj = *i;
+	for (auto obj : objects) {
 
 		//test if the object were hit
 	  if(obj->hit(r, t_min, t_max, rec)){
 	    hit_anything = true;
+			// std::cout << "obj mater " << obj->get_material()->albedo << '\n';
 	    t_max = rec.t; //closest point to the ray origin
 	  }
 
