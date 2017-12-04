@@ -337,6 +337,16 @@ namespace utility{
     return rotation_matrix(rotation_vector[0], rotation_vector[1], rotation_vector[2]);
   }
 
+  static Matrix translation_matrix(double x, double y, double z){
+    Matrix m = identity_matrix();
+
+    m.matrix[0][3] = x;
+    m.matrix[1][3] = y;
+    m.matrix[2][3] = z;
+
+    return m;
+  }
+
   static Matrix translation_matrix(Vector3 v){
     Matrix m = identity_matrix();
 

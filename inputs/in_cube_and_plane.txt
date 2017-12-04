@@ -10,7 +10,7 @@ antialiasing = 4
 BEGIN SHADER
 
   shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong | cel
-  iterations = 40
+  iterations = 50
 
 END SHADER
 
@@ -42,7 +42,16 @@ BEGIN MATERIAL
   ID = yellowish_metal
   material = metal # lambertian | shiny | metal | normal | cartoon | dieletric
   albedo = 0.8 0.6 0.2
-  fuzziness = 0.4;
+  fuzziness = 0.6;
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = blueish_metal
+  material = metal # lambertian | shiny | metal | normal | cartoon | dieletric
+  albedo = 0.2 0.5 0.8
+  fuzziness = 0.1;
 
 END MATERIAL
 
@@ -95,22 +104,32 @@ BEGIN SCENE
 
   END BACKGROUND
 
-
   BEGIN OBJECT
-    BEGIN PLANE
-      origin = 0 0 -1
-      height = 1
-      width = 2
-      material = blue_lambertian
-      culling = true
-    END PLANE
-    BEGIN TRANSFORMATIONS
-      translate = 0 0 0
-      rotate = 0 0 0
-      scale = 1 1 1
-    END TRANSFORMATIONS
+    BEGIN CUBE
+       p1 = 0 0 -4
+       size = 1
+       material = yellowish_metal
+     END CUBE
+
+     BEGIN TRANSFORMATIONS
+       translate = 0 0 0
+       rotate = -45 -45 0
+       scale = 1 1 1
+     END TRANSFORMATIONS
   END OBJECT
 
+    BEGIN OBJECT
+      BEGIN SPHERE
+        center = 0 0 -4
+        radius = 0.5
+        material = blueish_metal
+      END SPHERE
+      BEGIN TRANSFORMATIONS
+      translate = 1 0 0
+      rotate = 0 0 0
+      scale = 1 1 1
+      END TRANSFORMATIONS
+    END OBJECT
 
 END SCENE
 

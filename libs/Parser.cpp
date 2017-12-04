@@ -344,7 +344,7 @@ bool parse_cube(Hitable *&hitable, std::ifstream &input_file, int &line_number){
       split_string(line, delim, words);
       if(words.empty()){continue;}
 
-      if(words[0] == "v1"){
+      if(words[0] == "p1"){
         if(words.size() == 5 and words[1] == "="){
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
@@ -359,7 +359,12 @@ bool parse_cube(Hitable *&hitable, std::ifstream &input_file, int &line_number){
       }
       else if(words[0] == "material"){
         std::string id = words[2];
-        material = materials[id];
+        auto it = materials.find(id);
+        if(it == materials.end()){
+          std::cerr << "material "<< id << " not found" << '\n';
+          return false;
+        }
+        material = it->second;
         has_material = true;
       }
       else if(words[0] == "END"){
@@ -429,7 +434,12 @@ bool parse_plane(Hitable *&hitable, std::ifstream &input_file, int &line_number)
       }
       else if(words[0] == "material" and words[1] == "="){
         std::string id = words[2];
-        material = materials[id];
+        auto it = materials.find(id);
+        if(it == materials.end()){
+          std::cerr << "material "<< id << " not found" << '\n';
+          return false;
+        }
+        material = it->second;
         has_material = true;
       }
       else if(words[0] == "culling" and words[1] == "="){
@@ -497,7 +507,12 @@ bool parse_sphere(Hitable *&hitable, std::ifstream &input_file, int &line_number
       }
       else if(words[0] == "material"){
         std::string id = words[2];
-        material = materials[id];
+        auto it = materials.find(id);
+        if(it == materials.end()){
+          std::cerr << "material "<< id << " not found" << '\n';
+          return false;
+        }
+        material = it->second;
         has_material = true;
       }
       else if(words[0] == "END"){
@@ -523,7 +538,7 @@ bool parse_triangle(Hitable *&hitable, std::ifstream &input_file, int &line_numb
   Point3 v1, v2, v3;
   v1 = v2 = v3 = Point3(0);
   bool culling = true;
-  Material *material;
+  Material *material = new Lambertian(RGB(0));
   bool has_material = false;
 
   std::string line;
@@ -570,7 +585,12 @@ bool parse_triangle(Hitable *&hitable, std::ifstream &input_file, int &line_numb
         }
         else if(words[0] == "material"){
           std::string id = words[2];
-          material = materials[id];
+          auto it = materials.find(id);
+          if(it == materials.end()){
+            std::cerr << "material "<< id << " not found" << '\n';
+            return false;
+          }
+          material = it->second;
           has_material = true;
         }
         else{
@@ -615,8 +635,7 @@ bool parse_transformations(Matrix &matrix, std::ifstream &input_file, int &line_
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          Vector3 translate_vector(x,y,z);
-          Matrix translate = translation_matrix(translate_vector);
+          Matrix translate = translation_matrix(x, y, z);
           matrix = translate * matrix;
           // std::cout << "translate matrix\n" << translate << '\n';
         }
@@ -624,8 +643,7 @@ bool parse_transformations(Matrix &matrix, std::ifstream &input_file, int &line_
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          Vector3 rotate_vector(x,y,z);
-          Matrix rotate = rotation_matrix(rotate_vector);
+          Matrix rotate = rotation_matrix(x, y, z);
           matrix = rotate * matrix;
           // std::cout << "rotate matrix\n" << rotate << '\n';
 
@@ -634,8 +652,7 @@ bool parse_transformations(Matrix &matrix, std::ifstream &input_file, int &line_
           double x = std::stod(words[2]);
           double y = std::stod(words[3]);
           double z = std::stod(words[4]);
-          Vector3 scale_vector(x,y,z);
-          Matrix scale = scale_matrix(scale_vector);
+          Matrix scale = scale_matrix(x, y, z);
           matrix = scale * matrix;
           // std::cout << "scale matrix\n" << scale << '\n';
 

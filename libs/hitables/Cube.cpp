@@ -13,6 +13,7 @@ bool Cube::hit(const Ray & r, double t_min, double t_max, hit_record & rec) {
   bool hit_any_triangle = false;
   for(auto triangle : triangles){
     if(triangle->hit(r, t_min, t_max, rec)){
+      t_max = rec.t;
       hit_any_triangle = true;
     }
   }

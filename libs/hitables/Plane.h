@@ -9,7 +9,7 @@ public:
 	Point3 origin;
 	double height;
 	double width;
-	Triangle t1, t2;
+	Triangle *t1, *t2;
 	bool culling;
 	Plane () {};
 	Plane(Point3 o, double h, double w, Material *mat, bool cull = true) {
@@ -19,8 +19,8 @@ public:
 		Point3 p2 = Point3(o.x(), o.y() + h, o.z());
 		Point3 p3 = Point3(o.x() + w, o.y() + h, o.z());
 
-		t1 = Triangle(o, p1, p2, mat, cull);
-		t2 = Triangle(p1, p3, p2, mat, cull);
+		t1 = new Triangle(o, p1, p2, mat, cull);
+		t2 = new Triangle(p1, p3, p2, mat, cull);
 
     material = mat;
   }

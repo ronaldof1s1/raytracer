@@ -69,12 +69,12 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
 
     t = dot(edge_2, Q) * inv_det;
 
-    if (t< EPSILON){
-      return false;
-    }
 
   }
 
+  if (t< EPSILON){
+    return false;
+  }
   if(t < t_max and t > t_min){
     rec.t = t;
     rec.p = r.point_at(t);
