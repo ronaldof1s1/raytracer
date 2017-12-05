@@ -10,8 +10,8 @@ class Metal : public Material{
 public:
   //Constructors
   Metal(double fuzz = 0):Material(){fuzziness = std::min(1.0,fuzz);}
-  Metal(RGB rgb_, double fuzz = 0 ):Material(rgb_){fuzziness = std::min(1.0,fuzz);}
-  
+  Metal(Texture *texture, double fuzz = 0 ):Material(texture){fuzziness = std::min(1.0,fuzz);}
+
   //Methods
   bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const override;
 };

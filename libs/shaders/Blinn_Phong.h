@@ -97,7 +97,7 @@ RGB Blinn_Phong::shade(const Ray &ray, const Scene &scene) const {
 
         RGB diffuse_intensity = light_intensity * cos_light_normal;
 
-        rgb_to_paint += rec.material->albedo * diffuse_intensity * use_diffuse;
+        rgb_to_paint += rec.material->texture->value(0,0,rec.p) * diffuse_intensity * use_diffuse;
 
 
         if(shiny != nullptr){

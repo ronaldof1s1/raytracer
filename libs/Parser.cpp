@@ -4,6 +4,7 @@ bool is_blinn_phong, is_depth_map, is_normal_to_rgb, is_recursive, is_standard, 
 bool shadow;
 int iterations;
 std::map<std::string, Material*> materials;
+std::map<std::string, Texture*> textures;
 
 bool string_to_bool(std::string word, bool &result){
   if(word == "true"){
@@ -126,17 +127,138 @@ bool parse_antialiasing(std::vector< std::string > &words, int &antialiasing){
   return false;
 }
 
+bool parse_texture(std::ifstream &input_file, int &line_number){
+  Texture *texture;
+  RGB color(0);
+  Texture *t1, *t2;
+  t1 = new Constant_Texture(color);
+  t2 = new Constant_Texture(color);
+
+  bool is_constant, is_checker, is_perlin, is_image;
+  is_constant = is_checker = is_perlin = is_image = false;
+
+  std::string id = "";
+  bool has_id = false;
+
+  std::string line = "";
+
+  while (std::getline(input_file, line, '\n')) {
+
+    line_number++;
+
+    clean_up(line);
+    // std::cout << line <<std::endl;
+
+    if(!line.empty()){
+
+      std::vector< std::string > words;
+
+      std::string delimiter = " ";
+
+      split_string(line, delimiter, words);
+
+      if(words[1] == "="){
+
+        if(words[0] == "type"){
+          if(is_constant or is_checker or is_perlin or is_image){
+            return false;
+          }
+
+          if(words[2] == "constant"){
+            is_constant = true;
+          }
+          else if(words[2] == "checker"){
+            is_checker = true;
+          }
+          else if(words[2] == "perlin"){
+            is_perlin = true;
+          }
+          else if(words[2] == "image"){
+            is_image = true;
+          }
+          else{
+            return false;
+          }
+        }
+        else if (words[0] == "ID"){
+          id = words[2];
+          has_id = true;
+        }
+        else if(words[0] == "color"){
+
+          if(words.size() == 5){
+            double r = std::stod(words[2]);
+            double g = std::stod(words[3]);
+            double b = std::stod(words[4]);
+            color = RGB(r,g,b);
+          }
+          else{
+            return false;
+          }
+        }
+        else if(words[0] == "odd_texture"){
+          auto it = textures.find(words[2]);
+          if(it == textures.end()){
+            std::cerr << "texture " << words[2] << " not found" << '\n';
+            return false;
+          }
+          t1 = it->second;
+        }
+        else if(words[0] == "even_texture"){
+          auto it = textures.find(words[2]);
+          if(it == textures.end()){
+            std::cerr << "texture " << words[2] << " not found" << '\n';
+            return false;
+          }
+          t2 = it->second;
+        }
+        else{
+          return false;
+        }
+      }
+      else if(words[0] == "END"){
+        if(!has_id){
+          std::cerr << "texture without id" << '\n';
+          return false;
+        }
+        if(is_constant){
+          texture = new Constant_Texture(color);
+        }
+        else if(is_checker){
+          texture = new Checker_Texture(t1, t2);
+        }
+        else if (is_perlin){
+
+        }
+        else if (is_image){
+
+        }
+        else{
+          return false;
+        }
+        textures.emplace(id, texture);
+        return (words[1] == "TEXTURE") ? true : false;
+      }
+      else{
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
 bool parse_material(std::ifstream &input_file, int &line_number){
   Material* material;
-  RGB ambient, diffuse, specular, albedo;
+  RGB ambient, diffuse, specular;
   RGB shadow_color, outline;
   bool is_lambertian, is_shiny, is_metal, is_normal, is_cartoon, is_dieletric, has_id;
   int specular_exponent = 0;
   double fuzziness = 1.0;
   double refraction_index = 1.0;
   is_dieletric = is_cartoon = is_normal = is_metal = is_lambertian = is_shiny = has_id = false;
-  ambient = diffuse = specular = albedo = shadow_color = outline = RGB(0);
+  ambient = diffuse = specular = shadow_color = outline = RGB(0);
   std::string id = "";
+  Texture *texture = new Constant_Texture(RGB(0));
 
   std::string line = "";
 
@@ -188,6 +310,14 @@ bool parse_material(std::ifstream &input_file, int &line_number){
           id = words[2];
           has_id = true;
         }
+        else if(words[0] == "texture"){
+          auto it = textures.find(words[2]);
+          if(it == textures.end()){
+            std::cerr << "texture not found" << '\n';
+            return false;
+          }
+          texture = it->second;
+        }
         else if(words[0] == "ambient"){
 
           if(words.size() == 5){
@@ -217,17 +347,6 @@ bool parse_material(std::ifstream &input_file, int &line_number){
             double g = std::stod(words[3]);
             double b = std::stod(words[4]);
             specular = RGB(r,g,b);
-          }
-          else{
-            return false;
-          }
-        }
-        else if(words[0] == "albedo"){
-          if(words.size() == 5){
-            double r = std::stod(words[2]);
-            double g = std::stod(words[3]);
-            double b = std::stod(words[4]);
-            albedo = RGB(r,g,b);
           }
           else{
             return false;
@@ -289,22 +408,22 @@ bool parse_material(std::ifstream &input_file, int &line_number){
           return false;
         }
         if(is_lambertian){
-          material = new Lambertian(ambient, albedo);
+          material = new Lambertian(ambient, texture);
         }
         else if(is_shiny){
-          material = new Shiny(ambient, diffuse, specular, specular_exponent);
+          material = new Shiny(texture, ambient, specular, specular_exponent);
         }
         else if (is_metal){
-          material = new Metal(albedo, fuzziness);
+          material = new Metal(texture, fuzziness);
         }
         else if (is_normal){
           material = new Normal_Material();
         }
         else if (is_cartoon){
-          material = new Cartoon(albedo, shadow_color, outline);
+          material = new Cartoon(texture, shadow_color, outline);
         }
         else if (is_dieletric){
-          material = new Dieletric(refraction_index, albedo);
+          material = new Dieletric(refraction_index, texture);
         }
         else{
           return false;
@@ -323,7 +442,7 @@ bool parse_material(std::ifstream &input_file, int &line_number){
 bool parse_cube(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   Point3 v1= Point3(0);
   double size = 0;
-  Material *material = new Lambertian(RGB(0));;
+  Material *material = new Lambertian(new Constant_Texture(RGB(0)));;
   bool has_material = false;
 
   std::string line;
@@ -392,7 +511,7 @@ bool parse_plane(Hitable *&hitable, std::ifstream &input_file, int &line_number)
   width = height = 1;
   bool culling = false;
 
-  Material *material = new Lambertian(RGB(0));
+  Material *material = new Lambertian(new Constant_Texture(RGB(0)));
 
   bool has_material = false;
 
@@ -468,7 +587,8 @@ bool parse_plane(Hitable *&hitable, std::ifstream &input_file, int &line_number)
 bool parse_sphere(Hitable *&hitable, std::ifstream &input_file, int &line_number){
   Point3 center = Point3(0);
 
-  Material *material  = new Lambertian(RGB(0));;
+  Material *material = new Lambertian(new Constant_Texture(RGB(0)));
+
 
   double radius = 1.0;
 
@@ -538,7 +658,8 @@ bool parse_triangle(Hitable *&hitable, std::ifstream &input_file, int &line_numb
   Point3 v1, v2, v3;
   v1 = v2 = v3 = Point3(0);
   bool culling = true;
-  Material *material = new Lambertian(RGB(0));
+  Material *material = new Lambertian(new Constant_Texture(RGB(0)));
+
   bool has_material = false;
 
   std::string line;
@@ -1385,6 +1506,11 @@ bool parse_image(Image &image, Shader *&shader, std::ifstream &input_file, int &
         }
         else if(words[1] == "MATERIAL"){
           if(!parse_material(input_file, line_number)){
+            return false;
+          }
+        }
+        else if(words[1] == "TEXTURE"){
+          if(!parse_texture(input_file, line_number)){
             return false;
           }
         }

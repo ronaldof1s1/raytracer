@@ -105,14 +105,14 @@ RGB Cel::shade(const Ray &ray, const Scene &scene) const{
           if(cos_light_normal >= cos_interval){
             if(cos_interval > max_cos){
               max_cos = cos_interval;
-              rgb_to_paint = cartoon->albedo * max_cos * light_intensity;
+              rgb_to_paint = cartoon->texture->value(0,0,rec.p) * max_cos * light_intensity;
               break;
             }
           }
           else if(interval == shading_intervals[shading_intervals.size()-1]){
             if(cos_interval > max_cos){
               max_cos = cos_interval;
-              rgb_to_paint = cartoon->albedo * max_cos * light_intensity;
+              rgb_to_paint = cartoon->texture->value(0,0,rec.p) * max_cos * light_intensity;
             }
           }
         }

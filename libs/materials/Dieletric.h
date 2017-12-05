@@ -7,7 +7,7 @@
 class Dieletric : public Material{
   double refraction_index;
 public:
-  Dieletric(double refraction_index_, RGB color = RGB(1)):Material(color){
+  Dieletric(double refraction_index_, Texture *texture):Material(texture){
     refraction_index = refraction_index_;
   }
 

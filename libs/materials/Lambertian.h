@@ -9,8 +9,8 @@ public:
   RGB k_a;
 
   Lambertian():Material(){}
-  Lambertian(RGB rgb):Material(rgb){k_a = RGB(0);}
-  Lambertian(RGB k_a_, RGB albedo):Material(albedo){k_a = k_a_;}
+  Lambertian(Texture *texture):Material(texture){k_a = RGB(0);}
+  Lambertian(RGB k_a_, Texture *texture):Material(texture){k_a = k_a_;}
   bool scatter(const Ray &ray_in, const hit_record &rec, Ray &scattered) const override;
 };
 
