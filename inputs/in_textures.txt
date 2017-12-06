@@ -75,6 +75,20 @@ BEGIN TEXTURE
   even_texture = red_texture
 END TEXTURE
 
+BEGIN TEXTURE
+  ID = white_noise_texture
+  type = noise
+  color = 1 1 1
+  scale = 4
+END TEXTURE
+
+BEGIN TEXTURE
+  ID = green_noise_texture
+  type = noise
+  color = 0.2 0.8 0.2
+  scale = 4
+END TEXTURE
+
 BEGIN MATERIAL
 
   ID = yellowish_metal
@@ -90,6 +104,24 @@ BEGIN MATERIAL
   material = lambertian # lambertian | shiny | metal | normal | cartoon
   ambient = 0.1 0.1 0.1
   texture = green_texture
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = green_noise_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  texture = green_noise_texture
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = white_noise_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  texture = white_noise_texture
 
 END MATERIAL
 
@@ -157,7 +189,7 @@ BEGIN SCENE
 
     BEGIN SPHERE
       center = 1.0 0.0 -1.0
-      radius = 0.5
+      radius = 0.4
       material = yellowish_metal
     END SPHERE
     BEGIN TRANSFORMATIONS
@@ -173,7 +205,7 @@ BEGIN SCENE
 
       BEGIN SPHERE
         center = 0.0 0.0 -1.0
-        radius = 0.5
+        radius = 0.4
         material = red_lambertian
       END SPHERE
       BEGIN TRANSFORMATIONS
@@ -187,7 +219,7 @@ BEGIN SCENE
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = 0.0 1 -1.0
+        center = 0.0 0.8 -1.0
         radius = 0.3
         material = red_blue_lambertian
       END SPHERE
@@ -200,9 +232,39 @@ BEGIN SCENE
     END OBJECT
 
     BEGIN OBJECT
+
+      BEGIN SPHERE
+        center = 1.0 0.8 -1.0
+        radius = 0.3
+        material = green_noise_lambertian
+      END SPHERE
+      BEGIN TRANSFORMATIONS
+        translate = 0 0 0
+        rotate = 0 0 0
+        scale = 1 1 1
+      END TRANSFORMATIONS
+
+    END OBJECT
+
+    BEGIN OBJECT
+
+      BEGIN SPHERE
+        center = -1.0 0.8 -1.0
+        radius = 0.3
+        material = white_noise_lambertian
+      END SPHERE
+      BEGIN TRANSFORMATIONS
+        translate = 0 0 0
+        rotate = 0 0 0
+        scale = 1 1 1
+      END TRANSFORMATIONS
+
+    END OBJECT
+
+    BEGIN OBJECT
     BEGIN SPHERE
       center = -1.0 0.0 -1.0
-      radius = 0.5
+      radius = 0.4
       material = gray_dieletric
     END SPHERE
 
@@ -218,7 +280,7 @@ BEGIN SCENE
 
     BEGIN SPHERE
       center = -1.0 0.0 -1.0
-      radius = -0.45
+      radius = -0.38
       material = gray_dieletric
     END SPHERE
 
@@ -236,7 +298,7 @@ BEGIN SCENE
     BEGIN SPHERE
       center = 0.0 -100.5 -1.0
       radius = 100.0
-      material = green_lambertian
+      material = white_noise_lambertian
     END SPHERE
     BEGIN TRANSFORMATIONS
       translate = 0 0 0

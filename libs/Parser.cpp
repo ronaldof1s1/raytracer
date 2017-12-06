@@ -133,9 +133,10 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
   Texture *t1, *t2;
   t1 = new Constant_Texture(color);
   t2 = new Constant_Texture(color);
+  double scale = 1;
 
-  bool is_constant, is_checker, is_perlin, is_image;
-  is_constant = is_checker = is_perlin = is_image = false;
+  bool is_constant, is_checker, is_noise, is_image;
+  is_constant = is_checker = is_noise = is_image = false;
 
   std::string id = "";
   bool has_id = false;
@@ -160,7 +161,7 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
       if(words[1] == "="){
 
         if(words[0] == "type"){
-          if(is_constant or is_checker or is_perlin or is_image){
+          if(is_constant or is_checker or is_noise or is_image){
             return false;
           }
 
@@ -170,8 +171,8 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
           else if(words[2] == "checker"){
             is_checker = true;
           }
-          else if(words[2] == "perlin"){
-            is_perlin = true;
+          else if(words[2] == "noise"){
+            is_noise = true;
           }
           else if(words[2] == "image"){
             is_image = true;
@@ -212,6 +213,9 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
           }
           t2 = it->second;
         }
+        else if(words[0] == "scale"){
+          scale = std::stod(words[2]);
+        }
         else{
           return false;
         }
@@ -227,8 +231,8 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
         else if(is_checker){
           texture = new Checker_Texture(t1, t2);
         }
-        else if (is_perlin){
-
+        else if (is_noise){
+          texture = new Noise_Texture(color, scale);
         }
         else if (is_image){
 

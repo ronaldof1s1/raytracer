@@ -1,7 +1,7 @@
 #ifndef CONSTANT_TEXTURE_H_
 #define CONSTANT_TEXTURE_H_
 
-#include "Texture.h"
+#include "../Texture.h"
 
 class Constant_Texture : public Texture{
 public:
