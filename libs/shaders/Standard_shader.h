@@ -23,7 +23,7 @@
     //if hit an object
     if(scene.hit_anything(ray, min_t, max_t, rec)){
 
-      rgb_to_paint = rec.material->texture->value(0, 0, rec.p);
+      rgb_to_paint = rec.material->texture->value(rec.u, rec.v, rec.p);
 
     }
     else{

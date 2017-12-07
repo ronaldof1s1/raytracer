@@ -80,6 +80,8 @@ bool Triangle::hit(const Ray & r, double t_min, double t_max, hit_record & rec) 
     rec.p = r.point_at(t);
     rec.material = material;
     rec.normal = normal;
+    rec.u = 0;
+    rec.v = 0;
   }
   return true;
 }

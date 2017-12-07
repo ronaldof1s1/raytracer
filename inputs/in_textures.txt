@@ -5,7 +5,7 @@ codification = binary # ascii | binary
 width = 1000
 height = 500
 maxcolor = 255
-antialiasing = 4
+antialiasing = 16
 
 BEGIN SHADER
 
@@ -18,7 +18,7 @@ BEGIN CAMERA
 
 type = perspective
 
-look_from = 0 0 1
+look_from = 0 0 2
 look_at = 0 0 0
 up = 0 1 0
 vp_normal = 0.00 0.00 0.00
@@ -41,6 +41,12 @@ BEGIN TEXTURE
   ID = yellow_texture
   type = constant
   color = 0.8 0.6 0.2
+END TEXTURE
+
+BEGIN TEXTURE
+  ID = mean_girls
+  type = image
+  image_path = textures/mean_girls.jpg
 END TEXTURE
 
 BEGIN TEXTURE
@@ -104,6 +110,15 @@ BEGIN MATERIAL
   material = lambertian # lambertian | shiny | metal | normal | cartoon
   ambient = 0.1 0.1 0.1
   texture = green_texture
+
+END MATERIAL
+
+BEGIN MATERIAL
+
+  ID = mean_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  texture = mean_girls
 
 END MATERIAL
 
@@ -188,7 +203,7 @@ BEGIN SCENE
   BEGIN OBJECT
 
     BEGIN SPHERE
-      center = 1.0 0.0 -1.0
+      center = 1.0 0.0 0.0
       radius = 0.4
       material = yellowish_metal
     END SPHERE
@@ -204,13 +219,13 @@ BEGIN SCENE
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = 0.0 0.0 -1.0
+        center = 0.0 0.0 0.0
         radius = 0.4
-        material = red_lambertian
+        material = mean_lambertian
       END SPHERE
       BEGIN TRANSFORMATIONS
         translate = 0 0 0
-        rotate = 0 0 0
+        rotate = 0.1 49.4 0
         scale = 1 1 1
       END TRANSFORMATIONS
 
@@ -219,7 +234,7 @@ BEGIN SCENE
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = 0.0 0.8 -1.0
+        center = 0.0 0.8 0.0
         radius = 0.3
         material = red_blue_lambertian
       END SPHERE
@@ -234,7 +249,7 @@ BEGIN SCENE
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = 1.0 0.8 -1.0
+        center = 1.0 0.8 0.0
         radius = 0.3
         material = green_noise_lambertian
       END SPHERE
@@ -249,9 +264,9 @@ BEGIN SCENE
     BEGIN OBJECT
 
       BEGIN SPHERE
-        center = -1.0 0.8 -1.0
+        center = -1.0 0.8 0.0
         radius = 0.3
-        material = white_noise_lambertian
+        material = red_lambertian
       END SPHERE
       BEGIN TRANSFORMATIONS
         translate = 0 0 0
@@ -263,7 +278,7 @@ BEGIN SCENE
 
     BEGIN OBJECT
     BEGIN SPHERE
-      center = -1.0 0.0 -1.0
+      center = -1.0 0.0 0.0
       radius = 0.4
       material = gray_dieletric
     END SPHERE
@@ -279,7 +294,7 @@ BEGIN SCENE
   BEGIN OBJECT
 
     BEGIN SPHERE
-      center = -1.0 0.0 -1.0
+      center = -1.0 0.0 0.0
       radius = -0.38
       material = gray_dieletric
     END SPHERE
@@ -296,7 +311,7 @@ BEGIN SCENE
   BEGIN OBJECT
 
     BEGIN SPHERE
-      center = 0.0 -100.5 -1.0
+      center = 0.0 -100.5 0.0
       radius = 100.0
       material = white_noise_lambertian
     END SPHERE

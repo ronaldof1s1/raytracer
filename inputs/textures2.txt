@@ -1,0 +1,121 @@
+BEGIN IMAGE
+
+type = ppm
+codification = binary # ascii | binary
+width = 1000
+height = 500
+maxcolor = 255
+antialiasing = 4
+
+BEGIN SHADER
+
+  shader = recursive #recursive | normal2rgb | standard | depthmap | blinnphong | cel
+  iterations = 51
+
+END SHADER
+
+BEGIN CAMERA
+
+type = perspective
+
+look_from = 0 0 4
+look_at = 0 0 0
+up = 0 1 0
+vp_normal = 0.00 0.00 0.00
+
+#parallel arguments
+#top = 0 1 0
+#bottom = 0 -1 0
+#left = -2 0 0
+#right = 2 0 0
+
+#perspective arguments
+vfov = 70
+aspect_ratio = 2
+dist_to_focus = 1
+focal_opening = 0
+
+END CAMERA
+
+
+
+BEGIN TEXTURE
+  ID = mean_girls
+  type = image
+  image_path = textures/mean_girls.jpg
+END TEXTURE
+
+BEGIN TEXTURE
+  ID = red_b
+  type = image
+  image_path = textures/red-blue.jpg
+END TEXTURE
+
+BEGIN MATERIAL
+
+  ID = mean_lambertian
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  texture = mean_girls
+
+END MATERIAL
+
+
+BEGIN MATERIAL
+
+  ID = red_m
+  material = lambertian # lambertian | shiny | metal | normal | cartoon
+  ambient = 0.1 0.1 0.1
+  texture = red_b
+
+END MATERIAL
+
+BEGIN SCENE
+
+  ambient_light = 0.4 0.4 0.4
+
+  BEGIN BACKGROUND
+
+    lower_left = 1.0 1.0 1.0
+    upper_left = 0.5 0.7 1
+    lower_right = 1.0 1.0 1.0
+    upper_right = 0.5 0.7 1
+
+  END BACKGROUND
+
+  BEGIN LIGHT
+
+    type = pointlight
+    source = 1.0 5.0 3.0
+    direction = 0.0 0.0 -1.0
+    opening = 70
+    atenuation = 1
+    intensity = 1.0 1.0 1.0
+
+  END LIGHT
+
+
+    BEGIN OBJECT
+
+      BEGIN SPHERE
+        center = 0.0 0.0 0
+        radius = 2
+        material = mean_lambertian
+      END SPHERE
+      BEGIN TRANSFORMATIONS
+        translate = 1 0 0
+        rotate = 0.1 49.4 0
+        scale = 1 1 1
+      END TRANSFORMATIONS
+
+    END OBJECT
+
+
+
+
+
+
+
+END SCENE
+
+END IMAGE

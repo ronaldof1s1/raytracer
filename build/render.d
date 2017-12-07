@@ -20,6 +20,8 @@ build/render.o: src/render.cpp src/../libs/Parser.h \
  src/../libs/textures/Noise_Texture.h \
  src/../libs/textures/../utility/Perlin.h \
  src/../libs/textures/../utility/Vector3.h \
+ src/../libs/textures/Image_Texture.h \
+ src/../libs/textures/../utility/stb_image.h \
  src/../libs/shaders/Blinn_Phong.h src/../libs/shaders/../Shader.h \
  src/../libs/shaders/../utility/Ray.h src/../libs/shaders/../Scene.h \
  src/../libs/shaders/../materials/Shiny.h src/../libs/shaders/Depth_map.h \
@@ -108,6 +110,10 @@ src/../libs/textures/Noise_Texture.h:
 src/../libs/textures/../utility/Perlin.h:
 
 src/../libs/textures/../utility/Vector3.h:
+
+src/../libs/textures/Image_Texture.h:
+
+src/../libs/textures/../utility/stb_image.h:
 
 src/../libs/shaders/Blinn_Phong.h:
 

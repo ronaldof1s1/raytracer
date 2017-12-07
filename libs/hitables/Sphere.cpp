@@ -1,4 +1,14 @@
 #include "Sphere.h"
+
+#include <cmath>
+
+void get_sphere_uv(const Point3& p, double& u, double& v){
+  double phi = atan2(p.z(), p.x());
+  double theta = asin(p.y());
+  u = 1 - (phi + M_PI) / (2*M_PI);
+  v = (theta + M_PI/2) / M_PI;
+}
+
 bool Sphere::hit(const Ray & r, double t_min, double t_max, hit_record & rec) {
 
     //bhaskara to see if the ray collides with the sphere
@@ -30,20 +40,18 @@ bool Sphere::hit(const Ray & r, double t_min, double t_max, hit_record & rec) {
             if(t1 < t2 || t2 < 0){
             rec.t = t1;
             rec.p = new_ray.point_at(t1);
-            Vector3 normal = unit_vector((rec.p - center)/radius);
-            // rec.normal = transform.transform_vector(normal);
-            rec.normal = normal;
+            rec.normal = (rec.p - center)/radius;
             rec.material = material;
+            get_sphere_uv(rec.normal, rec.u, rec.v);
             return true;
             }
         }
         if(t2 > t_min && t2 < t_max){
             rec.t = t2;
             rec.p = new_ray.point_at(t2);
-            Vector3 normal = unit_vector((rec.p - center)/radius);
-            // rec.normal = transform.transform_vector(normal);
-            rec.normal = normal;
+            rec.normal = (rec.p - center)/radius;
             rec.material = material;
+            get_sphere_uv(rec.normal, rec.u, rec.v);
             return true;
         }
     }

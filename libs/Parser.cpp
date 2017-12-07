@@ -134,6 +134,7 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
   t1 = new Constant_Texture(color);
   t2 = new Constant_Texture(color);
   double scale = 1;
+  std::string image_path = "";
 
   bool is_constant, is_checker, is_noise, is_image;
   is_constant = is_checker = is_noise = is_image = false;
@@ -213,6 +214,12 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
           }
           t2 = it->second;
         }
+        else if(words[0] == "image_path"){
+          for (size_t i = 2; i < words.size(); i++) {
+            image_path += words[i];
+            if(i < words.size()-1) image_path += " ";
+          }
+        }
         else if(words[0] == "scale"){
           scale = std::stod(words[2]);
         }
@@ -235,7 +242,7 @@ bool parse_texture(std::ifstream &input_file, int &line_number){
           texture = new Noise_Texture(color, scale);
         }
         else if (is_image){
-
+          texture = new Image_Texture(image_path);
         }
         else{
           return false;

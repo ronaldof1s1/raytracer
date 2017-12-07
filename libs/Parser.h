@@ -17,6 +17,7 @@
 #include "textures/Constant_Texture.h"
 #include "textures/Checker_Texture.h"
 #include "textures/Noise_Texture.h"
+#include "textures/Image_Texture.h"
 #include "shaders/Blinn_Phong.h"
 #include "shaders/Depth_map.h"
 #include "shaders/Normal_to_RGB.h"

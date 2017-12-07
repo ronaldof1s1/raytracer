@@ -46,7 +46,7 @@ public:
             // use_diffuse is 1 if this shader use the diffuse coefficient;
             Ray scattered;
             rec.material->scatter(ray, rec, scattered);
-            rgb_to_paint += rec.material->texture->value(0,0,rec.p) * shade(scattered, scene, actual_iteration - 1);
+            rgb_to_paint += rec.material->texture->value(rec.u,rec.v,rec.p) * shade(scattered, scene, actual_iteration - 1);
           }
           //get mean of the colors from this "antialiasing"
           rgb_to_paint /= 30;
@@ -71,7 +71,7 @@ public:
         // sums with the recursive call applied to the diffuse coeficient
         Ray scattered;
         rec.material->scatter(ray, rec, scattered);
-        rgb_to_paint += rec.material->texture->value(0,0,rec.p) * shade(scattered, scene, actual_iteration - 1);
+        rgb_to_paint += rec.material->texture->value(rec.u,rec.v,rec.p) * shade(scattered, scene, actual_iteration - 1);
 
       }
       else{ // the number of iterations hits it's maximum
